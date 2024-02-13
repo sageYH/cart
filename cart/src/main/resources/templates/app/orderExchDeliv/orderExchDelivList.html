@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsOrderExchDeliv = new pageCls("dvOrderExchDelivPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("ordExchDelivId"))==false) params["ordExchDelivId"] = getEVal("ordExchDelivId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("collDelivCompId"))==false) params["collDelivCompId"] = getEVal("collDelivCompId");
+	if (isEmpty(getEVal("collDelivFee"))==false) params["collDelivFee"] = getEVal("collDelivFee");
+	if (isEmpty(getEVal("collPymtCompId"))==false) params["collPymtCompId"] = getEVal("collPymtCompId");
+	if (isEmpty(getEVal("collDelivYn"))==false) params["collDelivYn"] = getEVal("collDelivYn");
+	if (isEmpty(getEVal("collDelivExpectedYmd"))==false) params["collDelivExpectedYmd"] = getEVal("collDelivExpectedYmd");
+	if (isEmpty(getEVal("collDelivYmd"))==false) params["collDelivYmd"] = getEVal("collDelivYmd");
+	if (isEmpty(getEVal("exchDelivCompId"))==false) params["exchDelivCompId"] = getEVal("exchDelivCompId");
+	if (isEmpty(getEVal("exchDelivFee"))==false) params["exchDelivFee"] = getEVal("exchDelivFee");
+	if (isEmpty(getEVal("exchPymtCompId"))==false) params["exchPymtCompId"] = getEVal("exchPymtCompId");
+	if (isEmpty(getEVal("exchDelivYn"))==false) params["exchDelivYn"] = getEVal("exchDelivYn");
+	if (isEmpty(getEVal("exchDelivExpectedYmd"))==false) params["exchDelivExpectedYmd"] = getEVal("exchDelivExpectedYmd");
+	if (isEmpty(getEVal("exchDelivYmd"))==false) params["exchDelivYmd"] = getEVal("exchDelivYmd");
+	//page set
+	params = pageClsOrderExchDeliv.getPageInfo(params);
+
+	var url = "/app/orderExchDeliv/getOrderExchDelivPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["ordExchDelivId","ordId","collDelivCompId","collDelivFee","collPymtCompId","collDelivYn","collDelivExpectedYmd","collDelivYmd","exchDelivCompId","exchDelivFee","exchPymtCompId","exchDelivYn","exchDelivExpectedYmd","exchDelivYmd"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,14);
+	pageClsOrderExchDeliv.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsOrderExchDelivDown(){
+	var url = "/app/orderExchDeliv/getOrderExchDelivExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("ordExchDelivId"))==false) paramXls["ordExchDelivId"] = getEVal("ordExchDelivId");
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("collDelivCompId"))==false) paramXls["collDelivCompId"] = getEVal("collDelivCompId");
+	if (isEmpty(getEVal("collDelivFee"))==false) paramXls["collDelivFee"] = getEVal("collDelivFee");
+	if (isEmpty(getEVal("collPymtCompId"))==false) paramXls["collPymtCompId"] = getEVal("collPymtCompId");
+	if (isEmpty(getEVal("collDelivYn"))==false) paramXls["collDelivYn"] = getEVal("collDelivYn");
+	if (isEmpty(getEVal("collDelivExpectedYmd"))==false) paramXls["collDelivExpectedYmd"] = getEVal("collDelivExpectedYmd");
+	if (isEmpty(getEVal("collDelivYmd"))==false) paramXls["collDelivYmd"] = getEVal("collDelivYmd");
+	if (isEmpty(getEVal("exchDelivCompId"))==false) paramXls["exchDelivCompId"] = getEVal("exchDelivCompId");
+	if (isEmpty(getEVal("exchDelivFee"))==false) paramXls["exchDelivFee"] = getEVal("exchDelivFee");
+	if (isEmpty(getEVal("exchPymtCompId"))==false) paramXls["exchPymtCompId"] = getEVal("exchPymtCompId");
+	if (isEmpty(getEVal("exchDelivYn"))==false) paramXls["exchDelivYn"] = getEVal("exchDelivYn");
+	if (isEmpty(getEVal("exchDelivExpectedYmd"))==false) paramXls["exchDelivExpectedYmd"] = getEVal("exchDelivExpectedYmd");
+	if (isEmpty(getEVal("exchDelivYmd"))==false) paramXls["exchDelivYmd"] = getEVal("exchDelivYmd");
+
+	var params = {"xlsName":"주문교환배송"
+		,"sheetName":"시트"
+		,"columnHeaders":["주문교환배송ID","주문ID","수거배송업체ID","수거배송비","수거지급사ID","수거배송여부","수거배송예정일","수거배송일","교환배송업체ID","교환배송비","교환지급사ID","교환배송여부","교환배송예정일","교환배송일"]
+		,"columnNames":["ordExchDelivId","ordId","collDelivCompId","collDelivFee","collPymtCompId","collDelivYn","collDelivExpectedYmd","collDelivYmd","exchDelivCompId","exchDelivFee","exchPymtCompId","exchDelivYn","exchDelivExpectedYmd","exchDelivYmd"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["ordExchDelivId"] = arr[0].trim();
+	}
+	OrderExchDelivPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvOrderExchDelivSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvOrderExchDelivSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsOrderExchDeliv.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">주문교환배송ID</th>
+							<th scope="col">주문ID</th>
+							<th scope="col">수거배송업체ID</th>
+							<th scope="col">수거배송비</th>
+							<th scope="col">수거지급사ID</th>
+							<th scope="col">수거배송여부</th>
+							<th scope="col">수거배송예정일</th>
+							<th scope="col">수거배송일</th>
+							<th scope="col">교환배송업체ID</th>
+							<th scope="col">교환배송비</th>
+							<th scope="col">교환지급사ID</th>
+							<th scope="col">교환배송여부</th>
+							<th scope="col">교환배송예정일</th>
+							<th scope="col">교환배송일</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{ordExchDelivId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{ordExchDelivId}}</td>
+						<td>{{ordId}}</td>
+						<td>{{collDelivCompId}}</td>
+						<td>{{collDelivFee}}</td>
+						<td>{{collPymtCompId}}</td>
+						<td>{{collDelivYn}}</td>
+						<td>{{collDelivExpectedYmd}}</td>
+						<td>{{collDelivYmd}}</td>
+						<td>{{exchDelivCompId}}</td>
+						<td>{{exchDelivFee}}</td>
+						<td>{{exchPymtCompId}}</td>
+						<td>{{exchDelivYn}}</td>
+						<td>{{exchDelivExpectedYmd}}</td>
+						<td>{{exchDelivYmd}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvOrderExchDelivPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/orderExchDeliv/orderExchDelivPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

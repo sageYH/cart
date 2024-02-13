@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/code/codeGrid.js"></script>
+<script language="javascript" type="text/javascript">
+var gridCode = null;
+window.onload = function() {
+	gridCode = setGridCode("dvGridCode");
+	
+	gridCode.on("click",function(ev){
+		toggleGrid(gridCode,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCode.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCode)==false){
+			dblClickGridCode();
+		}
+		return ev.stop();
+	});
+}
+
+//page
+var pageClsCode = new pageCls("dvCodePageList",fnGetList);
+
+function fnGetList(){
+	setClearGrid(gridCode);
+
+	var params = {};
+	if (isEmpty(getEVal("cdId"))==false) params["cdId"] = getEVal("cdId");
+	if (isEmpty(getEVal("cdNm"))==false) params["cdNm"] = getEVal("cdNm");
+	//page set
+	params = pageClsCode.getPageInfo(params);
+
+	var url = "/app/code/getCodePageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCode,result.payloads);
+		//set total
+		pageClsCode.setTotalRowsReload(result.totalRows);
+	}));
+}
+function fnXlsCodeDown(){
+	var url = "/app/code/getCodeExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cdId"))==false) paramXls["cdId"] = getEVal("cdId");
+	if (isEmpty(getEVal("cdNm"))==false) paramXls["cdNm"] = getEVal("cdNm");
+
+	var params = {"xlsName":"코드"
+		,"sheetName":"시트"
+		,"columnHeaders":getColInfoXls(gridCode,"header")
+		,"columnNames":getColInfoXls(gridCode,"name")
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function dblClickGridCode(){
+	var map = getFocusedRowDataGrid(gridCode);
+	fnOpenCodeDialog(map);
+//	codeInfoDiallog();
+//	codeSearchDiallog();
+}
+function newCodeDiallog(){
+	fnOpenCodeDialog();
+}
+function fnOpenCodeDialog(map){
+	var url = "/app/popup/code/codePop.do";
+	var params = {};
+	if (isEmpty(map)==false){
+		params["cdId"] = map["cdId"];
+		params["grpId"] = map["grpId"];
+	}
+	else{
+		params["cdId"] = "";
+		params["grpId"] = "";
+	}
+	var map = {"transData":JSON.stringify(params),"callbackFunc":"fnCBCodePop"};
+	popOpenWindow("codePopId",url,map);
+}
+function fnCBCodePop(map){
+	//resultCd,resultMsg
+	if (map["resultCd"]=="Y"){
+		fnGetList();
+		alert("작업이 완료되었습니다.");
+	}
+	else{
+		alert(map["resultMsg"]);
+	}
+}
+//code data information
+function codeInfoDiallog(){
+	var map = getFocusedRowDataGrid(gridCode);
+	if (isEmpty(map)){
+		alert("자료를 선택하세요.");
+		return;
+	}
+	fnCodeInfoDialog(map);
+}
+function fnCodeInfoDialog(map){
+	var url = "/app/popup/code/codeInfoPop.do";
+	var params = {};
+	params["cdId"] = map["cdId"];
+	params["grpId"] = map["grpId"];
+	var map = {"transData":JSON.stringify(params),"callbackFunc":""};
+	popOpenWindow("codeInfoPopId",url,map);
+}
+//code search
+function codeSearchDiallog(){
+	fnCodeSearchDialog();
+}
+function fnCodeSearchDialog(map){
+	var url = "/app/popup/code/codeSearchPop.do";
+	var params = {};
+	var map = {"transData":JSON.stringify(params),"callbackFunc":"fnCBCodeSearchPop"};
+	popOpenWindow("codeSearchPopId",url,map,null,400);
+}
+function fnCBCodeSearchPop(map){
+	//map 적용
+	console.log("11....."+JSON.stringify(map));
+}
+
+</script>
+<body>
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<section class="">
+	<div class="inner">
+		<div id="dvCodeSearch" class="main__search">
+			<table class="input-item">
+			<colgroup>
+				<col width="5%">
+				<col width="25%">
+				<col width="5%">
+				<col width="25%">
+				<col width="5%">
+				<col width="45%">
+			</colgroup>
+			<tbody>
+				<tr>
+					<th scope="row">코드</th>
+					<td>
+						<input type="text" name="cdId" id="cdId" placeholder="코드" style="width:80%" title="코드">
+					</td>
+					<th scope="row">코드명</th>
+					<td>
+						<input type="text" name="cdNm" id="cdNm" placeholder="코드명" style="width:80%" title="코드명">
+					</td>
+					<th></th>
+					<td></td>
+				</tr>
+			</tbody>
+			</table>
+
+			<div class="search__bottom">
+				<div class="search__bottom-box">
+					<button type="button" id="searchBtn" class="btn btn-primary btn-sm btn-search" onclick="javascript:fnGetList();"><i class="fas fa-search"></i>조회</button>
+				</div>
+			</div>
+		</div>
+		<div class="containerGrid">
+			<div class="col2-left clearfix">
+				<div id="dvCodeDisp" class="inBlock">
+					<span id="totalCnt" class="ma-r-sm fc-mg">10</span>건 / <span id="totalPages" class="fc-lg"></span>
+				</div>
+
+				<div id="dvCodePageIdx" class="inBlock">
+					<select>
+						<option value="10">10개씩 보기</option>
+						<option value="15" selected>15개씩 보기</option>
+						<option value="30">30개씩 보기</option>
+						<option value="50">50개씩 보기</option>
+					</select>
+				</div>
+
+			</div>
+			<div class="col2-left clearfix">
+				<button type="button" class="btn btn-primary btn-sm btn-enter" onclick="fnXlsCodeDown();">Download</button>
+			</div>
+
+			<div class="col2-right clearfix">
+				<button type="button" class="btn btn-primary btn-sm btn-modify" onclick="javascript:newCodeDiallog();">신규</button>
+				<button type="button" class="btn btn-primary btn-sm btn-modify" onclick="javascript:dblClickGridCode();">수정</button>
+			</div>
+
+			<div>
+				<div id="dvGridCode"></div>
+				<div id="dvCodePageList" class="table-num" style="margin-top: 10px;"></div>
+			</div>
+		</div>
+	</div>
+</section>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</body>
+</html>

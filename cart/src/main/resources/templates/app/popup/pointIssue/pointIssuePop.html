@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["pointIssueId"] = '[[${transData.pointIssueId}]]';
+	if (isEmpty(map["pointIssueId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("pointIssueId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/pointIssue/getPointIssue.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["pointIssueId","","자료(포인트발급ID)를 확인하세요."]
+		["pointId","","자료(포인트ID)를 확인하세요."]
+		["pointCont","","자료(포인트내용)를 확인하세요."]
+		["pymtCompId","","자료(지급업체ID)를 확인하세요."]
+		["pointApplFrYmd","","자료(포인트적용시작일)를 확인하세요."]
+		["pointApplToYmd","","자료(포인트적용종료일)를 확인하세요."]
+		["pointTotAmt","","자료(포인트총액)를 확인하세요."]
+		["pointAmt","","자료(포인트금액)를 확인하세요."]
+		["prodMinAmt","","자료(상품최소금액)를 확인하세요."]
+		["ordMinAmt","","자료(주문최소금액)를 확인하세요."]
+		["pointPaidTotAmt","","자료(포인트지급총액)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/pointIssue/updatePointIssue.do";
+	if (mode=="NEW"){
+		url = "/app/pointIssue/insertPointIssue.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formPointIssuePop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvPointIssuePop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formPointIssuePop" name="formPointIssuePop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">포인트발급ID</th>
+						<td><input type="text" name="pointIssueId" id="pointIssueId" style="width:70%" readonly >
+						</td>
+					<th scope="row">포인트ID</th>
+					<td><input type="text" name="pointId" id="pointId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">포인트내용</th>
+						<td><input type="text" name="pointCont" id="pointCont" style="width:70%" >
+						</td>
+					<th scope="row">지급업체ID</th>
+					<td><input type="text" name="pymtCompId" id="pymtCompId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">포인트적용시작일</th>
+						<td><input type="text" name="pointApplFrYmd" id="pointApplFrYmd" style="width:70%" >
+						</td>
+					<th scope="row">포인트적용종료일</th>
+					<td><input type="text" name="pointApplToYmd" id="pointApplToYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">포인트총액</th>
+						<td><input type="text" name="pointTotAmt" id="pointTotAmt" style="width:70%" >
+						</td>
+					<th scope="row">포인트금액</th>
+					<td><input type="text" name="pointAmt" id="pointAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품최소금액</th>
+						<td><input type="text" name="prodMinAmt" id="prodMinAmt" style="width:70%" >
+						</td>
+					<th scope="row">주문최소금액</th>
+					<td><input type="text" name="ordMinAmt" id="ordMinAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">포인트지급총액</th>
+						<td><input type="text" name="pointPaidTotAmt" id="pointPaidTotAmt" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

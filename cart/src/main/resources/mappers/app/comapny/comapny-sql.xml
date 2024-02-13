@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="comapnyMapper">
+	<sql id="where-comapny">
+		WHERE 1=1
+			<if test="compId != null and compId != '' ">
+			AND C.COMP_ID = #{compId}
+			</if>
+			<if test="compNm != null and compNm != '' ">
+			AND C.COMP_NM = #{compNm}
+			</if>
+			<if test="cntryCd != null and cntryCd != '' ">
+			AND C.CNTRY_CD = #{cntryCd}
+			</if>
+			<if test="cpDivCd != null and cpDivCd != '' ">
+			AND C.CP_DIV_CD = #{cpDivCd}
+			</if>
+			<if test="bizRegNo != null and bizRegNo != '' ">
+			AND C.BIZ_REG_NO = #{bizRegNo}
+			</if>
+			<if test="repNm != null and repNm != '' ">
+			AND C.REP_NM = #{repNm}
+			</if>
+			<if test="bizTyp != null and bizTyp != '' ">
+			AND C.BIZ_TYP = #{bizTyp}
+			</if>
+			<if test="bizItem != null and bizItem != '' ">
+			AND C.BIZ_ITEM = #{bizItem}
+			</if>
+			<if test="zipCd != null and zipCd != '' ">
+			AND C.ZIP_CD = #{zipCd}
+			</if>
+			<if test="addr != null and addr != '' ">
+			AND C.ADDR = #{addr}
+			</if>
+			<if test="dtlAddr != null and dtlAddr != '' ">
+			AND C.DTL_ADDR = #{dtlAddr}
+			</if>
+			<if test="dtlAddr2 != null and dtlAddr2 != '' ">
+			AND C.DTL_ADDR2 = #{dtlAddr2}
+			</if>
+			<if test="picNm != null and picNm != '' ">
+			AND C.PIC_NM = #{picNm}
+			</if>
+			<if test="picPhoneNo != null and picPhoneNo != '' ">
+			AND C.PIC_PHONE_NO = #{picPhoneNo}
+			</if>
+			<if test="hqYn != null and hqYn != '' ">
+			AND C.HQ_YN = #{hqYn}
+			</if>
+			<if test="storeYn != null and storeYn != '' ">
+			AND C.STORE_YN = #{storeYn}
+			</if>
+			<if test="afCpYn != null and afCpYn != '' ">
+			AND C.AF_CP_YN = #{afCpYn}
+			</if>
+			<if test="frchseYn != null and frchseYn != '' ">
+			AND C.FRCHSE_YN = #{frchseYn}
+			</if>
+			<if test="custCpYn != null and custCpYn != '' ">
+			AND C.CUST_CP_YN = #{custCpYn}
+			</if>
+			<if test="orgYn != null and orgYn != '' ">
+			AND C.ORG_YN = #{orgYn}
+			</if>
+	</sql>
+
+	<select id="getComapnyListCount" parameterType="ComapnyExDto" resultType="Integer">
+	/* comapnyMapper.getComapnyListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMAPNY C
+		<include refid="where-comapny" />
+	</select>
+
+	<select id="getComapnyList" parameterType="ComapnyExDto" resultType="ComapnyExDto">
+	/* comapnyMapper.getComapnyList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			C.COMP_ID
+			,C.COMP_NM
+			,C.CNTRY_CD
+			,C.CP_DIV_CD
+			,C.BIZ_REG_NO
+			,C.REP_NM
+			,C.BIZ_TYP
+			,C.BIZ_ITEM
+			,C.ZIP_CD
+			,C.ADDR
+			,C.DTL_ADDR
+			,C.DTL_ADDR2
+			,C.PIC_NM
+			,C.PIC_PHONE_NO
+			,C.HQ_YN
+			,C.STORE_YN
+			,C.AF_CP_YN
+			,C.FRCHSE_YN
+			,C.CUST_CP_YN
+			,C.ORG_YN
+			,C.REG_USER_ID
+			,REG_DTM
+			,C.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMAPNY C
+		<include refid="where-comapny" />
+		ORDER BY
+			C.COMP_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getComapny" parameterType="ComapnyExDto" resultType="ComapnyExDto">
+	/* comapnyMapper.getComapny */
+		SELECT
+			C.COMP_ID
+			,C.COMP_NM
+			,C.CNTRY_CD
+			,C.CP_DIV_CD
+			,C.BIZ_REG_NO
+			,C.REP_NM
+			,C.BIZ_TYP
+			,C.BIZ_ITEM
+			,C.ZIP_CD
+			,C.ADDR
+			,C.DTL_ADDR
+			,C.DTL_ADDR2
+			,C.PIC_NM
+			,C.PIC_PHONE_NO
+			,C.HQ_YN
+			,C.STORE_YN
+			,C.AF_CP_YN
+			,C.FRCHSE_YN
+			,C.CUST_CP_YN
+			,C.ORG_YN
+			,C.REG_USER_ID
+			,REG_DTM
+			,C.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMAPNY C
+		WHERE
+			C.COMP_ID = #{compId}
+	</select>
+
+	<insert id="insertComapny" parameterType="ComapnyExDto">
+	/* comapnyMapper.insertComapny */
+		INSERT INTO CW_COMAPNY (
+			COMP_ID
+			,COMP_NM
+			,CNTRY_CD
+			,CP_DIV_CD
+			,BIZ_REG_NO
+			,REP_NM
+			,BIZ_TYP
+			,BIZ_ITEM
+			,ZIP_CD
+			,ADDR
+			,DTL_ADDR
+			,DTL_ADDR2
+			,PIC_NM
+			,PIC_PHONE_NO
+			,HQ_YN
+			,STORE_YN
+			,AF_CP_YN
+			,FRCHSE_YN
+			,CUST_CP_YN
+			,ORG_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{compId}
+			,#{compNm}
+			,#{cntryCd}
+			,#{cpDivCd}
+			,#{bizRegNo}
+			,#{repNm}
+			,#{bizTyp}
+			,#{bizItem}
+			,#{zipCd}
+			,#{addr}
+			,#{dtlAddr}
+			,#{dtlAddr2}
+			,#{picNm}
+			,#{picPhoneNo}
+			,#{hqYn}
+			,#{storeYn}
+			,#{afCpYn}
+			,#{frchseYn}
+			,#{custCpYn}
+			,#{orgYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateComapny" parameterType="ComapnyExDto">
+	/* comapnyMapper.updateComapny */
+		UPDATE CW_COMAPNY
+		<set>
+		<if test="compNm != null">
+		COMP_NM = #{compNm},
+		</if>
+		<if test="cntryCd != null">
+		CNTRY_CD = #{cntryCd},
+		</if>
+		<if test="cpDivCd != null">
+		CP_DIV_CD = #{cpDivCd},
+		</if>
+		<if test="bizRegNo != null">
+		BIZ_REG_NO = #{bizRegNo},
+		</if>
+		<if test="repNm != null">
+		REP_NM = #{repNm},
+		</if>
+		<if test="bizTyp != null">
+		BIZ_TYP = #{bizTyp},
+		</if>
+		<if test="bizItem != null">
+		BIZ_ITEM = #{bizItem},
+		</if>
+		<if test="zipCd != null">
+		ZIP_CD = #{zipCd},
+		</if>
+		<if test="addr != null">
+		ADDR = #{addr},
+		</if>
+		<if test="dtlAddr != null">
+		DTL_ADDR = #{dtlAddr},
+		</if>
+		<if test="dtlAddr2 != null">
+		DTL_ADDR2 = #{dtlAddr2},
+		</if>
+		<if test="picNm != null">
+		PIC_NM = #{picNm},
+		</if>
+		<if test="picPhoneNo != null">
+		PIC_PHONE_NO = #{picPhoneNo},
+		</if>
+		<if test="hqYn != null">
+		HQ_YN = #{hqYn},
+		</if>
+		<if test="storeYn != null">
+		STORE_YN = #{storeYn},
+		</if>
+		<if test="afCpYn != null">
+		AF_CP_YN = #{afCpYn},
+		</if>
+		<if test="frchseYn != null">
+		FRCHSE_YN = #{frchseYn},
+		</if>
+		<if test="custCpYn != null">
+		CUST_CP_YN = #{custCpYn},
+		</if>
+		<if test="orgYn != null">
+		ORG_YN = #{orgYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMP_ID = #{compId}
+	</update>
+
+	<delete id="deleteComapny" parameterType="ComapnyExDto">
+	/* comapnyMapper.deleteComapny */
+	DELETE FROM CW_COMAPNY
+	WHERE
+		COMP_ID = #{compId}
+	</delete>
+</mapper>

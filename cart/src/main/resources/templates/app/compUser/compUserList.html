@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCompUser = new pageCls("dvCompUserPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("userId"))==false) params["userId"] = getEVal("userId");
+	//page set
+	params = pageClsCompUser.getPageInfo(params);
+
+	var url = "/app/compUser/getCompUserPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["compId","userId"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,2);
+	pageClsCompUser.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCompUserDown(){
+	var url = "/app/compUser/getCompUserExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("userId"))==false) paramXls["userId"] = getEVal("userId");
+
+	var params = {"xlsName":"업체사용자"
+		,"sheetName":"시트"
+		,"columnHeaders":["업체ID","사용자ID"]
+		,"columnNames":["compId","userId"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["compId"] = arr[0].trim();
+	}
+	CompUserPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCompUserSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCompUserSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCompUser.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">업체ID</th>
+							<th scope="col">사용자ID</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{compId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{compId}}</td>
+						<td>{{userId}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCompUserPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/compUser/compUserPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

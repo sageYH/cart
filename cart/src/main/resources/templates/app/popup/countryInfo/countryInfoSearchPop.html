@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/countryInfo/countryInfoGrid.js"></script>
+<script>
+var gridCountryInfo = null;
+window.onload = function() {
+	gridCountryInfo = setGridCountryInfo("dvGridCountryInfoSearch");
+	gridCountryInfo.setBodyHeight(300);
+	fixedColGrid(gridCountryInfo);
+
+	gridCountryInfo.on("click",function(ev){
+		toggleGrid(gridCountryInfo,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCountryInfo.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCountryInfo)==false){
+			dblClickGridCountryInfo();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCountryInfo(){
+	getResultData();
+}
+
+//page
+var pageClsCountryInfo = new pageCls("dvCountryInfoPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCountryInfo);
+
+	var params = {};
+	if (isEmpty(getEVal("cntryCd"))==false) params["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("cntryAbbrCd"))==false) params["cntryAbbrCd"] = getEVal("cntryAbbrCd");
+	if (isEmpty(getEVal("cntryNm"))==false) params["cntryNm"] = getEVal("cntryNm");
+	if (isEmpty(getEVal("cntryAbbrNm"))==false) params["cntryAbbrNm"] = getEVal("cntryAbbrNm");
+	if (isEmpty(getEVal("cntryNmLng"))==false) params["cntryNmLng"] = getEVal("cntryNmLng");
+	if (isEmpty(getEVal("cntryAbbrNmLng"))==false) params["cntryAbbrNmLng"] = getEVal("cntryAbbrNmLng");
+	if (isEmpty(getEVal("stdTime"))==false) params["stdTime"] = getEVal("stdTime");
+	//page set
+	params = pageClsCountryInfo.getPageInfo(params);
+
+	var url = "/app/countryInfo/getCountryInfoPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCountryInfo,result.payloads);
+		//set total
+		pageClsCountryInfo.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCountryInfo);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCountryInfoSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCountryInfoSearch" class="addr-list" ></div>
+					<div id="dvCountryInfoPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

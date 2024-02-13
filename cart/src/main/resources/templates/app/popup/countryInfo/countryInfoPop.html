@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cntryCd"] = '[[${transData.cntryCd}]]';
+	if (isEmpty(map["cntryCd"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cntryCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/countryInfo/getCountryInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cntryCd","","자료(국가코드)를 확인하세요."]
+		["cntryAbbrCd","","자료(국가약어코드)를 확인하세요."]
+		["cntryNm","","자료(국가명)를 확인하세요."]
+		["cntryAbbrNm","","자료(국가약어명)를 확인하세요."]
+		["cntryNmLng","","자료(국가명_언어)를 확인하세요."]
+		["cntryAbbrNmLng","","자료(국가약어_언어)를 확인하세요."]
+		["stdTime","","자료(표준시)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/countryInfo/updateCountryInfo.do";
+	if (mode=="NEW"){
+		url = "/app/countryInfo/insertCountryInfo.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCountryInfoPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCountryInfoPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCountryInfoPop" name="formCountryInfoPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">국가코드</th>
+						<td><input type="text" name="cntryCd" id="cntryCd" style="width:70%" readonly >
+						</td>
+					<th scope="row">국가약어코드</th>
+					<td><input type="text" name="cntryAbbrCd" id="cntryAbbrCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">국가명</th>
+						<td><input type="text" name="cntryNm" id="cntryNm" style="width:70%" >
+						</td>
+					<th scope="row">국가약어명</th>
+					<td><input type="text" name="cntryAbbrNm" id="cntryAbbrNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">국가명_언어</th>
+						<td><input type="text" name="cntryNmLng" id="cntryNmLng" style="width:70%" >
+						</td>
+					<th scope="row">국가약어_언어</th>
+					<td><input type="text" name="cntryAbbrNmLng" id="cntryAbbrNmLng" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">표준시</th>
+						<td><input type="text" name="stdTime" id="stdTime" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

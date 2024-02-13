@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrTermsId"] = '[[${transData.mbrTermsId}]]';
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["mbrTermsId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/mbrTermsAcpt/getMbrTermsAcpt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvMbrTermsAcptPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="mbrTermsId" id="mbrTermsId">
+				<input type="hidden" name="mbrId" id="mbrId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">약관ID</th>
+							<td><span name="termsId" id="termsId"></span></td>
+							<th scope="row">약관상세ID</th>
+							<td><span name="termsDtlId" id="termsDtlId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">동의구분코드[TM03]</th>
+							<td><span name="acptDivCd" id="acptDivCd"></span></td>
+							<th scope="row">필수동의여부</th>
+							<td><span name="reqdAcptYn" id="reqdAcptYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">선택동의여부</th>
+							<td><span name="optAcptYn" id="optAcptYn"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

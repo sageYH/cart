@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/comapny/comapnyGrid.js"></script>
+<script>
+var gridComapny = null;
+window.onload = function() {
+	gridComapny = setGridComapny("dvGridComapnySearch");
+	gridComapny.setBodyHeight(300);
+	fixedColGrid(gridComapny);
+
+	gridComapny.on("click",function(ev){
+		toggleGrid(gridComapny,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridComapny.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridComapny)==false){
+			dblClickGridComapny();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridComapny(){
+	getResultData();
+}
+
+//page
+var pageClsComapny = new pageCls("dvComapnyPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridComapny);
+
+	var params = {};
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("compNm"))==false) params["compNm"] = getEVal("compNm");
+	if (isEmpty(getEVal("cntryCd"))==false) params["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("cpDivCd"))==false) params["cpDivCd"] = getEVal("cpDivCd");
+	if (isEmpty(getEVal("bizRegNo"))==false) params["bizRegNo"] = getEVal("bizRegNo");
+	if (isEmpty(getEVal("repNm"))==false) params["repNm"] = getEVal("repNm");
+	if (isEmpty(getEVal("bizTyp"))==false) params["bizTyp"] = getEVal("bizTyp");
+	if (isEmpty(getEVal("bizItem"))==false) params["bizItem"] = getEVal("bizItem");
+	if (isEmpty(getEVal("zipCd"))==false) params["zipCd"] = getEVal("zipCd");
+	if (isEmpty(getEVal("addr"))==false) params["addr"] = getEVal("addr");
+	if (isEmpty(getEVal("dtlAddr"))==false) params["dtlAddr"] = getEVal("dtlAddr");
+	if (isEmpty(getEVal("dtlAddr2"))==false) params["dtlAddr2"] = getEVal("dtlAddr2");
+	if (isEmpty(getEVal("picNm"))==false) params["picNm"] = getEVal("picNm");
+	if (isEmpty(getEVal("picPhoneNo"))==false) params["picPhoneNo"] = getEVal("picPhoneNo");
+	if (isEmpty(getEVal("hqYn"))==false) params["hqYn"] = getEVal("hqYn");
+	if (isEmpty(getEVal("storeYn"))==false) params["storeYn"] = getEVal("storeYn");
+	if (isEmpty(getEVal("afCpYn"))==false) params["afCpYn"] = getEVal("afCpYn");
+	if (isEmpty(getEVal("frchseYn"))==false) params["frchseYn"] = getEVal("frchseYn");
+	if (isEmpty(getEVal("custCpYn"))==false) params["custCpYn"] = getEVal("custCpYn");
+	if (isEmpty(getEVal("orgYn"))==false) params["orgYn"] = getEVal("orgYn");
+	//page set
+	params = pageClsComapny.getPageInfo(params);
+
+	var url = "/app/comapny/getComapnyPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridComapny,result.payloads);
+		//set total
+		pageClsComapny.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridComapny);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvComapnySearchPop" class="modal shot-pop" title="업체정보 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridComapnySearch" class="addr-list" ></div>
+					<div id="dvComapnyPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

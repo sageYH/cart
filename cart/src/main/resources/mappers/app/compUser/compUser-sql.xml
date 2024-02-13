@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="compUserMapper">
+	<sql id="where-compUser">
+		WHERE 1=1
+			<if test="compId != null and compId != '' ">
+			AND CU.COMP_ID = #{compId}
+			</if>
+			<if test="userId != null and userId != '' ">
+			AND CU.USER_ID = #{userId}
+			</if>
+	</sql>
+
+	<select id="getCompUserListCount" parameterType="CompUserExDto" resultType="Integer">
+	/* compUserMapper.getCompUserListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMP_USER CU
+		<include refid="where-compUser" />
+	</select>
+
+	<select id="getCompUserList" parameterType="CompUserExDto" resultType="CompUserExDto">
+	/* compUserMapper.getCompUserList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CU.COMP_ID
+			,CU.USER_ID
+			,CU.REG_USER_ID
+			,REG_DTM
+			,CU.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_USER CU
+		<include refid="where-compUser" />
+		ORDER BY
+			CU.COMP_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCompUser" parameterType="CompUserExDto" resultType="CompUserExDto">
+	/* compUserMapper.getCompUser */
+		SELECT
+			CU.COMP_ID
+			,CU.USER_ID
+			,CU.REG_USER_ID
+			,REG_DTM
+			,CU.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_USER CU
+		WHERE
+			CU.COMP_ID = #{compId}
+	</select>
+
+	<insert id="insertCompUser" parameterType="CompUserExDto">
+	/* compUserMapper.insertCompUser */
+		INSERT INTO CW_COMP_USER (
+			COMP_ID
+			,USER_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{compId}
+			,#{userId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCompUser" parameterType="CompUserExDto">
+	/* compUserMapper.updateCompUser */
+		UPDATE CW_COMP_USER
+		<set>
+		<if test="userId != null">
+		USER_ID = #{userId},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMP_ID = #{compId}
+	</update>
+
+	<delete id="deleteCompUser" parameterType="CompUserExDto">
+	/* compUserMapper.deleteCompUser */
+	DELETE FROM CW_COMP_USER
+	WHERE
+		COMP_ID = #{compId}
+	</delete>
+</mapper>

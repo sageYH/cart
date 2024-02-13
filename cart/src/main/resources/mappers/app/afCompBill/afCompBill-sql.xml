@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="afCompBillMapper">
+	<sql id="where-afCompBill">
+		WHERE 1=1
+			<if test="afCompBillId != null and afCompBillId != '' ">
+			AND ACB.AF_COMP_BILL_ID = #{afCompBillId}
+			</if>
+			<if test="afCompBillYmd != null and afCompBillYmd != '' ">
+			AND ACB.AF_COMP_BILL_YMD = #{afCompBillYmd}
+			</if>
+			<if test="afCompId != null and afCompId != '' ">
+			AND ACB.AF_COMP_ID = #{afCompId}
+			</if>
+			<if test="afDivCd != null and afDivCd != '' ">
+			AND ACB.AF_DIV_CD = #{afDivCd}
+			</if>
+			<if test="afBillQty != null and afBillQty != '' ">
+			AND ACB.AF_BILL_QTY = #{afBillQty}
+			</if>
+			<if test="afBillAmt != null and afBillAmt != '' ">
+			AND ACB.AF_BILL_AMT = #{afBillAmt}
+			</if>
+			<if test="billCfmYn != null and billCfmYn != '' ">
+			AND ACB.BILL_CFM_YN = #{billCfmYn}
+			</if>
+			<if test="billCfmYmd != null and billCfmYmd != '' ">
+			AND ACB.BILL_CFM_YMD = #{billCfmYmd}
+			</if>
+	</sql>
+
+	<select id="getAfCompBillListCount" parameterType="AfCompBillExDto" resultType="Integer">
+	/* afCompBillMapper.getAfCompBillListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_AF_COMP_BILL ACB
+		<include refid="where-afCompBill" />
+	</select>
+
+	<select id="getAfCompBillList" parameterType="AfCompBillExDto" resultType="AfCompBillExDto">
+	/* afCompBillMapper.getAfCompBillList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ACB.AF_COMP_BILL_ID
+			,ACB.AF_COMP_BILL_YMD
+			,ACB.AF_COMP_ID
+			,ACB.AF_DIV_CD
+			,ACB.AF_BILL_QTY
+			,ACB.AF_BILL_AMT
+			,ACB.BILL_CFM_YN
+			,ACB.BILL_CFM_YMD
+			,ACB.REG_USER_ID
+			,REG_DTM
+			,ACB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_AF_COMP_BILL ACB
+		<include refid="where-afCompBill" />
+		ORDER BY
+			ACB.AF_COMP_BILL_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getAfCompBill" parameterType="AfCompBillExDto" resultType="AfCompBillExDto">
+	/* afCompBillMapper.getAfCompBill */
+		SELECT
+			ACB.AF_COMP_BILL_ID
+			,ACB.AF_COMP_BILL_YMD
+			,ACB.AF_COMP_ID
+			,ACB.AF_DIV_CD
+			,ACB.AF_BILL_QTY
+			,ACB.AF_BILL_AMT
+			,ACB.BILL_CFM_YN
+			,ACB.BILL_CFM_YMD
+			,ACB.REG_USER_ID
+			,REG_DTM
+			,ACB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_AF_COMP_BILL ACB
+		WHERE
+			ACB.AF_COMP_BILL_ID = #{afCompBillId}
+	</select>
+
+	<insert id="insertAfCompBill" parameterType="AfCompBillExDto">
+	/* afCompBillMapper.insertAfCompBill */
+		INSERT INTO CW_AF_COMP_BILL (
+			AF_COMP_BILL_ID
+			,AF_COMP_BILL_YMD
+			,AF_COMP_ID
+			,AF_DIV_CD
+			,AF_BILL_QTY
+			,AF_BILL_AMT
+			,BILL_CFM_YN
+			,BILL_CFM_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{afCompBillId}
+			,#{afCompBillYmd}
+			,#{afCompId}
+			,#{afDivCd}
+			,#{afBillQty}
+			,#{afBillAmt}
+			,#{billCfmYn}
+			,#{billCfmYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateAfCompBill" parameterType="AfCompBillExDto">
+	/* afCompBillMapper.updateAfCompBill */
+		UPDATE CW_AF_COMP_BILL
+		<set>
+		<if test="afCompBillYmd != null">
+		AF_COMP_BILL_YMD = #{afCompBillYmd},
+		</if>
+		<if test="afCompId != null">
+		AF_COMP_ID = #{afCompId},
+		</if>
+		<if test="afDivCd != null">
+		AF_DIV_CD = #{afDivCd},
+		</if>
+		<if test="afBillQty != null">
+		AF_BILL_QTY = #{afBillQty},
+		</if>
+		<if test="afBillAmt != null">
+		AF_BILL_AMT = #{afBillAmt},
+		</if>
+		<if test="billCfmYn != null">
+		BILL_CFM_YN = #{billCfmYn},
+		</if>
+		<if test="billCfmYmd != null">
+		BILL_CFM_YMD = #{billCfmYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			AF_COMP_BILL_ID = #{afCompBillId}
+	</update>
+
+	<delete id="deleteAfCompBill" parameterType="AfCompBillExDto">
+	/* afCompBillMapper.deleteAfCompBill */
+	DELETE FROM CW_AF_COMP_BILL
+	WHERE
+		AF_COMP_BILL_ID = #{afCompBillId}
+	</delete>
+</mapper>

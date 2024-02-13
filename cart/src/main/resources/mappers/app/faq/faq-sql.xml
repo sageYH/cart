@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="faqMapper">
+	<sql id="where-faq">
+		WHERE 1=1
+			<if test="faqId != null and faqId != '' ">
+			AND F.FAQ_ID = #{faqId}
+			</if>
+			<if test="faqTypCd != null and faqTypCd != '' ">
+			AND F.FAQ_TYP_CD = #{faqTypCd}
+			</if>
+			<if test="faqTitle != null and faqTitle != '' ">
+			AND F.FAQ_TITLE = #{faqTitle}
+			</if>
+			<if test="faqCont != null and faqCont != '' ">
+			AND F.FAQ_CONT = #{faqCont}
+			</if>
+			<if test="faqViews != null and faqViews != '' ">
+			AND F.FAQ_VIEWS = #{faqViews}
+			</if>
+			<if test="prntFaqId != null and prntFaqId != '' ">
+			AND F.PRNT_FAQ_ID = #{prntFaqId}
+			</if>
+			<if test="grpFaqId != null and grpFaqId != '' ">
+			AND F.GRP_FAQ_ID = #{grpFaqId}
+			</if>
+			<if test="faqFrYmd != null and faqFrYmd != '' ">
+			AND F.FAQ_FR_YMD = #{faqFrYmd}
+			</if>
+			<if test="faqToYmd != null and faqToYmd != '' ">
+			AND F.FAQ_TO_YMD = #{faqToYmd}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND F.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="popupYn != null and popupYn != '' ">
+			AND F.POPUP_YN = #{popupYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND F.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getFaqListCount" parameterType="FaqExDto" resultType="Integer">
+	/* faqMapper.getFaqListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_FAQ F
+		<include refid="where-faq" />
+	</select>
+
+	<select id="getFaqList" parameterType="FaqExDto" resultType="FaqExDto">
+	/* faqMapper.getFaqList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			F.FAQ_ID
+			,F.FAQ_TYP_CD
+			,F.FAQ_TITLE
+			,F.FAQ_CONT
+			,F.FAQ_VIEWS
+			,F.PRNT_FAQ_ID
+			,F.GRP_FAQ_ID
+			,F.FAQ_FR_YMD
+			,F.FAQ_TO_YMD
+			,F.FILE_REF_ID
+			,F.POPUP_YN
+			,F.USE_YN
+			,F.REG_USER_ID
+			,REG_DTM
+			,F.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FAQ F
+		<include refid="where-faq" />
+		ORDER BY
+			F.FAQ_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getFaq" parameterType="FaqExDto" resultType="FaqExDto">
+	/* faqMapper.getFaq */
+		SELECT
+			F.FAQ_ID
+			,F.FAQ_TYP_CD
+			,F.FAQ_TITLE
+			,F.FAQ_CONT
+			,F.FAQ_VIEWS
+			,F.PRNT_FAQ_ID
+			,F.GRP_FAQ_ID
+			,F.FAQ_FR_YMD
+			,F.FAQ_TO_YMD
+			,F.FILE_REF_ID
+			,F.POPUP_YN
+			,F.USE_YN
+			,F.REG_USER_ID
+			,REG_DTM
+			,F.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FAQ F
+		WHERE
+			F.FAQ_ID = #{faqId}
+	</select>
+
+	<insert id="insertFaq" parameterType="FaqExDto">
+	/* faqMapper.insertFaq */
+		INSERT INTO CW_FAQ (
+			FAQ_ID
+			,FAQ_TYP_CD
+			,FAQ_TITLE
+			,FAQ_CONT
+			,FAQ_VIEWS
+			,PRNT_FAQ_ID
+			,GRP_FAQ_ID
+			,FAQ_FR_YMD
+			,FAQ_TO_YMD
+			,FILE_REF_ID
+			,POPUP_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{faqId}
+			,#{faqTypCd}
+			,#{faqTitle}
+			,#{faqCont}
+			,#{faqViews}
+			,#{prntFaqId}
+			,#{grpFaqId}
+			,#{faqFrYmd}
+			,#{faqToYmd}
+			,#{fileRefId}
+			,#{popupYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateFaq" parameterType="FaqExDto">
+	/* faqMapper.updateFaq */
+		UPDATE CW_FAQ
+		<set>
+		<if test="faqTypCd != null">
+		FAQ_TYP_CD = #{faqTypCd},
+		</if>
+		<if test="faqTitle != null">
+		FAQ_TITLE = #{faqTitle},
+		</if>
+		<if test="faqCont != null">
+		FAQ_CONT = #{faqCont},
+		</if>
+		<if test="faqViews != null">
+		FAQ_VIEWS = #{faqViews},
+		</if>
+		<if test="prntFaqId != null">
+		PRNT_FAQ_ID = #{prntFaqId},
+		</if>
+		<if test="grpFaqId != null">
+		GRP_FAQ_ID = #{grpFaqId},
+		</if>
+		<if test="faqFrYmd != null">
+		FAQ_FR_YMD = #{faqFrYmd},
+		</if>
+		<if test="faqToYmd != null">
+		FAQ_TO_YMD = #{faqToYmd},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="popupYn != null">
+		POPUP_YN = #{popupYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			FAQ_ID = #{faqId}
+	</update>
+
+	<delete id="deleteFaq" parameterType="FaqExDto">
+	/* faqMapper.deleteFaq */
+	DELETE FROM CW_FAQ
+	WHERE
+		FAQ_ID = #{faqId}
+	</delete>
+</mapper>

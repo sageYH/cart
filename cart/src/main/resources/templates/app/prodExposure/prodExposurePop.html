@@ -1,0 +1,184 @@
+<div id="divProdExposurePop" class="sub_wrap" style="display:none;width:92%" title="상품노출 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>상품노출 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="prodExpId_g1">상품노출ID</label>
+						<div class="wrap">
+							<input type="text" id="prodExpId_g1" name="prodExpId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="menuId_g1">메뉴ID</label>
+						<div class="wrap">
+							<input type="text" id="menuId_g1" name="menuId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="prodId_g1">상품ID</label>
+						<div class="wrap">
+							<input type="text" id="prodId_g1" name="prodId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="locInfoCd_g1">위치정보코드[PD07]</label>
+						<div class="wrap">
+							<input type="text" id="locInfoCd_g1" name="locInfoCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="expFrYmd_g1">노출시작일</label>
+						<div class="wrap">
+							<input type="text" id="expFrYmd_g1" name="expFrYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="expToYmd_g1">노출종료일</label>
+						<div class="wrap">
+							<input type="text" id="expToYmd_g1" name="expToYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="adFee_g1">광고료</label>
+						<div class="wrap">
+							<input type="text" id="adFee_g1" name="adFee_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="ProdExposurePop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="ProdExposurePop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="ProdExposurePop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var ProdExposurePop = new $W.load("divProdExposurePop");
+ProdExposurePop.ready(function(){
+	//
+});
+
+ProdExposurePop.fnOpen = function(mode, params, func) {
+	clearObjects("divProdExposurePop");
+	ProdExposurePop.mode = mode;
+	if (!isEmpty(func)){
+		ProdExposurePop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divProdExposurePop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["prodExpId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/prodExposure/getProdExposure.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("menuId_g1").focus();
+	}else{
+		readOnlyFalse(["prodExpId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+ProdExposurePop.fnSave = function(){
+
+	var valid = 0 || [
+		["prodExpId_g1","","자료(상품노출ID)를 확인하세요."]
+		,["menuId_g1","","자료(메뉴ID)를 확인하세요."]
+		,["prodId_g1","","자료(상품ID)를 확인하세요."]
+		,["locInfoCd_g1","","자료(위치정보코드[PD07])를 확인하세요."]
+		,["expFrYmd_g1","","자료(노출시작일)를 확인하세요."]
+		,["expToYmd_g1","","자료(노출종료일)를 확인하세요."]
+		,["adFee_g1","","자료(광고료)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divProdExposurePop");
+	var url = "/app/prodExposure/updateProdExposure.do";
+	if (ProdExposurePop.mode=="CREATE"){
+		url = "/app/prodExposure/insertProdExposure.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ProdExposurePop.func)){
+			ProdExposurePop.func();
+			ProdExposurePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+ProdExposurePop.fnDelete = function(){
+	if (ProdExposurePop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/prodExposure/deleteProdExposure.do";
+	var params = {};
+	params["prodExpId"] = getElement("prodExpId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ProdExposurePop.func)){
+			ProdExposurePop.func();
+			ProdExposurePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+ProdExposurePop.fnClose = function(){
+	layerToggle("divProdExposurePop",{"mode":0});
+};
+</script>

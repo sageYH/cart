@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="noticeMapper">
+	<sql id="where-notice">
+		WHERE 1=1
+			<if test="noticeId != null and noticeId != '' ">
+			AND N.NOTICE_ID = #{noticeId}
+			</if>
+			<if test="noticeTypCd != null and noticeTypCd != '' ">
+			AND N.NOTICE_TYP_CD = #{noticeTypCd}
+			</if>
+			<if test="noticeTitle != null and noticeTitle != '' ">
+			AND N.NOTICE_TITLE = #{noticeTitle}
+			</if>
+			<if test="noticeCont != null and noticeCont != '' ">
+			AND N.NOTICE_CONT = #{noticeCont}
+			</if>
+			<if test="noticeViews != null and noticeViews != '' ">
+			AND N.NOTICE_VIEWS = #{noticeViews}
+			</if>
+			<if test="prntNoticeId != null and prntNoticeId != '' ">
+			AND N.PRNT_NOTICE_ID = #{prntNoticeId}
+			</if>
+			<if test="grpNoticeId != null and grpNoticeId != '' ">
+			AND N.GRP_NOTICE_ID = #{grpNoticeId}
+			</if>
+			<if test="noticeFrYmd != null and noticeFrYmd != '' ">
+			AND N.NOTICE_FR_YMD = #{noticeFrYmd}
+			</if>
+			<if test="noticeToYmd != null and noticeToYmd != '' ">
+			AND N.NOTICE_TO_YMD = #{noticeToYmd}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND N.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="popupYn != null and popupYn != '' ">
+			AND N.POPUP_YN = #{popupYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND N.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getNoticeListCount" parameterType="NoticeExDto" resultType="Integer">
+	/* noticeMapper.getNoticeListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_NOTICE N
+		<include refid="where-notice" />
+	</select>
+
+	<select id="getNoticeList" parameterType="NoticeExDto" resultType="NoticeExDto">
+	/* noticeMapper.getNoticeList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			N.NOTICE_ID
+			,N.NOTICE_TYP_CD
+			,N.NOTICE_TITLE
+			,N.NOTICE_CONT
+			,N.NOTICE_VIEWS
+			,N.PRNT_NOTICE_ID
+			,N.GRP_NOTICE_ID
+			,N.NOTICE_FR_YMD
+			,N.NOTICE_TO_YMD
+			,N.FILE_REF_ID
+			,N.POPUP_YN
+			,N.USE_YN
+			,N.REG_USER_ID
+			,REG_DTM
+			,N.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NOTICE N
+		<include refid="where-notice" />
+		ORDER BY
+			N.NOTICE_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getNotice" parameterType="NoticeExDto" resultType="NoticeExDto">
+	/* noticeMapper.getNotice */
+		SELECT
+			N.NOTICE_ID
+			,N.NOTICE_TYP_CD
+			,N.NOTICE_TITLE
+			,N.NOTICE_CONT
+			,N.NOTICE_VIEWS
+			,N.PRNT_NOTICE_ID
+			,N.GRP_NOTICE_ID
+			,N.NOTICE_FR_YMD
+			,N.NOTICE_TO_YMD
+			,N.FILE_REF_ID
+			,N.POPUP_YN
+			,N.USE_YN
+			,N.REG_USER_ID
+			,REG_DTM
+			,N.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NOTICE N
+		WHERE
+			N.NOTICE_ID = #{noticeId}
+	</select>
+
+	<insert id="insertNotice" parameterType="NoticeExDto">
+	/* noticeMapper.insertNotice */
+		INSERT INTO CW_NOTICE (
+			NOTICE_ID
+			,NOTICE_TYP_CD
+			,NOTICE_TITLE
+			,NOTICE_CONT
+			,NOTICE_VIEWS
+			,PRNT_NOTICE_ID
+			,GRP_NOTICE_ID
+			,NOTICE_FR_YMD
+			,NOTICE_TO_YMD
+			,FILE_REF_ID
+			,POPUP_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{noticeId}
+			,#{noticeTypCd}
+			,#{noticeTitle}
+			,#{noticeCont}
+			,#{noticeViews}
+			,#{prntNoticeId}
+			,#{grpNoticeId}
+			,#{noticeFrYmd}
+			,#{noticeToYmd}
+			,#{fileRefId}
+			,#{popupYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateNotice" parameterType="NoticeExDto">
+	/* noticeMapper.updateNotice */
+		UPDATE CW_NOTICE
+		<set>
+		<if test="noticeTypCd != null">
+		NOTICE_TYP_CD = #{noticeTypCd},
+		</if>
+		<if test="noticeTitle != null">
+		NOTICE_TITLE = #{noticeTitle},
+		</if>
+		<if test="noticeCont != null">
+		NOTICE_CONT = #{noticeCont},
+		</if>
+		<if test="noticeViews != null">
+		NOTICE_VIEWS = #{noticeViews},
+		</if>
+		<if test="prntNoticeId != null">
+		PRNT_NOTICE_ID = #{prntNoticeId},
+		</if>
+		<if test="grpNoticeId != null">
+		GRP_NOTICE_ID = #{grpNoticeId},
+		</if>
+		<if test="noticeFrYmd != null">
+		NOTICE_FR_YMD = #{noticeFrYmd},
+		</if>
+		<if test="noticeToYmd != null">
+		NOTICE_TO_YMD = #{noticeToYmd},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="popupYn != null">
+		POPUP_YN = #{popupYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			NOTICE_ID = #{noticeId}
+	</update>
+
+	<delete id="deleteNotice" parameterType="NoticeExDto">
+	/* noticeMapper.deleteNotice */
+	DELETE FROM CW_NOTICE
+	WHERE
+		NOTICE_ID = #{noticeId}
+	</delete>
+</mapper>

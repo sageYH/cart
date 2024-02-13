@@ -1,0 +1,161 @@
+<div id="divMbrLoginHistPop" class="sub_wrap" style="display:none;width:92%" title="멤버로그인이력 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>멤버로그인이력 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="mbrLoginSeqNo_g1">멤버로그인일련번호</label>
+						<div class="wrap">
+							<input type="text" id="mbrLoginSeqNo_g1" name="mbrLoginSeqNo_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="accYmd_g1">접속년월일</label>
+						<div class="wrap">
+							<input type="text" id="accYmd_g1" name="accYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="accHms_g1">접속시분초</label>
+						<div class="wrap">
+							<input type="text" id="accHms_g1" name="accHms_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mbrId_g1">멤버ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrId_g1" name="mbrId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="accDevCd_g1">접근기기코드[MB04]</label>
+						<div class="wrap">
+							<input type="text" id="accDevCd_g1" name="accDevCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="accChanCd_g1">접속채널코드[MB08]</label>
+						<div class="wrap">
+							<input type="text" id="accChanCd_g1" name="accChanCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="MbrLoginHistPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="MbrLoginHistPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="MbrLoginHistPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var MbrLoginHistPop = new $W.load("divMbrLoginHistPop");
+MbrLoginHistPop.ready(function(){
+	//
+});
+
+MbrLoginHistPop.fnOpen = function(mode, params, func) {
+	clearObjects("divMbrLoginHistPop");
+	MbrLoginHistPop.mode = mode;
+	if (!isEmpty(func)){
+		MbrLoginHistPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divMbrLoginHistPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["mbrLoginSeqNo_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/mbrLoginHist/getMbrLoginHist.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("accYmd_g1").focus();
+	}else{
+		readOnlyFalse(["mbrLoginSeqNo_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+MbrLoginHistPop.fnSave = function(){
+
+	var valid = 0 || [
+		["mbrLoginSeqNo_g1","","자료(멤버로그인일련번호)를 확인하세요."]
+		,["accYmd_g1","","자료(접속년월일)를 확인하세요."]
+		,["accHms_g1","","자료(접속시분초)를 확인하세요."]
+		,["mbrId_g1","","자료(멤버ID)를 확인하세요."]
+		,["accDevCd_g1","","자료(접근기기코드[MB04])를 확인하세요."]
+		,["accChanCd_g1","","자료(접속채널코드[MB08])를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divMbrLoginHistPop");
+	var url = "/app/mbrLoginHist/updateMbrLoginHist.do";
+	if (MbrLoginHistPop.mode=="CREATE"){
+		url = "/app/mbrLoginHist/insertMbrLoginHist.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrLoginHistPop.func)){
+			MbrLoginHistPop.func();
+			MbrLoginHistPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+MbrLoginHistPop.fnDelete = function(){
+	if (MbrLoginHistPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/mbrLoginHist/deleteMbrLoginHist.do";
+	var params = {};
+	params["mbrLoginSeqNo"] = getElement("mbrLoginSeqNo_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrLoginHistPop.func)){
+			MbrLoginHistPop.func();
+			MbrLoginHistPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+MbrLoginHistPop.fnClose = function(){
+	layerToggle("divMbrLoginHistPop",{"mode":0});
+};
+</script>

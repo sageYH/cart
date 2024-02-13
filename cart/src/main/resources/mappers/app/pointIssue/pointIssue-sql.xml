@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pointIssueMapper">
+	<sql id="where-pointIssue">
+		WHERE 1=1
+			<if test="pointIssueId != null and pointIssueId != '' ">
+			AND PI.POINT_ISSUE_ID = #{pointIssueId}
+			</if>
+			<if test="pointId != null and pointId != '' ">
+			AND PI.POINT_ID = #{pointId}
+			</if>
+			<if test="pointCont != null and pointCont != '' ">
+			AND PI.POINT_CONT = #{pointCont}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND PI.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+			<if test="pointApplFrYmd != null and pointApplFrYmd != '' ">
+			AND PI.POINT_APPL_FR_YMD = #{pointApplFrYmd}
+			</if>
+			<if test="pointApplToYmd != null and pointApplToYmd != '' ">
+			AND PI.POINT_APPL_TO_YMD = #{pointApplToYmd}
+			</if>
+			<if test="pointTotAmt != null and pointTotAmt != '' ">
+			AND PI.POINT_TOT_AMT = #{pointTotAmt}
+			</if>
+			<if test="pointAmt != null and pointAmt != '' ">
+			AND PI.POINT_AMT = #{pointAmt}
+			</if>
+			<if test="prodMinAmt != null and prodMinAmt != '' ">
+			AND PI.PROD_MIN_AMT = #{prodMinAmt}
+			</if>
+			<if test="ordMinAmt != null and ordMinAmt != '' ">
+			AND PI.ORD_MIN_AMT = #{ordMinAmt}
+			</if>
+			<if test="pointPaidTotAmt != null and pointPaidTotAmt != '' ">
+			AND PI.POINT_PAID_TOT_AMT = #{pointPaidTotAmt}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getPointIssueListCount" parameterType="PointIssueExDto" resultType="Integer">
+	/* pointIssueMapper.getPointIssueListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_POINT_ISSUE PI
+		<include refid="where-pointIssue" />
+	</select>
+
+	<select id="getPointIssueList" parameterType="PointIssueExDto" resultType="PointIssueExDto">
+	/* pointIssueMapper.getPointIssueList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PI.POINT_ISSUE_ID
+			,PI.POINT_ID
+			,PI.POINT_CONT
+			,PI.PYMT_COMP_ID
+			,PI.POINT_APPL_FR_YMD
+			,PI.POINT_APPL_TO_YMD
+			,PI.POINT_TOT_AMT
+			,PI.POINT_AMT
+			,PI.PROD_MIN_AMT
+			,PI.ORD_MIN_AMT
+			,PI.POINT_PAID_TOT_AMT
+			,PI.USE_YN
+			,PI.REG_USER_ID
+			,REG_DTM
+			,PI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_ISSUE PI
+		<include refid="where-pointIssue" />
+		ORDER BY
+			PI.POINT_ISSUE_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getPointIssue" parameterType="PointIssueExDto" resultType="PointIssueExDto">
+	/* pointIssueMapper.getPointIssue */
+		SELECT
+			PI.POINT_ISSUE_ID
+			,PI.POINT_ID
+			,PI.POINT_CONT
+			,PI.PYMT_COMP_ID
+			,PI.POINT_APPL_FR_YMD
+			,PI.POINT_APPL_TO_YMD
+			,PI.POINT_TOT_AMT
+			,PI.POINT_AMT
+			,PI.PROD_MIN_AMT
+			,PI.ORD_MIN_AMT
+			,PI.POINT_PAID_TOT_AMT
+			,PI.USE_YN
+			,PI.REG_USER_ID
+			,REG_DTM
+			,PI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_ISSUE PI
+		WHERE
+			PI.POINT_ISSUE_ID = #{pointIssueId}
+	</select>
+
+	<insert id="insertPointIssue" parameterType="PointIssueExDto">
+	/* pointIssueMapper.insertPointIssue */
+		INSERT INTO CW_POINT_ISSUE (
+			POINT_ISSUE_ID
+			,POINT_ID
+			,POINT_CONT
+			,PYMT_COMP_ID
+			,POINT_APPL_FR_YMD
+			,POINT_APPL_TO_YMD
+			,POINT_TOT_AMT
+			,POINT_AMT
+			,PROD_MIN_AMT
+			,ORD_MIN_AMT
+			,POINT_PAID_TOT_AMT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{pointIssueId}
+			,#{pointId}
+			,#{pointCont}
+			,#{pymtCompId}
+			,#{pointApplFrYmd}
+			,#{pointApplToYmd}
+			,#{pointTotAmt}
+			,#{pointAmt}
+			,#{prodMinAmt}
+			,#{ordMinAmt}
+			,#{pointPaidTotAmt}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updatePointIssue" parameterType="PointIssueExDto">
+	/* pointIssueMapper.updatePointIssue */
+		UPDATE CW_POINT_ISSUE
+		<set>
+		<if test="pointId != null">
+		POINT_ID = #{pointId},
+		</if>
+		<if test="pointCont != null">
+		POINT_CONT = #{pointCont},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="pointApplFrYmd != null">
+		POINT_APPL_FR_YMD = #{pointApplFrYmd},
+		</if>
+		<if test="pointApplToYmd != null">
+		POINT_APPL_TO_YMD = #{pointApplToYmd},
+		</if>
+		<if test="pointTotAmt != null">
+		POINT_TOT_AMT = #{pointTotAmt},
+		</if>
+		<if test="pointAmt != null">
+		POINT_AMT = #{pointAmt},
+		</if>
+		<if test="prodMinAmt != null">
+		PROD_MIN_AMT = #{prodMinAmt},
+		</if>
+		<if test="ordMinAmt != null">
+		ORD_MIN_AMT = #{ordMinAmt},
+		</if>
+		<if test="pointPaidTotAmt != null">
+		POINT_PAID_TOT_AMT = #{pointPaidTotAmt},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			POINT_ISSUE_ID = #{pointIssueId}
+	</update>
+
+	<delete id="deletePointIssue" parameterType="PointIssueExDto">
+	/* pointIssueMapper.deletePointIssue */
+	DELETE FROM CW_POINT_ISSUE
+	WHERE
+		POINT_ISSUE_ID = #{pointIssueId}
+	</delete>
+</mapper>

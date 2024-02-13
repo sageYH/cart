@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="compAuthnKeyMapper">
+	<sql id="where-compAuthnKey">
+		WHERE 1=1
+			<if test="ptnrCompId != null and ptnrCompId != '' ">
+			AND CAK.PTNR_COMP_ID = #{ptnrCompId}
+			</if>
+			<if test="authnDivCd != null and authnDivCd != '' ">
+			AND CAK.AUTHN_DIV_CD = #{authnDivCd}
+			</if>
+			<if test="ownCompAuthnId != null and ownCompAuthnId != '' ">
+			AND CAK.OWN_COMP_AUTHN_ID = #{ownCompAuthnId}
+			</if>
+			<if test="ownCompAuthnPwd != null and ownCompAuthnPwd != '' ">
+			AND CAK.OWN_COMP_AUTHN_PWD = #{ownCompAuthnPwd}
+			</if>
+			<if test="ptnrCwCompAuthnKey != null and ptnrCwCompAuthnKey != '' ">
+			AND CAK.PTNR_CW_COMP_AUTHN_KEY = #{ptnrCwCompAuthnKey}
+			</if>
+			<if test="authnIshDtm != null and authnIshDtm != '' ">
+			AND CAK.AUTHN_ISH_DTM = STR_TO_DATE(#{authnIshDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="authnUpdDtm != null and authnUpdDtm != '' ">
+			AND CAK.AUTHN_UPD_DTM = STR_TO_DATE(#{authnUpdDtm}, '%Y%m%d %h%i%s')
+			</if>
+	</sql>
+
+	<select id="getCompAuthnKeyListCount" parameterType="CompAuthnKeyExDto" resultType="Integer">
+	/* compAuthnKeyMapper.getCompAuthnKeyListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMP_AUTHN_KEY CAK
+		<include refid="where-compAuthnKey" />
+	</select>
+
+	<select id="getCompAuthnKeyList" parameterType="CompAuthnKeyExDto" resultType="CompAuthnKeyExDto">
+	/* compAuthnKeyMapper.getCompAuthnKeyList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CAK.PTNR_COMP_ID
+			,CAK.AUTHN_DIV_CD
+			,CAK.OWN_COMP_AUTHN_ID
+			,CAK.OWN_COMP_AUTHN_PWD
+			,CAK.PTNR_CW_COMP_AUTHN_KEY
+			,AUTHN_ISH_DTM
+			,AUTHN_UPD_DTM
+			,CAK.REG_USER_ID
+			,REG_DTM
+			,CAK.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_AUTHN_KEY CAK
+		<include refid="where-compAuthnKey" />
+		ORDER BY
+			CAK.PTNR_COMP_ID
+			,CAK.AUTHN_DIV_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCompAuthnKey" parameterType="CompAuthnKeyExDto" resultType="CompAuthnKeyExDto">
+	/* compAuthnKeyMapper.getCompAuthnKey */
+		SELECT
+			CAK.PTNR_COMP_ID
+			,CAK.AUTHN_DIV_CD
+			,CAK.OWN_COMP_AUTHN_ID
+			,CAK.OWN_COMP_AUTHN_PWD
+			,CAK.PTNR_CW_COMP_AUTHN_KEY
+			,AUTHN_ISH_DTM
+			,AUTHN_UPD_DTM
+			,CAK.REG_USER_ID
+			,REG_DTM
+			,CAK.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_AUTHN_KEY CAK
+		WHERE
+			CAK.PTNR_COMP_ID = #{ptnrCompId}
+			AND CAK.AUTHN_DIV_CD = #{authnDivCd}
+	</select>
+
+	<insert id="insertCompAuthnKey" parameterType="CompAuthnKeyExDto">
+	/* compAuthnKeyMapper.insertCompAuthnKey */
+		INSERT INTO CW_COMP_AUTHN_KEY (
+			PTNR_COMP_ID
+			,AUTHN_DIV_CD
+			,OWN_COMP_AUTHN_ID
+			,OWN_COMP_AUTHN_PWD
+			,PTNR_CW_COMP_AUTHN_KEY
+			,AUTHN_ISH_DTM
+			,AUTHN_UPD_DTM
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ptnrCompId}
+			,#{authnDivCd}
+			,#{ownCompAuthnId}
+			,#{ownCompAuthnPwd}
+			,#{ptnrCwCompAuthnKey}
+			,STR_TO_DATE(#{authnIshDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{authnUpdDtm}, '%Y%m%d %h%i%s')
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCompAuthnKey" parameterType="CompAuthnKeyExDto">
+	/* compAuthnKeyMapper.updateCompAuthnKey */
+		UPDATE CW_COMP_AUTHN_KEY
+		<set>
+		<if test="ownCompAuthnId != null">
+		OWN_COMP_AUTHN_ID = #{ownCompAuthnId},
+		</if>
+		<if test="ownCompAuthnPwd != null">
+		OWN_COMP_AUTHN_PWD = #{ownCompAuthnPwd},
+		</if>
+		<if test="ptnrCwCompAuthnKey != null">
+		PTNR_CW_COMP_AUTHN_KEY = #{ptnrCwCompAuthnKey},
+		</if>
+		<if test="authnIshDtm != null">
+		AUTHN_ISH_DTM = STR_TO_DATE(#{authnIshDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="authnUpdDtm != null">
+		AUTHN_UPD_DTM = STR_TO_DATE(#{authnUpdDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PTNR_COMP_ID = #{ptnrCompId}
+			AND AUTHN_DIV_CD = #{authnDivCd}
+	</update>
+
+	<delete id="deleteCompAuthnKey" parameterType="CompAuthnKeyExDto">
+	/* compAuthnKeyMapper.deleteCompAuthnKey */
+	DELETE FROM CW_COMP_AUTHN_KEY
+	WHERE
+		PTNR_COMP_ID = #{ptnrCompId}
+		AND AUTHN_DIV_CD = #{authnDivCd}
+	</delete>
+</mapper>

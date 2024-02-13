@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodClassifId"] = '[[${transData.prodClassifId}]]';
+	if (isEmpty(map["prodClassifId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("prodClassifId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/prodClassif/getProdClassif.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["prodClassifId","","자료(상품분류ID)를 확인하세요."]
+		["prodClassifNm","","자료(상품분류명)를 확인하세요."]
+		["prntProdClassifId","","자료(상위상품분류ID)를 확인하세요."]
+		["prodLvl","","자료(상품레벨)를 확인하세요."]
+		["chdYn","","자료(하위여부)를 확인하세요."]
+		["fileRefId","","자료(파일참조ID)를 확인하세요."]
+		["mobiFileRefId","","자료(모바일파일참조ID)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/prodClassif/updateProdClassif.do";
+	if (mode=="NEW"){
+		url = "/app/prodClassif/insertProdClassif.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formProdClassifPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvProdClassifPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formProdClassifPop" name="formProdClassifPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">상품분류ID</th>
+						<td><input type="text" name="prodClassifId" id="prodClassifId" style="width:70%" readonly >
+						</td>
+					<th scope="row">상품분류명</th>
+					<td><input type="text" name="prodClassifNm" id="prodClassifNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상위상품분류ID</th>
+						<td><input type="text" name="prntProdClassifId" id="prntProdClassifId" style="width:70%" >
+						</td>
+					<th scope="row">상품레벨</th>
+					<td><input type="text" name="prodLvl" id="prodLvl" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">하위여부</th>
+						<td><input type="text" name="chdYn" id="chdYn" style="width:70%" >
+						</td>
+					<th scope="row">파일참조ID</th>
+					<td><input type="text" name="fileRefId" id="fileRefId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">모바일파일참조ID</th>
+						<td><input type="text" name="mobiFileRefId" id="mobiFileRefId" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

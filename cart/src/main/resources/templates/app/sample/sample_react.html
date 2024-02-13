@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/sample/WebViewMessage.js"></script>
+<script language="javascript" type="text/javascript">
+
+window.onload = function() {
+
+}
+
+function fnTestReactVer(){
+	(async ()=>{
+		const version = await getInfoFromRN(RN_API.GET_VERSION,"");
+		if (version !== null) {
+			alert("수신 성공! 버전: " + JSON.stringify(version));
+		} else {
+			alert("수신 실패...");
+		}
+	})()
+}
+function fnTestReactPos(){
+	(async ()=>{
+		const data = await getInfoFromRN(RN_API.GET_POSITION,"");
+		if (data !== null) {
+			alert("수신 성공! 위치: " + JSON.stringify(data));
+		} else {
+			alert("수신 실패...");
+		}
+	})()
+}
+function fnTestGoCode(){
+	window.location.href = "/app/sample/sample.do";
+}
+
+</script>
+<body>
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<section class="">
+	<div class="inner">
+		<div style="font-size:36pt;"> Test React </div>
+		<div> <button style="font-size:36pt;" onclick="fnTestReactVer();"> test Version </button> </div>
+		<div> <button style="font-size:36pt;" onclick="fnTestReactPos();"> test position </button> </div>
+		<div> <button style="font-size:36pt;" onclick="fnTestGoCode();"> go Code </button> </div>
+	</div>
+</section>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["userCertId"] = '[[${transData.userCertId}]]';
+	if (isEmpty(map["userCertId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/userCert/getUserCert.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvUserCertPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="userCertId" id="userCertId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">사용자ID</th>
+							<td><span name="userId" id="userId"></span></td>
+							<th scope="row">인증수단코드[CM03]</th>
+							<td><span name="certMethCd" id="certMethCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">사용자인증키</th>
+							<td><span name="userCertKey" id="userCertKey"></span></td>
+							<th scope="row">인증시작일시</th>
+							<td><span name="certFrDtm" id="certFrDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">인증종료일시</th>
+							<td><span name="certToDtm" id="certToDtm"></span></td>
+							<th scope="row">인증발송일시</th>
+							<td><span name="certSendDtm" id="certSendDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">인증확정일시</th>
+							<td><span name="certCfmDtm" id="certCfmDtm"></span></td>
+							<th scope="row">인증확정여부</th>
+							<td><span name="certCfmYn" id="certCfmYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

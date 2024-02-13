@@ -1,0 +1,164 @@
+<div id="divNewsLangPop" class="sub_wrap" style="display:none;width:92%" title="NEWS_언어 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>NEWS_언어 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="newsId_g1">NEWS_ID</label>
+						<div class="wrap">
+							<input type="text" id="newsId_g1" name="newsId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="langCd_g1">언어코드</label>
+						<div class="wrap">
+							<input type="text" id="langCd_g1" name="langCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="newsTitle_g1">제목</label>
+						<div class="wrap">
+							<input type="text" id="newsTitle_g1" name="newsTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="newsCont_g1">NEWS내용</label>
+						<div class="wrap">
+							<input type="text" id="newsCont_g1" name="newsCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="NewsLangPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="NewsLangPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="NewsLangPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var NewsLangPop = new $W.load("divNewsLangPop");
+NewsLangPop.ready(function(){
+	//
+});
+
+NewsLangPop.fnOpen = function(mode, params, func) {
+	clearObjects("divNewsLangPop");
+	NewsLangPop.mode = mode;
+	if (!isEmpty(func)){
+		NewsLangPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divNewsLangPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["newsId_g1","langCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/newsLang/getNewsLang.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("newsTitle_g1").focus();
+	}else{
+		readOnlyFalse(["newsId_g1","langCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+NewsLangPop.fnSave = function(){
+
+	var valid = 0 || [
+		["newsId_g1","","자료(NEWS_ID)를 확인하세요."]
+		,["langCd_g1","","자료(언어코드)를 확인하세요."]
+		,["newsTitle_g1","","자료(제목)를 확인하세요."]
+		,["newsCont_g1","","자료(NEWS내용)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divNewsLangPop");
+	var url = "/app/newsLang/updateNewsLang.do";
+	if (NewsLangPop.mode=="CREATE"){
+		url = "/app/newsLang/insertNewsLang.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NewsLangPop.func)){
+			NewsLangPop.func();
+			NewsLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+NewsLangPop.fnDelete = function(){
+	if (NewsLangPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/newsLang/deleteNewsLang.do";
+	var params = {};
+	params["newsId"] = getElement("newsId_g1").value;
+	params["langCd"] = getElement("langCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NewsLangPop.func)){
+			NewsLangPop.func();
+			NewsLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+NewsLangPop.fnClose = function(){
+	layerToggle("divNewsLangPop",{"mode":0});
+};
+</script>

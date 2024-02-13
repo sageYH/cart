@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="couponIssueMapper">
+	<sql id="where-couponIssue">
+		WHERE 1=1
+			<if test="cpnIssueId != null and cpnIssueId != '' ">
+			AND CI.CPN_ISSUE_ID = #{cpnIssueId}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND CI.CPN_ID = #{cpnId}
+			</if>
+			<if test="cpnCont != null and cpnCont != '' ">
+			AND CI.CPN_CONT = #{cpnCont}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND CI.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+			<if test="cpnApplFrYmd != null and cpnApplFrYmd != '' ">
+			AND CI.CPN_APPL_FR_YMD = #{cpnApplFrYmd}
+			</if>
+			<if test="cpnApplToYmd != null and cpnApplToYmd != '' ">
+			AND CI.CPN_APPL_TO_YMD = #{cpnApplToYmd}
+			</if>
+			<if test="mbrSpecifyYn != null and mbrSpecifyYn != '' ">
+			AND CI.MBR_SPECIFY_YN = #{mbrSpecifyYn}
+			</if>
+			<if test="cpnIssueQty != null and cpnIssueQty != '' ">
+			AND CI.CPN_ISSUE_QTY = #{cpnIssueQty}
+			</if>
+			<if test="cpnTotAmt != null and cpnTotAmt != '' ">
+			AND CI.CPN_TOT_AMT = #{cpnTotAmt}
+			</if>
+			<if test="cpnAmt != null and cpnAmt != '' ">
+			AND CI.CPN_AMT = #{cpnAmt}
+			</if>
+			<if test="prodMinAmt != null and prodMinAmt != '' ">
+			AND CI.PROD_MIN_AMT = #{prodMinAmt}
+			</if>
+			<if test="ordMinAmt != null and ordMinAmt != '' ">
+			AND CI.ORD_MIN_AMT = #{ordMinAmt}
+			</if>
+			<if test="cpnPaidQty != null and cpnPaidQty != '' ">
+			AND CI.CPN_PAID_QTY = #{cpnPaidQty}
+			</if>
+			<if test="cpnPaidTotAmt != null and cpnPaidTotAmt != '' ">
+			AND CI.CPN_PAID_TOT_AMT = #{cpnPaidTotAmt}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCouponIssueListCount" parameterType="CouponIssueExDto" resultType="Integer">
+	/* couponIssueMapper.getCouponIssueListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUPON_ISSUE CI
+		<include refid="where-couponIssue" />
+	</select>
+
+	<select id="getCouponIssueList" parameterType="CouponIssueExDto" resultType="CouponIssueExDto">
+	/* couponIssueMapper.getCouponIssueList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CI.CPN_ISSUE_ID
+			,CI.CPN_ID
+			,CI.CPN_CONT
+			,CI.PYMT_COMP_ID
+			,CI.CPN_APPL_FR_YMD
+			,CI.CPN_APPL_TO_YMD
+			,CI.MBR_SPECIFY_YN
+			,CI.CPN_ISSUE_QTY
+			,CI.CPN_TOT_AMT
+			,CI.CPN_AMT
+			,CI.PROD_MIN_AMT
+			,CI.ORD_MIN_AMT
+			,CI.CPN_PAID_QTY
+			,CI.CPN_PAID_TOT_AMT
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_ISSUE CI
+		<include refid="where-couponIssue" />
+		ORDER BY
+			CI.CPN_ISSUE_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCouponIssue" parameterType="CouponIssueExDto" resultType="CouponIssueExDto">
+	/* couponIssueMapper.getCouponIssue */
+		SELECT
+			CI.CPN_ISSUE_ID
+			,CI.CPN_ID
+			,CI.CPN_CONT
+			,CI.PYMT_COMP_ID
+			,CI.CPN_APPL_FR_YMD
+			,CI.CPN_APPL_TO_YMD
+			,CI.MBR_SPECIFY_YN
+			,CI.CPN_ISSUE_QTY
+			,CI.CPN_TOT_AMT
+			,CI.CPN_AMT
+			,CI.PROD_MIN_AMT
+			,CI.ORD_MIN_AMT
+			,CI.CPN_PAID_QTY
+			,CI.CPN_PAID_TOT_AMT
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_ISSUE CI
+		WHERE
+			CI.CPN_ISSUE_ID = #{cpnIssueId}
+	</select>
+
+	<insert id="insertCouponIssue" parameterType="CouponIssueExDto">
+	/* couponIssueMapper.insertCouponIssue */
+		INSERT INTO CW_COUPON_ISSUE (
+			CPN_ISSUE_ID
+			,CPN_ID
+			,CPN_CONT
+			,PYMT_COMP_ID
+			,CPN_APPL_FR_YMD
+			,CPN_APPL_TO_YMD
+			,MBR_SPECIFY_YN
+			,CPN_ISSUE_QTY
+			,CPN_TOT_AMT
+			,CPN_AMT
+			,PROD_MIN_AMT
+			,ORD_MIN_AMT
+			,CPN_PAID_QTY
+			,CPN_PAID_TOT_AMT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cpnIssueId}
+			,#{cpnId}
+			,#{cpnCont}
+			,#{pymtCompId}
+			,#{cpnApplFrYmd}
+			,#{cpnApplToYmd}
+			,#{mbrSpecifyYn}
+			,#{cpnIssueQty}
+			,#{cpnTotAmt}
+			,#{cpnAmt}
+			,#{prodMinAmt}
+			,#{ordMinAmt}
+			,#{cpnPaidQty}
+			,#{cpnPaidTotAmt}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCouponIssue" parameterType="CouponIssueExDto">
+	/* couponIssueMapper.updateCouponIssue */
+		UPDATE CW_COUPON_ISSUE
+		<set>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="cpnCont != null">
+		CPN_CONT = #{cpnCont},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="cpnApplFrYmd != null">
+		CPN_APPL_FR_YMD = #{cpnApplFrYmd},
+		</if>
+		<if test="cpnApplToYmd != null">
+		CPN_APPL_TO_YMD = #{cpnApplToYmd},
+		</if>
+		<if test="mbrSpecifyYn != null">
+		MBR_SPECIFY_YN = #{mbrSpecifyYn},
+		</if>
+		<if test="cpnIssueQty != null">
+		CPN_ISSUE_QTY = #{cpnIssueQty},
+		</if>
+		<if test="cpnTotAmt != null">
+		CPN_TOT_AMT = #{cpnTotAmt},
+		</if>
+		<if test="cpnAmt != null">
+		CPN_AMT = #{cpnAmt},
+		</if>
+		<if test="prodMinAmt != null">
+		PROD_MIN_AMT = #{prodMinAmt},
+		</if>
+		<if test="ordMinAmt != null">
+		ORD_MIN_AMT = #{ordMinAmt},
+		</if>
+		<if test="cpnPaidQty != null">
+		CPN_PAID_QTY = #{cpnPaidQty},
+		</if>
+		<if test="cpnPaidTotAmt != null">
+		CPN_PAID_TOT_AMT = #{cpnPaidTotAmt},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CPN_ISSUE_ID = #{cpnIssueId}
+	</update>
+
+	<delete id="deleteCouponIssue" parameterType="CouponIssueExDto">
+	/* couponIssueMapper.deleteCouponIssue */
+	DELETE FROM CW_COUPON_ISSUE
+	WHERE
+		CPN_ISSUE_ID = #{cpnIssueId}
+	</delete>
+</mapper>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["newsId"] = '[[${transData.newsId}]]';
+	if (isEmpty(map["newsId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("newsId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/news/getNews.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["newsId","","자료(NEWS_ID)를 확인하세요."]
+		["newsTypCd","","자료(NEWS유형코드)를 확인하세요."]
+		["newsTitle","","자료(제목)를 확인하세요."]
+		["newsCont","","자료(NEWS내용)를 확인하세요."]
+		["newsViews","","자료(NEWS조회수)를 확인하세요."]
+		["prntNewsId","","자료(상위NEWS_ID)를 확인하세요."]
+		["grpNewsId","","자료(그룹NEWS_ID)를 확인하세요."]
+		["newsFrYmd","","자료(NEWS시작일)를 확인하세요."]
+		["newsToYmd","","자료(NEWS종료일)를 확인하세요."]
+		["fileRefId","","자료(파일참조ID)를 확인하세요."]
+		["popupYn","","자료(팝업여부)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/news/updateNews.do";
+	if (mode=="NEW"){
+		url = "/app/news/insertNews.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formNewsPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvNewsPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formNewsPop" name="formNewsPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">NEWS_ID</th>
+						<td><input type="text" name="newsId" id="newsId" style="width:70%" readonly >
+						</td>
+					<th scope="row">NEWS유형코드</th>
+					<td><input type="text" name="newsTypCd" id="newsTypCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">제목</th>
+						<td><input type="text" name="newsTitle" id="newsTitle" style="width:70%" >
+						</td>
+					<th scope="row">NEWS내용</th>
+					<td><input type="text" name="newsCont" id="newsCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">NEWS조회수</th>
+						<td><input type="text" name="newsViews" id="newsViews" style="width:70%" >
+						</td>
+					<th scope="row">상위NEWS_ID</th>
+					<td><input type="text" name="prntNewsId" id="prntNewsId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">그룹NEWS_ID</th>
+						<td><input type="text" name="grpNewsId" id="grpNewsId" style="width:70%" >
+						</td>
+					<th scope="row">NEWS시작일</th>
+					<td><input type="text" name="newsFrYmd" id="newsFrYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">NEWS종료일</th>
+						<td><input type="text" name="newsToYmd" id="newsToYmd" style="width:70%" >
+						</td>
+					<th scope="row">파일참조ID</th>
+					<td><input type="text" name="fileRefId" id="fileRefId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">팝업여부</th>
+						<td><input type="text" name="popupYn" id="popupYn" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

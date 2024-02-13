@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsPymtAgcyComp = new pageCls("dvPymtAgcyCompPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cwPymtAgcyCompCd"))==false) params["cwPymtAgcyCompCd"] = getEVal("cwPymtAgcyCompCd");
+	if (isEmpty(getEVal("cwPymtAgcyCompNm"))==false) params["cwPymtAgcyCompNm"] = getEVal("cwPymtAgcyCompNm");
+	if (isEmpty(getEVal("cardCompCd"))==false) params["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("pymtTypCd"))==false) params["pymtTypCd"] = getEVal("pymtTypCd");
+	if (isEmpty(getEVal("storeId"))==false) params["storeId"] = getEVal("storeId");
+	if (isEmpty(getEVal("storeKey"))==false) params["storeKey"] = getEVal("storeKey");
+	if (isEmpty(getEVal("txnCancPwd"))==false) params["txnCancPwd"] = getEVal("txnCancPwd");
+	if (isEmpty(getEVal("vanAuthnKey"))==false) params["vanAuthnKey"] = getEVal("vanAuthnKey");
+	if (isEmpty(getEVal("pgRepCompYn"))==false) params["pgRepCompYn"] = getEVal("pgRepCompYn");
+	if (isEmpty(getEVal("vanRepCompYn"))==false) params["vanRepCompYn"] = getEVal("vanRepCompYn");
+	if (isEmpty(getEVal("pgUrl"))==false) params["pgUrl"] = getEVal("pgUrl");
+	if (isEmpty(getEVal("pgTestUrl"))==false) params["pgTestUrl"] = getEVal("pgTestUrl");
+	//page set
+	params = pageClsPymtAgcyComp.getPageInfo(params);
+
+	var url = "/app/pymtAgcyComp/getPymtAgcyCompPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cwPymtAgcyCompCd","cwPymtAgcyCompNm","cardCompCd","pymtTypCd","storeId","storeKey","txnCancPwd","vanAuthnKey","pgRepCompYn","vanRepCompYn","pgUrl","pgTestUrl"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,12);
+	pageClsPymtAgcyComp.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsPymtAgcyCompDown(){
+	var url = "/app/pymtAgcyComp/getPymtAgcyCompExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cwPymtAgcyCompCd"))==false) paramXls["cwPymtAgcyCompCd"] = getEVal("cwPymtAgcyCompCd");
+	if (isEmpty(getEVal("cwPymtAgcyCompNm"))==false) paramXls["cwPymtAgcyCompNm"] = getEVal("cwPymtAgcyCompNm");
+	if (isEmpty(getEVal("cardCompCd"))==false) paramXls["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("pymtTypCd"))==false) paramXls["pymtTypCd"] = getEVal("pymtTypCd");
+	if (isEmpty(getEVal("storeId"))==false) paramXls["storeId"] = getEVal("storeId");
+	if (isEmpty(getEVal("storeKey"))==false) paramXls["storeKey"] = getEVal("storeKey");
+	if (isEmpty(getEVal("txnCancPwd"))==false) paramXls["txnCancPwd"] = getEVal("txnCancPwd");
+	if (isEmpty(getEVal("vanAuthnKey"))==false) paramXls["vanAuthnKey"] = getEVal("vanAuthnKey");
+	if (isEmpty(getEVal("pgRepCompYn"))==false) paramXls["pgRepCompYn"] = getEVal("pgRepCompYn");
+	if (isEmpty(getEVal("vanRepCompYn"))==false) paramXls["vanRepCompYn"] = getEVal("vanRepCompYn");
+	if (isEmpty(getEVal("pgUrl"))==false) paramXls["pgUrl"] = getEVal("pgUrl");
+	if (isEmpty(getEVal("pgTestUrl"))==false) paramXls["pgTestUrl"] = getEVal("pgTestUrl");
+
+	var params = {"xlsName":"결제대행사"
+		,"sheetName":"시트"
+		,"columnHeaders":["결제대행사코드","결제대행사명","카드사코드","결제유형코드","상점ID","상점Key","거래취소비밀번호","VAN인증키","PG대표사여부","VAN대표사여부","PG사Url","PG사TestUrl"]
+		,"columnNames":["cwPymtAgcyCompCd","cwPymtAgcyCompNm","cardCompCd","pymtTypCd","storeId","storeKey","txnCancPwd","vanAuthnKey","pgRepCompYn","vanRepCompYn","pgUrl","pgTestUrl"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cwPymtAgcyCompCd"] = arr[0].trim();
+	}
+	PymtAgcyCompPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvPymtAgcyCompSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvPymtAgcyCompSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsPymtAgcyComp.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">결제대행사코드</th>
+							<th scope="col">결제대행사명</th>
+							<th scope="col">카드사코드</th>
+							<th scope="col">결제유형코드</th>
+							<th scope="col">상점ID</th>
+							<th scope="col">상점Key</th>
+							<th scope="col">거래취소비밀번호</th>
+							<th scope="col">VAN인증키</th>
+							<th scope="col">PG대표사여부</th>
+							<th scope="col">VAN대표사여부</th>
+							<th scope="col">PG사Url</th>
+							<th scope="col">PG사TestUrl</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cwPymtAgcyCompCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cwPymtAgcyCompCd}}</td>
+						<td>{{cwPymtAgcyCompNm}}</td>
+						<td>{{cardCompCd}}</td>
+						<td>{{pymtTypCd}}</td>
+						<td>{{storeId}}</td>
+						<td>{{storeKey}}</td>
+						<td>{{txnCancPwd}}</td>
+						<td>{{vanAuthnKey}}</td>
+						<td>{{pgRepCompYn}}</td>
+						<td>{{vanRepCompYn}}</td>
+						<td>{{pgUrl}}</td>
+						<td>{{pgTestUrl}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvPymtAgcyCompPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/pymtAgcyComp/pymtAgcyCompPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

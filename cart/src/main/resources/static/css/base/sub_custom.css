@@ -1,0 +1,63 @@
+@charset "utf-8";
+
+/* attach file list */
+.faq_dd>span {
+	padding-bottom:20px;
+}
+.faq_btn {
+   clear: both;
+   width: 100%;
+   padding: 20px 0 10px 50px;
+   border-top: 1px solid #ddd;
+}
+.attach_list {
+  font-size: 0;
+}
+.attach_list li {
+  margin-bottom: 10px;
+  border: 0;
+}
+.attach_list li:last-child {
+  margin-bottom: 0;
+}
+.attach_list li a {
+  display: block;
+  color: #000000;
+}
+.attach_list li a:hover {
+  text-decoration: underline;
+}
+.attach_list li a::before {
+  content: '';
+  background: url(/img/assets/btn_download.png) no-repeat center;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+  margin-top: -3px;
+}
+/* .attach_list li a::after { */
+/*   content: ''; */
+/*   background: url(/images/btn_download.png) no-repeat center; */
+/*   width: 18px; */
+/*   height: 18px; */
+/*   display: inline-block; */
+/*   vertical-align: middle; */
+/*   margin-left: 10px; */
+/*   margin-top: -3px; */
+/* } */
+
+.wrap.add-item-down button {
+    padding: 6px 20px 6px 40px;
+    font-size: 14px;
+    background: url(data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAJCAQAAACRI2S5AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAHdElNRQfnARQSMQtro8HGAAAAmElEQVQY02XOvQpBAQCG4cfhbmSRCzBI6RiUxSYXIHVMNqPFGTCLU5RiMjG7H2WRBYO/dL7p+xvezPCgKtaX1ljkGCgiMk/NcxGKgRh0rP7mlQ6Is+WTmwoK8nYeCGy0wMAoW+bkrIa8kjX2GqBnTA5M3E0R2iIEXTM+B2Yulmi+c1vyMsEXK3ljvZCTj/0dWKi7uqpb/MonKKQjM3TicBAAAAAASUVORK5CYII=) no-repeat 14px 50%;
+}
+
+.user-search-modal {
+  text-indent: -9999px;
+  background: url(/img/assets/icon-modal-search.png) no-repeat center;
+  width: 16px;
+  height: 16px;
+  margin-left: 3px;
+}

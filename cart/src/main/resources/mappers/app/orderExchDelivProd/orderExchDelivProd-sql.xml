@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderExchDelivProdMapper">
+	<sql id="where-orderExchDelivProd">
+		WHERE 1=1
+			<if test="ordExchDelivId != null and ordExchDelivId != '' ">
+			AND OEDP.ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OEDP.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND OEDP.PROD_ID = #{prodId}
+			</if>
+	</sql>
+
+	<select id="getOrderExchDelivProdListCount" parameterType="OrderExchDelivProdExDto" resultType="Integer">
+	/* orderExchDelivProdMapper.getOrderExchDelivProdListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_EXCH_DELIV_PROD OEDP
+		<include refid="where-orderExchDelivProd" />
+	</select>
+
+	<select id="getOrderExchDelivProdList" parameterType="OrderExchDelivProdExDto" resultType="OrderExchDelivProdExDto">
+	/* orderExchDelivProdMapper.getOrderExchDelivProdList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OEDP.ORD_EXCH_DELIV_ID
+			,OEDP.ORD_ID
+			,OEDP.PROD_ID
+			,OEDP.REG_USER_ID
+			,REG_DTM
+			,OEDP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH_DELIV_PROD OEDP
+		<include refid="where-orderExchDelivProd" />
+		ORDER BY
+			OEDP.ORD_EXCH_DELIV_ID
+			,OEDP.ORD_ID
+			,OEDP.PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderExchDelivProd" parameterType="OrderExchDelivProdExDto" resultType="OrderExchDelivProdExDto">
+	/* orderExchDelivProdMapper.getOrderExchDelivProd */
+		SELECT
+			OEDP.ORD_EXCH_DELIV_ID
+			,OEDP.ORD_ID
+			,OEDP.PROD_ID
+			,OEDP.REG_USER_ID
+			,REG_DTM
+			,OEDP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH_DELIV_PROD OEDP
+		WHERE
+			OEDP.ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+			AND OEDP.ORD_ID = #{ordId}
+			AND OEDP.PROD_ID = #{prodId}
+	</select>
+
+	<insert id="insertOrderExchDelivProd" parameterType="OrderExchDelivProdExDto">
+	/* orderExchDelivProdMapper.insertOrderExchDelivProd */
+		INSERT INTO CW_ORDER_EXCH_DELIV_PROD (
+			ORD_EXCH_DELIV_ID
+			,ORD_ID
+			,PROD_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordExchDelivId}
+			,#{ordId}
+			,#{prodId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderExchDelivProd" parameterType="OrderExchDelivProdExDto">
+	/* orderExchDelivProdMapper.updateOrderExchDelivProd */
+		UPDATE CW_ORDER_EXCH_DELIV_PROD
+		<set>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+			AND ORD_ID = #{ordId}
+			AND PROD_ID = #{prodId}
+	</update>
+
+	<delete id="deleteOrderExchDelivProd" parameterType="OrderExchDelivProdExDto">
+	/* orderExchDelivProdMapper.deleteOrderExchDelivProd */
+	DELETE FROM CW_ORDER_EXCH_DELIV_PROD
+	WHERE
+		ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+		AND ORD_ID = #{ordId}
+		AND PROD_ID = #{prodId}
+	</delete>
+</mapper>

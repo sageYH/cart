@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="codeMapper">
+	<sql id="where-code">
+		WHERE 1=1
+			<if test="cdId != null and cdId != '' ">
+				AND CD_ID = #{cdId}
+			</if>
+			<if test="cdNm != null and cdNm != '' ">
+				AND CD_NM = #{cdNm}
+			</if>
+			<if test="grpId != null and grpId != '' ">
+				AND GRP_ID = #{grpId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+				AND USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCodeListCount" parameterType="CodeExDto" resultType="Integer">
+	/* codeMapper.getCodeListCount */
+		SELECT COUNT(1) AS CNT
+		FROM PJ_CODE C
+		<include refid="where-code" />
+ 	</select>
+
+	<select id="getCodeList" parameterType="CodeExDto" resultType="CodeExDto">
+	/* codeMapper.getCodeList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			C.CD_ID
+			,C.CD_NM
+			,C.GRP_ID
+			,C.REF1
+			,C.REF2
+			,C.REF3
+			,C.SORT
+			,C.USE_YN
+			,C.REG_ID
+			,C.REG_DT
+			,C.MOD_ID
+			,C.MOD_DT
+		FROM PJ_CODE C
+		<include refid="where-code" />
+		ORDER BY
+		C.CD_ID
+		,C.GRP_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCode" parameterType="CodeExDto" resultType="CodeExDto">
+	/* codeMapper.getCode */
+		SELECT
+			C.CD_ID
+			,C.CD_NM
+			,C.GRP_ID
+			,C.REF1
+			,C.REF2
+			,C.REF3
+			,C.SORT
+			,C.USE_YN
+			,C.REG_ID
+			,C.REG_DT
+			,C.MOD_ID
+			,C.MOD_DT
+		FROM PJ_CODE C
+		WHERE
+			C.CD_ID = #{cdId}
+			AND C.GRP_ID = #{grpId}
+	</select>
+
+	<insert id="insertCode" parameterType="CodeExDto">
+	/* codeMapper.insertCode */
+		INSERT INTO PJ_CODE (
+			CD_ID
+			,CD_NM
+			,GRP_ID
+			,REF1
+			,REF2
+			,REF3
+			,SORT
+			,USE_YN
+			,REG_ID
+			,REG_DT
+			,MOD_ID
+			,MOD_DT
+		) VALUES (
+			#{cdId}
+			,#{cdNm}
+			,#{grpId}
+			,#{ref1}
+			,#{ref2}
+			,#{ref3}
+			,#{sort}
+			,#{useYn}
+			,#{regId}
+			,NOW()
+			,#{modId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCode" parameterType="CodeExDto">
+	/* codeMapper.updateCode */
+		UPDATE PJ_CODE
+		<set>
+	<if test="cdNm != null">
+	CD_NM = #{cdNm},
+	</if>
+	<if test="ref1 != null">
+	REF1 = #{ref1},
+	</if>
+	<if test="ref2 != null">
+	REF2 = #{ref2},
+	</if>
+	<if test="ref3 != null">
+	REF3 = #{ref3},
+	</if>
+	<if test="sort != null">
+	SORT = #{sort},
+	</if>
+	<if test="useYn != null">
+	USE_YN = #{useYn},
+	</if>
+	<if test="modId != null">
+	MOD_ID = #{modId},
+	</if>
+	<if test="modDt != null">
+	MOD_DT = NOW(),
+	</if>
+	</set>
+	WHERE
+		CD_ID = #{cdId}
+		AND GRP_ID = #{grpId}
+	</update>
+
+	<delete id="deleteCode" parameterType="CodeExDto">
+	/* codeMapper.deleteCode */
+	DELETE FROM PJ_CODE
+	WHERE
+		CD_ID = #{cdId}
+		AND GRP_ID = #{grpId}
+	</delete>
+</mapper>

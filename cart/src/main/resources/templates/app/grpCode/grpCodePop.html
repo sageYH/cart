@@ -1,0 +1,147 @@
+<div id="divGrpCodePop" class="sub_wrap" style="display:none;width:92%" title="그룹코드 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>그룹코드 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="grpCd_g1">그룹코드</label>
+						<div class="wrap">
+							<input type="text" id="grpCd_g1" name="grpCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="grpNm_g1">그룹명</label>
+						<div class="wrap">
+							<input type="text" id="grpNm_g1" name="grpNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="GrpCodePop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="GrpCodePop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="GrpCodePop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var GrpCodePop = new $W.load("divGrpCodePop");
+GrpCodePop.ready(function(){
+	//
+});
+
+GrpCodePop.fnOpen = function(mode, params, func) {
+	clearObjects("divGrpCodePop");
+	GrpCodePop.mode = mode;
+	if (!isEmpty(func)){
+		GrpCodePop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divGrpCodePop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["grpCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/grpCode/getGrpCode.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("grpNm_g1").focus();
+	}else{
+		readOnlyFalse(["grpCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+GrpCodePop.fnSave = function(){
+
+	var valid = 0 || [
+		["grpCd_g1","","자료(그룹코드)를 확인하세요."]
+		,["grpNm_g1","","자료(그룹명)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divGrpCodePop");
+	var url = "/app/grpCode/updateGrpCode.do";
+	if (GrpCodePop.mode=="CREATE"){
+		url = "/app/grpCode/insertGrpCode.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(GrpCodePop.func)){
+			GrpCodePop.func();
+			GrpCodePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+GrpCodePop.fnDelete = function(){
+	if (GrpCodePop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/grpCode/deleteGrpCode.do";
+	var params = {};
+	params["grpCd"] = getElement("grpCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(GrpCodePop.func)){
+			GrpCodePop.func();
+			GrpCodePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+GrpCodePop.fnClose = function(){
+	layerToggle("divGrpCodePop",{"mode":0});
+};
+</script>

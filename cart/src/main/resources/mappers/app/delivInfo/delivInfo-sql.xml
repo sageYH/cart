@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="delivInfoMapper">
+	<sql id="where-delivInfo">
+		WHERE 1=1
+			<if test="delivInfoId != null and delivInfoId != '' ">
+			AND DI.DELIV_INFO_ID = #{delivInfoId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND DI.MBR_ID = #{mbrId}
+			</if>
+			<if test="delivAddrNm != null and delivAddrNm != '' ">
+			AND DI.DELIV_ADDR_NM = #{delivAddrNm}
+			</if>
+			<if test="baseAddrYn != null and baseAddrYn != '' ">
+			AND DI.BASE_ADDR_YN = #{baseAddrYn}
+			</if>
+			<if test="rcptNm != null and rcptNm != '' ">
+			AND DI.RCPT_NM = #{rcptNm}
+			</if>
+			<if test="rcptTelNo != null and rcptTelNo != '' ">
+			AND DI.RCPT_TEL_NO = #{rcptTelNo}
+			</if>
+			<if test="rcptPhoneNo != null and rcptPhoneNo != '' ">
+			AND DI.RCPT_PHONE_NO = #{rcptPhoneNo}
+			</if>
+			<if test="delivZipCd != null and delivZipCd != '' ">
+			AND DI.DELIV_ZIP_CD = #{delivZipCd}
+			</if>
+			<if test="delivAddr != null and delivAddr != '' ">
+			AND DI.DELIV_ADDR = #{delivAddr}
+			</if>
+			<if test="delivDtlAddr != null and delivDtlAddr != '' ">
+			AND DI.DELIV_DTL_ADDR = #{delivDtlAddr}
+			</if>
+			<if test="delivDtlAddr2 != null and delivDtlAddr2 != '' ">
+			AND DI.DELIV_DTL_ADDR2 = #{delivDtlAddr2}
+			</if>
+			<if test="delivRefCont != null and delivRefCont != '' ">
+			AND DI.DELIV_REF_CONT = #{delivRefCont}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND DI.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND DI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getDelivInfoListCount" parameterType="DelivInfoExDto" resultType="Integer">
+	/* delivInfoMapper.getDelivInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_DELIV_INFO DI
+		<include refid="where-delivInfo" />
+	</select>
+
+	<select id="getDelivInfoList" parameterType="DelivInfoExDto" resultType="DelivInfoExDto">
+	/* delivInfoMapper.getDelivInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			DI.DELIV_INFO_ID
+			,DI.MBR_ID
+			,DI.DELIV_ADDR_NM
+			,DI.BASE_ADDR_YN
+			,DI.RCPT_NM
+			,DI.RCPT_TEL_NO
+			,DI.RCPT_PHONE_NO
+			,DI.DELIV_ZIP_CD
+			,DI.DELIV_ADDR
+			,DI.DELIV_DTL_ADDR
+			,DI.DELIV_DTL_ADDR2
+			,DI.DELIV_REF_CONT
+			,DI.SORT_SEQ
+			,DI.USE_YN
+			,DI.REG_USER_ID
+			,REG_DTM
+			,DI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_DELIV_INFO DI
+		<include refid="where-delivInfo" />
+		ORDER BY
+			DI.DELIV_INFO_ID
+			,DI.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getDelivInfo" parameterType="DelivInfoExDto" resultType="DelivInfoExDto">
+	/* delivInfoMapper.getDelivInfo */
+		SELECT
+			DI.DELIV_INFO_ID
+			,DI.MBR_ID
+			,DI.DELIV_ADDR_NM
+			,DI.BASE_ADDR_YN
+			,DI.RCPT_NM
+			,DI.RCPT_TEL_NO
+			,DI.RCPT_PHONE_NO
+			,DI.DELIV_ZIP_CD
+			,DI.DELIV_ADDR
+			,DI.DELIV_DTL_ADDR
+			,DI.DELIV_DTL_ADDR2
+			,DI.DELIV_REF_CONT
+			,DI.SORT_SEQ
+			,DI.USE_YN
+			,DI.REG_USER_ID
+			,REG_DTM
+			,DI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_DELIV_INFO DI
+		WHERE
+			DI.DELIV_INFO_ID = #{delivInfoId}
+			AND DI.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertDelivInfo" parameterType="DelivInfoExDto">
+	/* delivInfoMapper.insertDelivInfo */
+		INSERT INTO CW_DELIV_INFO (
+			DELIV_INFO_ID
+			,MBR_ID
+			,DELIV_ADDR_NM
+			,BASE_ADDR_YN
+			,RCPT_NM
+			,RCPT_TEL_NO
+			,RCPT_PHONE_NO
+			,DELIV_ZIP_CD
+			,DELIV_ADDR
+			,DELIV_DTL_ADDR
+			,DELIV_DTL_ADDR2
+			,DELIV_REF_CONT
+			,SORT_SEQ
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{delivInfoId}
+			,#{mbrId}
+			,#{delivAddrNm}
+			,#{baseAddrYn}
+			,#{rcptNm}
+			,#{rcptTelNo}
+			,#{rcptPhoneNo}
+			,#{delivZipCd}
+			,#{delivAddr}
+			,#{delivDtlAddr}
+			,#{delivDtlAddr2}
+			,#{delivRefCont}
+			,#{sortSeq}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateDelivInfo" parameterType="DelivInfoExDto">
+	/* delivInfoMapper.updateDelivInfo */
+		UPDATE CW_DELIV_INFO
+		<set>
+		<if test="delivAddrNm != null">
+		DELIV_ADDR_NM = #{delivAddrNm},
+		</if>
+		<if test="baseAddrYn != null">
+		BASE_ADDR_YN = #{baseAddrYn},
+		</if>
+		<if test="rcptNm != null">
+		RCPT_NM = #{rcptNm},
+		</if>
+		<if test="rcptTelNo != null">
+		RCPT_TEL_NO = #{rcptTelNo},
+		</if>
+		<if test="rcptPhoneNo != null">
+		RCPT_PHONE_NO = #{rcptPhoneNo},
+		</if>
+		<if test="delivZipCd != null">
+		DELIV_ZIP_CD = #{delivZipCd},
+		</if>
+		<if test="delivAddr != null">
+		DELIV_ADDR = #{delivAddr},
+		</if>
+		<if test="delivDtlAddr != null">
+		DELIV_DTL_ADDR = #{delivDtlAddr},
+		</if>
+		<if test="delivDtlAddr2 != null">
+		DELIV_DTL_ADDR2 = #{delivDtlAddr2},
+		</if>
+		<if test="delivRefCont != null">
+		DELIV_REF_CONT = #{delivRefCont},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			DELIV_INFO_ID = #{delivInfoId}
+			AND MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteDelivInfo" parameterType="DelivInfoExDto">
+	/* delivInfoMapper.deleteDelivInfo */
+	DELETE FROM CW_DELIV_INFO
+	WHERE
+		DELIV_INFO_ID = #{delivInfoId}
+		AND MBR_ID = #{mbrId}
+	</delete>
+</mapper>

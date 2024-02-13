@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordId"] = '[[${transData.ordId}]]';
+	if (isEmpty(map["ordId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/order/getOrder.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="ordId" id="ordId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">멤버ID</th>
+							<td><span name="mbrId" id="mbrId"></span></td>
+							<th scope="row">주문진행코드[OD01]</th>
+							<td><span name="ordProgCd" id="ordProgCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품수량</th>
+							<td><span name="prodQty" id="prodQty"></span></td>
+							<th scope="row">상품총액</th>
+							<td><span name="prodTotAmt" id="prodTotAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션총액</th>
+							<td><span name="optTotAmt" id="optTotAmt"></span></td>
+							<th scope="row">배송비총액</th>
+							<td><span name="delivTotAmt" id="delivTotAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">배송비무료액</th>
+							<td><span name="delivFreeAmt" id="delivFreeAmt"></span></td>
+							<th scope="row">배송비부과액</th>
+							<td><span name="delivChrgAmt" id="delivChrgAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">배송부과무게</th>
+							<td><span name="delivChrgWeight" id="delivChrgWeight"></span></td>
+							<th scope="row">배송부과수량</th>
+							<td><span name="delivChrgQty" id="delivChrgQty"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주문총액</th>
+							<td><span name="ordTotAmt" id="ordTotAmt"></span></td>
+							<th scope="row">지급포인트</th>
+							<td><span name="pymtPoint" id="pymtPoint"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">사용포인트</th>
+							<td><span name="usePoint" id="usePoint"></span></td>
+							<th scope="row">쿠폰ID</th>
+							<td><span name="cpnId" id="cpnId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">쿠폰금액</th>
+							<td><span name="cpnAmt" id="cpnAmt"></span></td>
+							<th scope="row">결제총액</th>
+							<td><span name="pymtTotAmt" id="pymtTotAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제수단코드[OD02]</th>
+							<td><span name="pymtMethCd" id="pymtMethCd"></span></td>
+							<th scope="row">주문일시</th>
+							<td><span name="ordDtm" id="ordDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">과세코드[OD03]</th>
+							<td><span name="taxCd" id="taxCd"></span></td>
+							<th scope="row">최종배송일</th>
+							<td><span name="finalDelivYmd" id="finalDelivYmd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주문마감일</th>
+							<td><span name="ordDueYmd" id="ordDueYmd"></span></td>
+							<th scope="row">고객확정일시</th>
+							<td><span name="mbrCfmDtm" id="mbrCfmDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">교환요청일시</th>
+							<td><span name="exchReqDtm" id="exchReqDtm"></span></td>
+							<th scope="row">주문취소요청일시</th>
+							<td><span name="ordCancReqDtm" id="ordCancReqDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주문취소액</th>
+							<td><span name="ordCancAmt" id="ordCancAmt"></span></td>
+							<th scope="row">최종결제액</th>
+							<td><span name="finalPymtAmt" id="finalPymtAmt"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

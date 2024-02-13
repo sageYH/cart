@@ -1,0 +1,156 @@
+<div id="divTermsPop" class="sub_wrap" style="display:none;width:92%" title="약관정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>약관정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="termsId_g1">약관ID</label>
+						<div class="wrap">
+							<input type="text" id="termsId_g1" name="termsId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="termsDivCd_g1">약관구분코드[TM01]</label>
+						<div class="wrap">
+							<input type="text" id="termsDivCd_g1" name="termsDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="termsFrYmd_g1">약관시작일</label>
+						<div class="wrap">
+							<input type="text" id="termsFrYmd_g1" name="termsFrYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="termsToYmd_g1">약관종료일</label>
+						<div class="wrap">
+							<input type="text" id="termsToYmd_g1" name="termsToYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="termsTgtCd_g1">약관대상코드[TM02]</label>
+						<div class="wrap">
+							<input type="text" id="termsTgtCd_g1" name="termsTgtCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="TermsPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="TermsPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="TermsPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var TermsPop = new $W.load("divTermsPop");
+TermsPop.ready(function(){
+	//
+});
+
+TermsPop.fnOpen = function(mode, params, func) {
+	clearObjects("divTermsPop");
+	TermsPop.mode = mode;
+	if (!isEmpty(func)){
+		TermsPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divTermsPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["termsId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/terms/getTerms.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("termsDivCd_g1").focus();
+	}else{
+		readOnlyFalse(["termsId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+TermsPop.fnSave = function(){
+
+	var valid = 0 || [
+		["termsId_g1","","자료(약관ID)를 확인하세요."]
+		,["termsDivCd_g1","","자료(약관구분코드[TM01])를 확인하세요."]
+		,["termsFrYmd_g1","","자료(약관시작일)를 확인하세요."]
+		,["termsToYmd_g1","","자료(약관종료일)를 확인하세요."]
+		,["termsTgtCd_g1","","자료(약관대상코드[TM02])를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divTermsPop");
+	var url = "/app/terms/updateTerms.do";
+	if (TermsPop.mode=="CREATE"){
+		url = "/app/terms/insertTerms.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(TermsPop.func)){
+			TermsPop.func();
+			TermsPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+TermsPop.fnDelete = function(){
+	if (TermsPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/terms/deleteTerms.do";
+	var params = {};
+	params["termsId"] = getElement("termsId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(TermsPop.func)){
+			TermsPop.func();
+			TermsPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+TermsPop.fnClose = function(){
+	layerToggle("divTermsPop",{"mode":0});
+};
+</script>

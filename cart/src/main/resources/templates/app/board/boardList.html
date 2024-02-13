@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsBoard = new pageCls("dvBoardPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("boardId"))==false) params["boardId"] = getEVal("boardId");
+	if (isEmpty(getEVal("boardTypCd"))==false) params["boardTypCd"] = getEVal("boardTypCd");
+	if (isEmpty(getEVal("boardTitle"))==false) params["boardTitle"] = getEVal("boardTitle");
+	if (isEmpty(getEVal("boardCont"))==false) params["boardCont"] = getEVal("boardCont");
+	if (isEmpty(getEVal("boardViews"))==false) params["boardViews"] = getEVal("boardViews");
+	if (isEmpty(getEVal("prntBoardId"))==false) params["prntBoardId"] = getEVal("prntBoardId");
+	if (isEmpty(getEVal("grpBoardId"))==false) params["grpBoardId"] = getEVal("grpBoardId");
+	if (isEmpty(getEVal("boardFrYmd"))==false) params["boardFrYmd"] = getEVal("boardFrYmd");
+	if (isEmpty(getEVal("boardToYmd"))==false) params["boardToYmd"] = getEVal("boardToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsBoard.getPageInfo(params);
+
+	var url = "/app/board/getBoardPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["boardId","boardTypCd","boardTitle","boardCont","boardViews","prntBoardId","grpBoardId","boardFrYmd","boardToYmd","fileRefId","popupYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,12);
+	pageClsBoard.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsBoardDown(){
+	var url = "/app/board/getBoardExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("boardId"))==false) paramXls["boardId"] = getEVal("boardId");
+	if (isEmpty(getEVal("boardTypCd"))==false) paramXls["boardTypCd"] = getEVal("boardTypCd");
+	if (isEmpty(getEVal("boardTitle"))==false) paramXls["boardTitle"] = getEVal("boardTitle");
+	if (isEmpty(getEVal("boardCont"))==false) paramXls["boardCont"] = getEVal("boardCont");
+	if (isEmpty(getEVal("boardViews"))==false) paramXls["boardViews"] = getEVal("boardViews");
+	if (isEmpty(getEVal("prntBoardId"))==false) paramXls["prntBoardId"] = getEVal("prntBoardId");
+	if (isEmpty(getEVal("grpBoardId"))==false) paramXls["grpBoardId"] = getEVal("grpBoardId");
+	if (isEmpty(getEVal("boardFrYmd"))==false) paramXls["boardFrYmd"] = getEVal("boardFrYmd");
+	if (isEmpty(getEVal("boardToYmd"))==false) paramXls["boardToYmd"] = getEVal("boardToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) paramXls["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) paramXls["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"게시판"
+		,"sheetName":"시트"
+		,"columnHeaders":["게시ID","게시유형코드","게시제목","게시내용","게시조회수","상위게시ID","그룹게시ID","게시시작일","게시종료일","파일참조ID","팝업여부","사용여부"]
+		,"columnNames":["boardId","boardTypCd","boardTitle","boardCont","boardViews","prntBoardId","grpBoardId","boardFrYmd","boardToYmd","fileRefId","popupYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["boardId"] = arr[0].trim();
+	}
+	BoardPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvBoardSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvBoardSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsBoard.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">게시ID</th>
+							<th scope="col">게시유형코드</th>
+							<th scope="col">게시제목</th>
+							<th scope="col">게시내용</th>
+							<th scope="col">게시조회수</th>
+							<th scope="col">상위게시ID</th>
+							<th scope="col">그룹게시ID</th>
+							<th scope="col">게시시작일</th>
+							<th scope="col">게시종료일</th>
+							<th scope="col">파일참조ID</th>
+							<th scope="col">팝업여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{boardId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{boardId}}</td>
+						<td>{{boardTypCd}}</td>
+						<td>{{boardTitle}}</td>
+						<td>{{boardCont}}</td>
+						<td>{{boardViews}}</td>
+						<td>{{prntBoardId}}</td>
+						<td>{{grpBoardId}}</td>
+						<td>{{boardFrYmd}}</td>
+						<td>{{boardToYmd}}</td>
+						<td>{{fileRefId}}</td>
+						<td>{{popupYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvBoardPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/board/boardPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

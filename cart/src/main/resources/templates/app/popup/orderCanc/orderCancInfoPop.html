@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordCnclId"] = '[[${transData.ordCnclId}]]';
+	if (isEmpty(map["ordCnclId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderCanc/getOrderCanc.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderCancPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="ordCnclId" id="ordCnclId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">주문ID</th>
+							<td><span name="ordId" id="ordId"></span></td>
+							<th scope="row">주문취소일시</th>
+							<td><span name="ordCnclDtm" id="ordCnclDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주문취소구분[OD04]</th>
+							<td><span name="ordCnclDivCd" id="ordCnclDivCd"></span></td>
+							<th scope="row">주문취소총액</th>
+							<td><span name="ordCnclAmt" id="ordCnclAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">지급취소포인트ID</th>
+							<td><span name="pymtCnclPointId" id="pymtCnclPointId"></span></td>
+							<th scope="row">지급취소쿠폰ID</th>
+							<td><span name="pymtCnclCpnId" id="pymtCnclCpnId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소배송비</th>
+							<td><span name="cnclDelivFee" id="cnclDelivFee"></span></td>
+							<th scope="row">배송비대상코드[OD05]</th>
+							<td><span name="delivFeeTgtCd" id="delivFeeTgtCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">지급사ID</th>
+							<td><span name="pymtCompId" id="pymtCompId"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

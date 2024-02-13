@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderCancMapper">
+	<sql id="where-orderCanc">
+		WHERE 1=1
+			<if test="ordCnclId != null and ordCnclId != '' ">
+			AND OC.ORD_CNCL_ID = #{ordCnclId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OC.ORD_ID = #{ordId}
+			</if>
+			<if test="ordCnclDtm != null and ordCnclDtm != '' ">
+			AND OC.ORD_CNCL_DTM = STR_TO_DATE(#{ordCnclDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="ordCnclDivCd != null and ordCnclDivCd != '' ">
+			AND OC.ORD_CNCL_DIV_CD = #{ordCnclDivCd}
+			</if>
+			<if test="ordCnclAmt != null and ordCnclAmt != '' ">
+			AND OC.ORD_CNCL_AMT = #{ordCnclAmt}
+			</if>
+			<if test="pymtCnclPointId != null and pymtCnclPointId != '' ">
+			AND OC.PYMT_CNCL_POINT_ID = #{pymtCnclPointId}
+			</if>
+			<if test="pymtCnclCpnId != null and pymtCnclCpnId != '' ">
+			AND OC.PYMT_CNCL_CPN_ID = #{pymtCnclCpnId}
+			</if>
+			<if test="cnclDelivFee != null and cnclDelivFee != '' ">
+			AND OC.CNCL_DELIV_FEE = #{cnclDelivFee}
+			</if>
+			<if test="delivFeeTgtCd != null and delivFeeTgtCd != '' ">
+			AND OC.DELIV_FEE_TGT_CD = #{delivFeeTgtCd}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND OC.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+	</sql>
+
+	<select id="getOrderCancListCount" parameterType="OrderCancExDto" resultType="Integer">
+	/* orderCancMapper.getOrderCancListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_CANC OC
+		<include refid="where-orderCanc" />
+	</select>
+
+	<select id="getOrderCancList" parameterType="OrderCancExDto" resultType="OrderCancExDto">
+	/* orderCancMapper.getOrderCancList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OC.ORD_CNCL_ID
+			,OC.ORD_ID
+			,ORD_CNCL_DTM
+			,OC.ORD_CNCL_DIV_CD
+			,OC.ORD_CNCL_AMT
+			,OC.PYMT_CNCL_POINT_ID
+			,OC.PYMT_CNCL_CPN_ID
+			,OC.CNCL_DELIV_FEE
+			,OC.DELIV_FEE_TGT_CD
+			,OC.PYMT_COMP_ID
+			,OC.REG_USER_ID
+			,REG_DTM
+			,OC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CANC OC
+		<include refid="where-orderCanc" />
+		ORDER BY
+			OC.ORD_CNCL_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderCanc" parameterType="OrderCancExDto" resultType="OrderCancExDto">
+	/* orderCancMapper.getOrderCanc */
+		SELECT
+			OC.ORD_CNCL_ID
+			,OC.ORD_ID
+			,ORD_CNCL_DTM
+			,OC.ORD_CNCL_DIV_CD
+			,OC.ORD_CNCL_AMT
+			,OC.PYMT_CNCL_POINT_ID
+			,OC.PYMT_CNCL_CPN_ID
+			,OC.CNCL_DELIV_FEE
+			,OC.DELIV_FEE_TGT_CD
+			,OC.PYMT_COMP_ID
+			,OC.REG_USER_ID
+			,REG_DTM
+			,OC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CANC OC
+		WHERE
+			OC.ORD_CNCL_ID = #{ordCnclId}
+	</select>
+
+	<insert id="insertOrderCanc" parameterType="OrderCancExDto">
+	/* orderCancMapper.insertOrderCanc */
+		INSERT INTO CW_ORDER_CANC (
+			ORD_CNCL_ID
+			,ORD_ID
+			,ORD_CNCL_DTM
+			,ORD_CNCL_DIV_CD
+			,ORD_CNCL_AMT
+			,PYMT_CNCL_POINT_ID
+			,PYMT_CNCL_CPN_ID
+			,CNCL_DELIV_FEE
+			,DELIV_FEE_TGT_CD
+			,PYMT_COMP_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordCnclId}
+			,#{ordId}
+			,STR_TO_DATE(#{ordCnclDtm}, '%Y%m%d %h%i%s')
+			,#{ordCnclDivCd}
+			,#{ordCnclAmt}
+			,#{pymtCnclPointId}
+			,#{pymtCnclCpnId}
+			,#{cnclDelivFee}
+			,#{delivFeeTgtCd}
+			,#{pymtCompId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderCanc" parameterType="OrderCancExDto">
+	/* orderCancMapper.updateOrderCanc */
+		UPDATE CW_ORDER_CANC
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="ordCnclDtm != null">
+		ORD_CNCL_DTM = STR_TO_DATE(#{ordCnclDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="ordCnclDivCd != null">
+		ORD_CNCL_DIV_CD = #{ordCnclDivCd},
+		</if>
+		<if test="ordCnclAmt != null">
+		ORD_CNCL_AMT = #{ordCnclAmt},
+		</if>
+		<if test="pymtCnclPointId != null">
+		PYMT_CNCL_POINT_ID = #{pymtCnclPointId},
+		</if>
+		<if test="pymtCnclCpnId != null">
+		PYMT_CNCL_CPN_ID = #{pymtCnclCpnId},
+		</if>
+		<if test="cnclDelivFee != null">
+		CNCL_DELIV_FEE = #{cnclDelivFee},
+		</if>
+		<if test="delivFeeTgtCd != null">
+		DELIV_FEE_TGT_CD = #{delivFeeTgtCd},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_CNCL_ID = #{ordCnclId}
+	</update>
+
+	<delete id="deleteOrderCanc" parameterType="OrderCancExDto">
+	/* orderCancMapper.deleteOrderCanc */
+	DELETE FROM CW_ORDER_CANC
+	WHERE
+		ORD_CNCL_ID = #{ordCnclId}
+	</delete>
+</mapper>

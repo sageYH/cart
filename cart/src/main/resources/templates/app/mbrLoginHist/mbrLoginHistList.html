@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsMbrLoginHist = new pageCls("dvMbrLoginHistPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("mbrLoginSeqNo"))==false) params["mbrLoginSeqNo"] = getEVal("mbrLoginSeqNo");
+	if (isEmpty(getEVal("accYmd"))==false) params["accYmd"] = getEVal("accYmd");
+	if (isEmpty(getEVal("accHms"))==false) params["accHms"] = getEVal("accHms");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("accDevCd"))==false) params["accDevCd"] = getEVal("accDevCd");
+	if (isEmpty(getEVal("accChanCd"))==false) params["accChanCd"] = getEVal("accChanCd");
+	//page set
+	params = pageClsMbrLoginHist.getPageInfo(params);
+
+	var url = "/app/mbrLoginHist/getMbrLoginHistPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["mbrLoginSeqNo","accYmd","accHms","mbrId","accDevCd","accChanCd"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,6);
+	pageClsMbrLoginHist.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsMbrLoginHistDown(){
+	var url = "/app/mbrLoginHist/getMbrLoginHistExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("mbrLoginSeqNo"))==false) paramXls["mbrLoginSeqNo"] = getEVal("mbrLoginSeqNo");
+	if (isEmpty(getEVal("accYmd"))==false) paramXls["accYmd"] = getEVal("accYmd");
+	if (isEmpty(getEVal("accHms"))==false) paramXls["accHms"] = getEVal("accHms");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("accDevCd"))==false) paramXls["accDevCd"] = getEVal("accDevCd");
+	if (isEmpty(getEVal("accChanCd"))==false) paramXls["accChanCd"] = getEVal("accChanCd");
+
+	var params = {"xlsName":"멤버로그인이력"
+		,"sheetName":"시트"
+		,"columnHeaders":["멤버로그인일련번호","접속년월일","접속시분초","멤버ID","접근기기코드[MB04]","접속채널코드[MB08]"]
+		,"columnNames":["mbrLoginSeqNo","accYmd","accHms","mbrId","accDevCd","accChanCd"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["mbrLoginSeqNo"] = arr[0].trim();
+	}
+	MbrLoginHistPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvMbrLoginHistSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvMbrLoginHistSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsMbrLoginHist.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">멤버로그인일련번호</th>
+							<th scope="col">접속년월일</th>
+							<th scope="col">접속시분초</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">접근기기코드[MB04]</th>
+							<th scope="col">접속채널코드[MB08]</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{mbrLoginSeqNo}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{mbrLoginSeqNo}}</td>
+						<td>{{accYmd}}</td>
+						<td>{{accHms}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{accDevCd}}</td>
+						<td>{{accChanCd}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvMbrLoginHistPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/mbrLoginHist/mbrLoginHistPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

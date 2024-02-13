@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderDtlMapper">
+	<sql id="where-orderDtl">
+		WHERE 1=1
+			<if test="ordDtlId != null and ordDtlId != '' ">
+			AND OD.ORD_DTL_ID = #{ordDtlId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OD.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND OD.PROD_ID = #{prodId}
+			</if>
+			<if test="cartId != null and cartId != '' ">
+			AND OD.CART_ID = #{cartId}
+			</if>
+			<if test="ordProdQty != null and ordProdQty != '' ">
+			AND OD.ORD_PROD_QTY = #{ordProdQty}
+			</if>
+			<if test="ordProdAmt != null and ordProdAmt != '' ">
+			AND OD.ORD_PROD_AMT = #{ordProdAmt}
+			</if>
+			<if test="ordOptAmt != null and ordOptAmt != '' ">
+			AND OD.ORD_OPT_AMT = #{ordOptAmt}
+			</if>
+			<if test="optDtlCont != null and optDtlCont != '' ">
+			AND OD.OPT_DTL_CONT = #{optDtlCont}
+			</if>
+			<if test="cartDtm != null and cartDtm != '' ">
+			AND OD.CART_DTM = STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="prodPathCd != null and prodPathCd != '' ">
+			AND OD.PROD_PATH_CD = #{prodPathCd}
+			</if>
+	</sql>
+
+	<select id="getOrderDtlListCount" parameterType="OrderDtlExDto" resultType="Integer">
+	/* orderDtlMapper.getOrderDtlListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_DTL OD
+		<include refid="where-orderDtl" />
+	</select>
+
+	<select id="getOrderDtlList" parameterType="OrderDtlExDto" resultType="OrderDtlExDto">
+	/* orderDtlMapper.getOrderDtlList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OD.ORD_DTL_ID
+			,OD.ORD_ID
+			,OD.PROD_ID
+			,OD.CART_ID
+			,OD.ORD_PROD_QTY
+			,OD.ORD_PROD_AMT
+			,OD.ORD_OPT_AMT
+			,OD.OPT_DTL_CONT
+			,CART_DTM
+			,OD.PROD_PATH_CD
+			,OD.REG_USER_ID
+			,REG_DTM
+			,OD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DTL OD
+		<include refid="where-orderDtl" />
+		ORDER BY
+			OD.ORD_DTL_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderDtl" parameterType="OrderDtlExDto" resultType="OrderDtlExDto">
+	/* orderDtlMapper.getOrderDtl */
+		SELECT
+			OD.ORD_DTL_ID
+			,OD.ORD_ID
+			,OD.PROD_ID
+			,OD.CART_ID
+			,OD.ORD_PROD_QTY
+			,OD.ORD_PROD_AMT
+			,OD.ORD_OPT_AMT
+			,OD.OPT_DTL_CONT
+			,CART_DTM
+			,OD.PROD_PATH_CD
+			,OD.REG_USER_ID
+			,REG_DTM
+			,OD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DTL OD
+		WHERE
+			OD.ORD_DTL_ID = #{ordDtlId}
+	</select>
+
+	<insert id="insertOrderDtl" parameterType="OrderDtlExDto">
+	/* orderDtlMapper.insertOrderDtl */
+		INSERT INTO CW_ORDER_DTL (
+			ORD_DTL_ID
+			,ORD_ID
+			,PROD_ID
+			,CART_ID
+			,ORD_PROD_QTY
+			,ORD_PROD_AMT
+			,ORD_OPT_AMT
+			,OPT_DTL_CONT
+			,CART_DTM
+			,PROD_PATH_CD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordDtlId}
+			,#{ordId}
+			,#{prodId}
+			,#{cartId}
+			,#{ordProdQty}
+			,#{ordProdAmt}
+			,#{ordOptAmt}
+			,#{optDtlCont}
+			,STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s')
+			,#{prodPathCd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderDtl" parameterType="OrderDtlExDto">
+	/* orderDtlMapper.updateOrderDtl */
+		UPDATE CW_ORDER_DTL
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="cartId != null">
+		CART_ID = #{cartId},
+		</if>
+		<if test="ordProdQty != null">
+		ORD_PROD_QTY = #{ordProdQty},
+		</if>
+		<if test="ordProdAmt != null">
+		ORD_PROD_AMT = #{ordProdAmt},
+		</if>
+		<if test="ordOptAmt != null">
+		ORD_OPT_AMT = #{ordOptAmt},
+		</if>
+		<if test="optDtlCont != null">
+		OPT_DTL_CONT = #{optDtlCont},
+		</if>
+		<if test="cartDtm != null">
+		CART_DTM = STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="prodPathCd != null">
+		PROD_PATH_CD = #{prodPathCd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_DTL_ID = #{ordDtlId}
+	</update>
+
+	<delete id="deleteOrderDtl" parameterType="OrderDtlExDto">
+	/* orderDtlMapper.deleteOrderDtl */
+	DELETE FROM CW_ORDER_DTL
+	WHERE
+		ORD_DTL_ID = #{ordDtlId}
+	</delete>
+</mapper>

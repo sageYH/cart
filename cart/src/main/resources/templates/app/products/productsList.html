@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsProducts = new pageCls("dvProductsPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodNm"))==false) params["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("prntProdId"))==false) params["prntProdId"] = getEVal("prntProdId");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("prodSkin"))==false) params["prodSkin"] = getEVal("prodSkin");
+	if (isEmpty(getEVal("prodMobiSkin"))==false) params["prodMobiSkin"] = getEVal("prodMobiSkin");
+	if (isEmpty(getEVal("prodMfr"))==false) params["prodMfr"] = getEVal("prodMfr");
+	if (isEmpty(getEVal("prodOrigin"))==false) params["prodOrigin"] = getEVal("prodOrigin");
+	if (isEmpty(getEVal("prodBrand"))==false) params["prodBrand"] = getEVal("prodBrand");
+	if (isEmpty(getEVal("prodModel"))==false) params["prodModel"] = getEVal("prodModel");
+	if (isEmpty(getEVal("prodAmt"))==false) params["prodAmt"] = getEVal("prodAmt");
+	if (isEmpty(getEVal("prodInvQty"))==false) params["prodInvQty"] = getEVal("prodInvQty");
+	if (isEmpty(getEVal("prodUseQty"))==false) params["prodUseQty"] = getEVal("prodUseQty");
+	if (isEmpty(getEVal("prodInQty"))==false) params["prodInQty"] = getEVal("prodInQty");
+	if (isEmpty(getEVal("soldOutYn"))==false) params["soldOutYn"] = getEVal("soldOutYn");
+	if (isEmpty(getEVal("pointId"))==false) params["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("prodWeight"))==false) params["prodWeight"] = getEVal("prodWeight");
+	if (isEmpty(getEVal("prodInclQty"))==false) params["prodInclQty"] = getEVal("prodInclQty");
+	if (isEmpty(getEVal("delivFeeTypCd"))==false) params["delivFeeTypCd"] = getEVal("delivFeeTypCd");
+	if (isEmpty(getEVal("baseDelivFee"))==false) params["baseDelivFee"] = getEVal("baseDelivFee");
+	if (isEmpty(getEVal("delivFreeMinAmt"))==false) params["delivFreeMinAmt"] = getEVal("delivFreeMinAmt");
+	if (isEmpty(getEVal("delivBaseWeight"))==false) params["delivBaseWeight"] = getEVal("delivBaseWeight");
+	if (isEmpty(getEVal("delivBaseQty"))==false) params["delivBaseQty"] = getEVal("delivBaseQty");
+	if (isEmpty(getEVal("prodViews"))==false) params["prodViews"] = getEVal("prodViews");
+	if (isEmpty(getEVal("prodRegDtm"))==false) params["prodRegDtm"] = getEVal("prodRegDtm");
+	if (isEmpty(getEVal("prodUpdDtm"))==false) params["prodUpdDtm"] = getEVal("prodUpdDtm");
+	if (isEmpty(getEVal("regIp"))==false) params["regIp"] = getEVal("regIp");
+	if (isEmpty(getEVal("sortSeq"))==false) params["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("salesQty"))==false) params["salesQty"] = getEVal("salesQty");
+	if (isEmpty(getEVal("incSmsNotifYn"))==false) params["incSmsNotifYn"] = getEVal("incSmsNotifYn");
+	if (isEmpty(getEVal("reviewNum"))==false) params["reviewNum"] = getEVal("reviewNum");
+	if (isEmpty(getEVal("reviewRtgAvg"))==false) params["reviewRtgAvg"] = getEVal("reviewRtgAvg");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsProducts.getPageInfo(params);
+
+	var url = "/app/products/getProductsPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["prodId","prodNm","prntProdId","compId","prodSkin","prodMobiSkin","prodMfr","prodOrigin","prodBrand","prodModel","prodAmt","prodInvQty","prodUseQty","prodInQty","soldOutYn","pointId","cpnId","prodWeight","prodInclQty","delivFeeTypCd","baseDelivFee","delivFreeMinAmt","delivBaseWeight","delivBaseQty","prodViews","prodRegDtm","prodUpdDtm","regIp","sortSeq","salesQty","incSmsNotifYn","reviewNum","reviewRtgAvg","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,34);
+	pageClsProducts.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsProductsDown(){
+	var url = "/app/products/getProductsExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodNm"))==false) paramXls["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("prntProdId"))==false) paramXls["prntProdId"] = getEVal("prntProdId");
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("prodSkin"))==false) paramXls["prodSkin"] = getEVal("prodSkin");
+	if (isEmpty(getEVal("prodMobiSkin"))==false) paramXls["prodMobiSkin"] = getEVal("prodMobiSkin");
+	if (isEmpty(getEVal("prodMfr"))==false) paramXls["prodMfr"] = getEVal("prodMfr");
+	if (isEmpty(getEVal("prodOrigin"))==false) paramXls["prodOrigin"] = getEVal("prodOrigin");
+	if (isEmpty(getEVal("prodBrand"))==false) paramXls["prodBrand"] = getEVal("prodBrand");
+	if (isEmpty(getEVal("prodModel"))==false) paramXls["prodModel"] = getEVal("prodModel");
+	if (isEmpty(getEVal("prodAmt"))==false) paramXls["prodAmt"] = getEVal("prodAmt");
+	if (isEmpty(getEVal("prodInvQty"))==false) paramXls["prodInvQty"] = getEVal("prodInvQty");
+	if (isEmpty(getEVal("prodUseQty"))==false) paramXls["prodUseQty"] = getEVal("prodUseQty");
+	if (isEmpty(getEVal("prodInQty"))==false) paramXls["prodInQty"] = getEVal("prodInQty");
+	if (isEmpty(getEVal("soldOutYn"))==false) paramXls["soldOutYn"] = getEVal("soldOutYn");
+	if (isEmpty(getEVal("pointId"))==false) paramXls["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("cpnId"))==false) paramXls["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("prodWeight"))==false) paramXls["prodWeight"] = getEVal("prodWeight");
+	if (isEmpty(getEVal("prodInclQty"))==false) paramXls["prodInclQty"] = getEVal("prodInclQty");
+	if (isEmpty(getEVal("delivFeeTypCd"))==false) paramXls["delivFeeTypCd"] = getEVal("delivFeeTypCd");
+	if (isEmpty(getEVal("baseDelivFee"))==false) paramXls["baseDelivFee"] = getEVal("baseDelivFee");
+	if (isEmpty(getEVal("delivFreeMinAmt"))==false) paramXls["delivFreeMinAmt"] = getEVal("delivFreeMinAmt");
+	if (isEmpty(getEVal("delivBaseWeight"))==false) paramXls["delivBaseWeight"] = getEVal("delivBaseWeight");
+	if (isEmpty(getEVal("delivBaseQty"))==false) paramXls["delivBaseQty"] = getEVal("delivBaseQty");
+	if (isEmpty(getEVal("prodViews"))==false) paramXls["prodViews"] = getEVal("prodViews");
+	if (isEmpty(getEVal("prodRegDtm"))==false) paramXls["prodRegDtm"] = getEVal("prodRegDtm");
+	if (isEmpty(getEVal("prodUpdDtm"))==false) paramXls["prodUpdDtm"] = getEVal("prodUpdDtm");
+	if (isEmpty(getEVal("regIp"))==false) paramXls["regIp"] = getEVal("regIp");
+	if (isEmpty(getEVal("sortSeq"))==false) paramXls["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("salesQty"))==false) paramXls["salesQty"] = getEVal("salesQty");
+	if (isEmpty(getEVal("incSmsNotifYn"))==false) paramXls["incSmsNotifYn"] = getEVal("incSmsNotifYn");
+	if (isEmpty(getEVal("reviewNum"))==false) paramXls["reviewNum"] = getEVal("reviewNum");
+	if (isEmpty(getEVal("reviewRtgAvg"))==false) paramXls["reviewRtgAvg"] = getEVal("reviewRtgAvg");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"상품"
+		,"sheetName":"시트"
+		,"columnHeaders":["상품ID","상품명","상위상품분류ID","상품레벨","상품스킨","상품모바일스킨","상품제조사","상품원산지","상품브랜드","상품모델","상품금액","상품재고수량","상품사용수량","상품입고수량","품절여부","포인트ID","쿠폰ID","상품무게","상품포함수량","배송비유형코드[DV01]","기본배송비","배송무료최소금액","배송기준무게","배송기준수량","상품조회수","상품등록일시","상품변경일시","등록 IP","정렬순서","판매수량","재입고SMS알림 여부","사용후기 수","사용후기 별점 평균","사용여부"]
+		,"columnNames":["prodId","prodNm","prntProdId","compId","prodSkin","prodMobiSkin","prodMfr","prodOrigin","prodBrand","prodModel","prodAmt","prodInvQty","prodUseQty","prodInQty","soldOutYn","pointId","cpnId","prodWeight","prodInclQty","delivFeeTypCd","baseDelivFee","delivFreeMinAmt","delivBaseWeight","delivBaseQty","prodViews","prodRegDtm","prodUpdDtm","regIp","sortSeq","salesQty","incSmsNotifYn","reviewNum","reviewRtgAvg","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["prodId"] = arr[0].trim();
+	}
+	ProductsPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvProductsSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvProductsSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsProducts.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">상품ID</th>
+							<th scope="col">상품명</th>
+							<th scope="col">상위상품분류ID</th>
+							<th scope="col">상품레벨</th>
+							<th scope="col">상품스킨</th>
+							<th scope="col">상품모바일스킨</th>
+							<th scope="col">상품제조사</th>
+							<th scope="col">상품원산지</th>
+							<th scope="col">상품브랜드</th>
+							<th scope="col">상품모델</th>
+							<th scope="col">상품금액</th>
+							<th scope="col">상품재고수량</th>
+							<th scope="col">상품사용수량</th>
+							<th scope="col">상품입고수량</th>
+							<th scope="col">품절여부</th>
+							<th scope="col">포인트ID</th>
+							<th scope="col">쿠폰ID</th>
+							<th scope="col">상품무게</th>
+							<th scope="col">상품포함수량</th>
+							<th scope="col">배송비유형코드[DV01]</th>
+							<th scope="col">기본배송비</th>
+							<th scope="col">배송무료최소금액</th>
+							<th scope="col">배송기준무게</th>
+							<th scope="col">배송기준수량</th>
+							<th scope="col">상품조회수</th>
+							<th scope="col">상품등록일시</th>
+							<th scope="col">상품변경일시</th>
+							<th scope="col">등록 IP</th>
+							<th scope="col">정렬순서</th>
+							<th scope="col">판매수량</th>
+							<th scope="col">재입고SMS알림 여부</th>
+							<th scope="col">사용후기 수</th>
+							<th scope="col">사용후기 별점 평균</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{prodId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{prodId}}</td>
+						<td>{{prodNm}}</td>
+						<td>{{prntProdId}}</td>
+						<td>{{compId}}</td>
+						<td>{{prodSkin}}</td>
+						<td>{{prodMobiSkin}}</td>
+						<td>{{prodMfr}}</td>
+						<td>{{prodOrigin}}</td>
+						<td>{{prodBrand}}</td>
+						<td>{{prodModel}}</td>
+						<td>{{prodAmt}}</td>
+						<td>{{prodInvQty}}</td>
+						<td>{{prodUseQty}}</td>
+						<td>{{prodInQty}}</td>
+						<td>{{soldOutYn}}</td>
+						<td>{{pointId}}</td>
+						<td>{{cpnId}}</td>
+						<td>{{prodWeight}}</td>
+						<td>{{prodInclQty}}</td>
+						<td>{{delivFeeTypCd}}</td>
+						<td>{{baseDelivFee}}</td>
+						<td>{{delivFreeMinAmt}}</td>
+						<td>{{delivBaseWeight}}</td>
+						<td>{{delivBaseQty}}</td>
+						<td>{{prodViews}}</td>
+						<td>{{prodRegDtm}}</td>
+						<td>{{prodUpdDtm}}</td>
+						<td>{{regIp}}</td>
+						<td>{{sortSeq}}</td>
+						<td>{{salesQty}}</td>
+						<td>{{incSmsNotifYn}}</td>
+						<td>{{reviewNum}}</td>
+						<td>{{reviewRtgAvg}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvProductsPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/products/productsPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

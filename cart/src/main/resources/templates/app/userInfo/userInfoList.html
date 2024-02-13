@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsUserInfo = new pageCls("dvUserInfoPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("userId"))==false) params["userId"] = getEVal("userId");
+	if (isEmpty(getEVal("userNm"))==false) params["userNm"] = getEVal("userNm");
+	if (isEmpty(getEVal("userPwd"))==false) params["userPwd"] = getEVal("userPwd");
+	if (isEmpty(getEVal("cntryCd"))==false) params["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("deptCd"))==false) params["deptCd"] = getEVal("deptCd");
+	if (isEmpty(getEVal("deptNm"))==false) params["deptNm"] = getEVal("deptNm");
+	if (isEmpty(getEVal("telNo"))==false) params["telNo"] = getEVal("telNo");
+	if (isEmpty(getEVal("phoneNo"))==false) params["phoneNo"] = getEVal("phoneNo");
+	if (isEmpty(getEVal("email"))==false) params["email"] = getEVal("email");
+	if (isEmpty(getEVal("pswdErrCnt"))==false) params["pswdErrCnt"] = getEVal("pswdErrCnt");
+	if (isEmpty(getEVal("grade"))==false) params["grade"] = getEVal("grade");
+	if (isEmpty(getEVal("pswdExpectedYmd"))==false) params["pswdExpectedYmd"] = getEVal("pswdExpectedYmd");
+	if (isEmpty(getEVal("initUserPswd"))==false) params["initUserPswd"] = getEVal("initUserPswd");
+	if (isEmpty(getEVal("mailAgreeYn"))==false) params["mailAgreeYn"] = getEVal("mailAgreeYn");
+	if (isEmpty(getEVal("smsAgreeYn"))==false) params["smsAgreeYn"] = getEVal("smsAgreeYn");
+	if (isEmpty(getEVal("ref1"))==false) params["ref1"] = getEVal("ref1");
+	if (isEmpty(getEVal("ref2"))==false) params["ref2"] = getEVal("ref2");
+	if (isEmpty(getEVal("lockYn"))==false) params["lockYn"] = getEVal("lockYn");
+	if (isEmpty(getEVal("expectedYn"))==false) params["expectedYn"] = getEVal("expectedYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	if (isEmpty(getEVal("cid"))==false) params["cid"] = getEVal("cid");
+	if (isEmpty(getEVal("certDn"))==false) params["certDn"] = getEVal("certDn");
+	if (isEmpty(getEVal("certSign"))==false) params["certSign"] = getEVal("certSign");
+	//page set
+	params = pageClsUserInfo.getPageInfo(params);
+
+	var url = "/app/userInfo/getUserInfoPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["userId","userNm","userPwd","cntryCd","compId","deptCd","deptNm","telNo","phoneNo","email","pswdErrCnt","grade","pswdExpectedYmd","initUserPswd","mailAgreeYn","smsAgreeYn","ref1","ref2","lockYn","expectedYn","useYn","cid","certDn","certSign"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,24);
+	pageClsUserInfo.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsUserInfoDown(){
+	var url = "/app/userInfo/getUserInfoExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("userId"))==false) paramXls["userId"] = getEVal("userId");
+	if (isEmpty(getEVal("userNm"))==false) paramXls["userNm"] = getEVal("userNm");
+	if (isEmpty(getEVal("userPwd"))==false) paramXls["userPwd"] = getEVal("userPwd");
+	if (isEmpty(getEVal("cntryCd"))==false) paramXls["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("deptCd"))==false) paramXls["deptCd"] = getEVal("deptCd");
+	if (isEmpty(getEVal("deptNm"))==false) paramXls["deptNm"] = getEVal("deptNm");
+	if (isEmpty(getEVal("telNo"))==false) paramXls["telNo"] = getEVal("telNo");
+	if (isEmpty(getEVal("phoneNo"))==false) paramXls["phoneNo"] = getEVal("phoneNo");
+	if (isEmpty(getEVal("email"))==false) paramXls["email"] = getEVal("email");
+	if (isEmpty(getEVal("pswdErrCnt"))==false) paramXls["pswdErrCnt"] = getEVal("pswdErrCnt");
+	if (isEmpty(getEVal("grade"))==false) paramXls["grade"] = getEVal("grade");
+	if (isEmpty(getEVal("pswdExpectedYmd"))==false) paramXls["pswdExpectedYmd"] = getEVal("pswdExpectedYmd");
+	if (isEmpty(getEVal("initUserPswd"))==false) paramXls["initUserPswd"] = getEVal("initUserPswd");
+	if (isEmpty(getEVal("mailAgreeYn"))==false) paramXls["mailAgreeYn"] = getEVal("mailAgreeYn");
+	if (isEmpty(getEVal("smsAgreeYn"))==false) paramXls["smsAgreeYn"] = getEVal("smsAgreeYn");
+	if (isEmpty(getEVal("ref1"))==false) paramXls["ref1"] = getEVal("ref1");
+	if (isEmpty(getEVal("ref2"))==false) paramXls["ref2"] = getEVal("ref2");
+	if (isEmpty(getEVal("lockYn"))==false) paramXls["lockYn"] = getEVal("lockYn");
+	if (isEmpty(getEVal("expectedYn"))==false) paramXls["expectedYn"] = getEVal("expectedYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+	if (isEmpty(getEVal("cid"))==false) paramXls["cid"] = getEVal("cid");
+	if (isEmpty(getEVal("certDn"))==false) paramXls["certDn"] = getEVal("certDn");
+	if (isEmpty(getEVal("certSign"))==false) paramXls["certSign"] = getEVal("certSign");
+
+	var params = {"xlsName":"사용자정보"
+		,"sheetName":"시트"
+		,"columnHeaders":["사용자ID","성명","비밀번호","국가코드","업체ID","부서코드","부서명","전화번호","폰번호","이메일주소","비번오류횟수","보안등급[B01]","비밀번호변경예정일","초기비밀번호","안내메일수신동의여부","SMS수신동의여부","참조1","참조2","LOCK여부","만료여부","사용여부","CID","인증서DN","인증서SIGN"]
+		,"columnNames":["userId","userNm","userPwd","cntryCd","compId","deptCd","deptNm","telNo","phoneNo","email","pswdErrCnt","grade","pswdExpectedYmd","initUserPswd","mailAgreeYn","smsAgreeYn","ref1","ref2","lockYn","expectedYn","useYn","cid","certDn","certSign"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["userId"] = arr[0].trim();
+	}
+	UserInfoPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvUserInfoSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvUserInfoSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsUserInfo.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">사용자ID</th>
+							<th scope="col">성명</th>
+							<th scope="col">비밀번호</th>
+							<th scope="col">국가코드</th>
+							<th scope="col">업체ID</th>
+							<th scope="col">부서코드</th>
+							<th scope="col">부서명</th>
+							<th scope="col">전화번호</th>
+							<th scope="col">폰번호</th>
+							<th scope="col">이메일주소</th>
+							<th scope="col">비번오류횟수</th>
+							<th scope="col">보안등급[B01]</th>
+							<th scope="col">비밀번호변경예정일</th>
+							<th scope="col">초기비밀번호</th>
+							<th scope="col">안내메일수신동의여부</th>
+							<th scope="col">SMS수신동의여부</th>
+							<th scope="col">참조1</th>
+							<th scope="col">참조2</th>
+							<th scope="col">LOCK여부</th>
+							<th scope="col">만료여부</th>
+							<th scope="col">사용여부</th>
+							<th scope="col">CID</th>
+							<th scope="col">인증서DN</th>
+							<th scope="col">인증서SIGN</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{userId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{userId}}</td>
+						<td>{{userNm}}</td>
+						<td>{{userPwd}}</td>
+						<td>{{cntryCd}}</td>
+						<td>{{compId}}</td>
+						<td>{{deptCd}}</td>
+						<td>{{deptNm}}</td>
+						<td>{{telNo}}</td>
+						<td>{{phoneNo}}</td>
+						<td>{{email}}</td>
+						<td>{{pswdErrCnt}}</td>
+						<td>{{grade}}</td>
+						<td>{{pswdExpectedYmd}}</td>
+						<td>{{initUserPswd}}</td>
+						<td>{{mailAgreeYn}}</td>
+						<td>{{smsAgreeYn}}</td>
+						<td>{{ref1}}</td>
+						<td>{{ref2}}</td>
+						<td>{{lockYn}}</td>
+						<td>{{expectedYn}}</td>
+						<td>{{useYn}}</td>
+						<td>{{cid}}</td>
+						<td>{{certDn}}</td>
+						<td>{{certSign}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvUserInfoPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/userInfo/userInfoPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

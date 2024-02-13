@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["userId"] = '[[${transData.userId}]]';
+	if (isEmpty(map["userId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("userId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/userInfo/getUserInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["userId","","자료(사용자ID)를 확인하세요."]
+		["userNm","","자료(성명)를 확인하세요."]
+		["userPwd","","자료(비밀번호)를 확인하세요."]
+		["cntryCd","","자료(국가코드)를 확인하세요."]
+		["compId","","자료(업체ID)를 확인하세요."]
+		["deptCd","","자료(부서코드)를 확인하세요."]
+		["deptNm","","자료(부서명)를 확인하세요."]
+		["telNo","","자료(전화번호)를 확인하세요."]
+		["phoneNo","","자료(폰번호)를 확인하세요."]
+		["email","","자료(이메일주소)를 확인하세요."]
+		["pswdErrCnt","","자료(비번오류횟수)를 확인하세요."]
+		["grade","","자료(보안등급[B01])를 확인하세요."]
+		["pswdExpectedYmd","","자료(비밀번호변경예정일)를 확인하세요."]
+		["initUserPswd","","자료(초기비밀번호)를 확인하세요."]
+		["mailAgreeYn","","자료(안내메일수신동의여부)를 확인하세요."]
+		["smsAgreeYn","","자료(SMS수신동의여부)를 확인하세요."]
+		["ref1","","자료(참조1)를 확인하세요."]
+		["ref2","","자료(참조2)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+		["cid","","자료(CID)를 확인하세요."]
+		["certDn","","자료(인증서DN)를 확인하세요."]
+		["certSign","","자료(인증서SIGN)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/userInfo/updateUserInfo.do";
+	if (mode=="NEW"){
+		url = "/app/userInfo/insertUserInfo.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formUserInfoPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvUserInfoPop" class="modal shot-pop" title="사용자정보 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formUserInfoPop" name="formUserInfoPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">사용자ID</th>
+						<td><input type="text" name="userId" id="userId" style="width:70%" readonly >
+						</td>
+					<th scope="row">성명</th>
+					<td><input type="text" name="userNm" id="userNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">비밀번호</th>
+						<td><input type="text" name="userPwd" id="userPwd" style="width:70%" >
+						</td>
+					<th scope="row">국가코드</th>
+					<td><input type="text" name="cntryCd" id="cntryCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">업체ID</th>
+						<td><input type="text" name="compId" id="compId" style="width:70%" >
+						</td>
+					<th scope="row">부서코드</th>
+					<td><input type="text" name="deptCd" id="deptCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">부서명</th>
+						<td><input type="text" name="deptNm" id="deptNm" style="width:70%" >
+						</td>
+					<th scope="row">전화번호</th>
+					<td><input type="text" name="telNo" id="telNo" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">폰번호</th>
+						<td><input type="text" name="phoneNo" id="phoneNo" style="width:70%" >
+						</td>
+					<th scope="row">이메일주소</th>
+					<td><input type="text" name="email" id="email" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">비번오류횟수</th>
+						<td><input type="text" name="pswdErrCnt" id="pswdErrCnt" style="width:70%" >
+						</td>
+					<th scope="row">보안등급[B01]</th>
+					<td><input type="text" name="grade" id="grade" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">비밀번호변경예정일</th>
+						<td><input type="text" name="pswdExpectedYmd" id="pswdExpectedYmd" style="width:70%" >
+						</td>
+					<th scope="row">초기비밀번호</th>
+					<td><input type="text" name="initUserPswd" id="initUserPswd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">안내메일수신동의여부</th>
+						<td><input type="text" name="mailAgreeYn" id="mailAgreeYn" style="width:70%" >
+						</td>
+					<th scope="row">SMS수신동의여부</th>
+					<td><input type="text" name="smsAgreeYn" id="smsAgreeYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">참조1</th>
+						<td><input type="text" name="ref1" id="ref1" style="width:70%" >
+						</td>
+					<th scope="row">참조2</th>
+					<td><input type="text" name="ref2" id="ref2" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th scope="row">CID</th>
+					<td><input type="text" name="cid" id="cid" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">인증서DN</th>
+						<td><input type="text" name="certDn" id="certDn" style="width:70%" >
+						</td>
+					<th scope="row">인증서SIGN</th>
+					<td><input type="text" name="certSign" id="certSign" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

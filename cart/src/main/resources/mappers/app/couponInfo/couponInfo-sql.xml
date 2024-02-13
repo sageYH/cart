@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="couponInfoMapper">
+	<sql id="where-couponInfo">
+		WHERE 1=1
+			<if test="cpnId != null and cpnId != '' ">
+			AND CI.CPN_ID = #{cpnId}
+			</if>
+			<if test="cpnKindCd != null and cpnKindCd != '' ">
+			AND CI.CPN_KIND_CD = #{cpnKindCd}
+			</if>
+			<if test="cpnTypCd != null and cpnTypCd != '' ">
+			AND CI.CPN_TYP_CD = #{cpnTypCd}
+			</if>
+			<if test="cpnNm != null and cpnNm != '' ">
+			AND CI.CPN_NM = #{cpnNm}
+			</if>
+			<if test="alwaysYn != null and alwaysYn != '' ">
+			AND CI.ALWAYS_YN = #{alwaysYn}
+			</if>
+			<if test="firstComeYn != null and firstComeYn != '' ">
+			AND CI.FIRST_COME_YN = #{firstComeYn}
+			</if>
+			<if test="dupePymtYn != null and dupePymtYn != '' ">
+			AND CI.DUPE_PYMT_YN = #{dupePymtYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCouponInfoListCount" parameterType="CouponInfoExDto" resultType="Integer">
+	/* couponInfoMapper.getCouponInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUPON_INFO CI
+		<include refid="where-couponInfo" />
+	</select>
+
+	<select id="getCouponInfoList" parameterType="CouponInfoExDto" resultType="CouponInfoExDto">
+	/* couponInfoMapper.getCouponInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CI.CPN_ID
+			,CI.CPN_KIND_CD
+			,CI.CPN_TYP_CD
+			,CI.CPN_NM
+			,CI.ALWAYS_YN
+			,CI.FIRST_COME_YN
+			,CI.DUPE_PYMT_YN
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_INFO CI
+		<include refid="where-couponInfo" />
+		ORDER BY
+			CI.CPN_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCouponInfo" parameterType="CouponInfoExDto" resultType="CouponInfoExDto">
+	/* couponInfoMapper.getCouponInfo */
+		SELECT
+			CI.CPN_ID
+			,CI.CPN_KIND_CD
+			,CI.CPN_TYP_CD
+			,CI.CPN_NM
+			,CI.ALWAYS_YN
+			,CI.FIRST_COME_YN
+			,CI.DUPE_PYMT_YN
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_INFO CI
+		WHERE
+			CI.CPN_ID = #{cpnId}
+	</select>
+
+	<insert id="insertCouponInfo" parameterType="CouponInfoExDto">
+	/* couponInfoMapper.insertCouponInfo */
+		INSERT INTO CW_COUPON_INFO (
+			CPN_ID
+			,CPN_KIND_CD
+			,CPN_TYP_CD
+			,CPN_NM
+			,ALWAYS_YN
+			,FIRST_COME_YN
+			,DUPE_PYMT_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cpnId}
+			,#{cpnKindCd}
+			,#{cpnTypCd}
+			,#{cpnNm}
+			,#{alwaysYn}
+			,#{firstComeYn}
+			,#{dupePymtYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCouponInfo" parameterType="CouponInfoExDto">
+	/* couponInfoMapper.updateCouponInfo */
+		UPDATE CW_COUPON_INFO
+		<set>
+		<if test="cpnKindCd != null">
+		CPN_KIND_CD = #{cpnKindCd},
+		</if>
+		<if test="cpnTypCd != null">
+		CPN_TYP_CD = #{cpnTypCd},
+		</if>
+		<if test="cpnNm != null">
+		CPN_NM = #{cpnNm},
+		</if>
+		<if test="alwaysYn != null">
+		ALWAYS_YN = #{alwaysYn},
+		</if>
+		<if test="firstComeYn != null">
+		FIRST_COME_YN = #{firstComeYn},
+		</if>
+		<if test="dupePymtYn != null">
+		DUPE_PYMT_YN = #{dupePymtYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CPN_ID = #{cpnId}
+	</update>
+
+	<delete id="deleteCouponInfo" parameterType="CouponInfoExDto">
+	/* couponInfoMapper.deleteCouponInfo */
+	DELETE FROM CW_COUPON_INFO
+	WHERE
+		CPN_ID = #{cpnId}
+	</delete>
+</mapper>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsFaqLang = new pageCls("dvFaqLangPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("faqId"))==false) params["faqId"] = getEVal("faqId");
+	if (isEmpty(getEVal("langCd"))==false) params["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("faqTitle"))==false) params["faqTitle"] = getEVal("faqTitle");
+	if (isEmpty(getEVal("faqCont"))==false) params["faqCont"] = getEVal("faqCont");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsFaqLang.getPageInfo(params);
+
+	var url = "/app/faqLang/getFaqLangPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["faqId","langCd","faqTitle","faqCont","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,5);
+	pageClsFaqLang.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsFaqLangDown(){
+	var url = "/app/faqLang/getFaqLangExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("faqId"))==false) paramXls["faqId"] = getEVal("faqId");
+	if (isEmpty(getEVal("langCd"))==false) paramXls["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("faqTitle"))==false) paramXls["faqTitle"] = getEVal("faqTitle");
+	if (isEmpty(getEVal("faqCont"))==false) paramXls["faqCont"] = getEVal("faqCont");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"FAQ_언어"
+		,"sheetName":"시트"
+		,"columnHeaders":["FAQ_ID","언어코드","제목","FAQ내용","사용여부"]
+		,"columnNames":["faqId","langCd","faqTitle","faqCont","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["faqId"] = arr[0].trim();
+		params["langCd"] = arr[1].trim();
+	}
+	FaqLangPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvFaqLangSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvFaqLangSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsFaqLang.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">FAQ_ID</th>
+							<th scope="col">언어코드</th>
+							<th scope="col">제목</th>
+							<th scope="col">FAQ내용</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{faqId}},{{langCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{faqId}}</td>
+						<td>{{langCd}}</td>
+						<td>{{faqTitle}}</td>
+						<td>{{faqCont}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvFaqLangPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/faqLang/faqLangPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+//	console.log("width...."+window.innerWidth);
+}
+function test1(){
+	var map={};
+	map["cdId"] = '[[${transData.cdId}]]';
+	map["cdNm"] = '[[${transData.cdNm}]]';
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+</script>
+<body>
+	<div>
+	popup test....
+	</div>
+	<input type="button" value="return test" onclick="test1();">
+</body>
+</html>

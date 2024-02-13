@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="termsMapper">
+	<sql id="where-terms">
+		WHERE 1=1
+			<if test="termsId != null and termsId != '' ">
+			AND T.TERMS_ID = #{termsId}
+			</if>
+			<if test="termsDivCd != null and termsDivCd != '' ">
+			AND T.TERMS_DIV_CD = #{termsDivCd}
+			</if>
+			<if test="termsFrYmd != null and termsFrYmd != '' ">
+			AND T.TERMS_FR_YMD = #{termsFrYmd}
+			</if>
+			<if test="termsToYmd != null and termsToYmd != '' ">
+			AND T.TERMS_TO_YMD = #{termsToYmd}
+			</if>
+			<if test="termsTgtCd != null and termsTgtCd != '' ">
+			AND T.TERMS_TGT_CD = #{termsTgtCd}
+			</if>
+	</sql>
+
+	<select id="getTermsListCount" parameterType="TermsExDto" resultType="Integer">
+	/* termsMapper.getTermsListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_TERMS T
+		<include refid="where-terms" />
+	</select>
+
+	<select id="getTermsList" parameterType="TermsExDto" resultType="TermsExDto">
+	/* termsMapper.getTermsList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			T.TERMS_ID
+			,T.TERMS_DIV_CD
+			,T.TERMS_FR_YMD
+			,T.TERMS_TO_YMD
+			,T.TERMS_TGT_CD
+			,T.REG_USER_ID
+			,REG_DTM
+			,T.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS T
+		<include refid="where-terms" />
+		ORDER BY
+			T.TERMS_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getTerms" parameterType="TermsExDto" resultType="TermsExDto">
+	/* termsMapper.getTerms */
+		SELECT
+			T.TERMS_ID
+			,T.TERMS_DIV_CD
+			,T.TERMS_FR_YMD
+			,T.TERMS_TO_YMD
+			,T.TERMS_TGT_CD
+			,T.REG_USER_ID
+			,REG_DTM
+			,T.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS T
+		WHERE
+			T.TERMS_ID = #{termsId}
+	</select>
+
+	<insert id="insertTerms" parameterType="TermsExDto">
+	/* termsMapper.insertTerms */
+		INSERT INTO CW_TERMS (
+			TERMS_ID
+			,TERMS_DIV_CD
+			,TERMS_FR_YMD
+			,TERMS_TO_YMD
+			,TERMS_TGT_CD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{termsId}
+			,#{termsDivCd}
+			,#{termsFrYmd}
+			,#{termsToYmd}
+			,#{termsTgtCd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateTerms" parameterType="TermsExDto">
+	/* termsMapper.updateTerms */
+		UPDATE CW_TERMS
+		<set>
+		<if test="termsDivCd != null">
+		TERMS_DIV_CD = #{termsDivCd},
+		</if>
+		<if test="termsFrYmd != null">
+		TERMS_FR_YMD = #{termsFrYmd},
+		</if>
+		<if test="termsToYmd != null">
+		TERMS_TO_YMD = #{termsToYmd},
+		</if>
+		<if test="termsTgtCd != null">
+		TERMS_TGT_CD = #{termsTgtCd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			TERMS_ID = #{termsId}
+	</update>
+
+	<delete id="deleteTerms" parameterType="TermsExDto">
+	/* termsMapper.deleteTerms */
+	DELETE FROM CW_TERMS
+	WHERE
+		TERMS_ID = #{termsId}
+	</delete>
+</mapper>

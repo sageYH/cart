@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordId"] = '[[${transData.ordId}]]';
+	if (isEmpty(map["ordId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ordId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/order/getOrder.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["ordProgCd","","자료(주문진행코드[OD01])를 확인하세요."]
+		["prodQty","","자료(상품수량)를 확인하세요."]
+		["prodTotAmt","","자료(상품총액)를 확인하세요."]
+		["optTotAmt","","자료(옵션총액)를 확인하세요."]
+		["delivTotAmt","","자료(배송비총액)를 확인하세요."]
+		["delivFreeAmt","","자료(배송비무료액)를 확인하세요."]
+		["delivChrgAmt","","자료(배송비부과액)를 확인하세요."]
+		["delivChrgWeight","","자료(배송부과무게)를 확인하세요."]
+		["delivChrgQty","","자료(배송부과수량)를 확인하세요."]
+		["ordTotAmt","","자료(주문총액)를 확인하세요."]
+		["pymtPoint","","자료(지급포인트)를 확인하세요."]
+		["usePoint","","자료(사용포인트)를 확인하세요."]
+		["cpnId","","자료(쿠폰ID)를 확인하세요."]
+		["cpnAmt","","자료(쿠폰금액)를 확인하세요."]
+		["pymtTotAmt","","자료(결제총액)를 확인하세요."]
+		["pymtMethCd","","자료(결제수단코드[OD02])를 확인하세요."]
+		["ordDtm","","자료(주문일시)를 확인하세요."]
+		["taxCd","","자료(과세코드[OD03])를 확인하세요."]
+		["finalDelivYmd","","자료(최종배송일)를 확인하세요."]
+		["ordDueYmd","","자료(주문마감일)를 확인하세요."]
+		["mbrCfmDtm","","자료(고객확정일시)를 확인하세요."]
+		["exchReqDtm","","자료(교환요청일시)를 확인하세요."]
+		["ordCancReqDtm","","자료(주문취소요청일시)를 확인하세요."]
+		["ordCancAmt","","자료(주문취소액)를 확인하세요."]
+		["finalPymtAmt","","자료(최종결제액)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/order/updateOrder.do";
+	if (mode=="NEW"){
+		url = "/app/order/insertOrder.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formOrderPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvOrderPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formOrderPop" name="formOrderPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문ID</th>
+						<td><input type="text" name="ordId" id="ordId" style="width:70%" readonly >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문진행코드[OD01]</th>
+						<td><input type="text" name="ordProgCd" id="ordProgCd" style="width:70%" >
+						</td>
+					<th scope="row">상품수량</th>
+					<td><input type="text" name="prodQty" id="prodQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품총액</th>
+						<td><input type="text" name="prodTotAmt" id="prodTotAmt" style="width:70%" >
+						</td>
+					<th scope="row">옵션총액</th>
+					<td><input type="text" name="optTotAmt" id="optTotAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송비총액</th>
+						<td><input type="text" name="delivTotAmt" id="delivTotAmt" style="width:70%" >
+						</td>
+					<th scope="row">배송비무료액</th>
+					<td><input type="text" name="delivFreeAmt" id="delivFreeAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송비부과액</th>
+						<td><input type="text" name="delivChrgAmt" id="delivChrgAmt" style="width:70%" >
+						</td>
+					<th scope="row">배송부과무게</th>
+					<td><input type="text" name="delivChrgWeight" id="delivChrgWeight" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송부과수량</th>
+						<td><input type="text" name="delivChrgQty" id="delivChrgQty" style="width:70%" >
+						</td>
+					<th scope="row">주문총액</th>
+					<td><input type="text" name="ordTotAmt" id="ordTotAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">지급포인트</th>
+						<td><input type="text" name="pymtPoint" id="pymtPoint" style="width:70%" >
+						</td>
+					<th scope="row">사용포인트</th>
+					<td><input type="text" name="usePoint" id="usePoint" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰ID</th>
+						<td><input type="text" name="cpnId" id="cpnId" style="width:70%" >
+						</td>
+					<th scope="row">쿠폰금액</th>
+					<td><input type="text" name="cpnAmt" id="cpnAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결제총액</th>
+						<td><input type="text" name="pymtTotAmt" id="pymtTotAmt" style="width:70%" >
+						</td>
+					<th scope="row">결제수단코드[OD02]</th>
+					<td><input type="text" name="pymtMethCd" id="pymtMethCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문일시</th>
+						<td><input type="text" name="ordDtm" id="ordDtm" style="width:70%" >
+						</td>
+					<th scope="row">과세코드[OD03]</th>
+					<td><input type="text" name="taxCd" id="taxCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">최종배송일</th>
+						<td><input type="text" name="finalDelivYmd" id="finalDelivYmd" style="width:70%" >
+						</td>
+					<th scope="row">주문마감일</th>
+					<td><input type="text" name="ordDueYmd" id="ordDueYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">고객확정일시</th>
+						<td><input type="text" name="mbrCfmDtm" id="mbrCfmDtm" style="width:70%" >
+						</td>
+					<th scope="row">교환요청일시</th>
+					<td><input type="text" name="exchReqDtm" id="exchReqDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문취소요청일시</th>
+						<td><input type="text" name="ordCancReqDtm" id="ordCancReqDtm" style="width:70%" >
+						</td>
+					<th scope="row">주문취소액</th>
+					<td><input type="text" name="ordCancAmt" id="ordCancAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">최종결제액</th>
+						<td><input type="text" name="finalPymtAmt" id="finalPymtAmt" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

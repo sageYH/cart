@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodId"] = '[[${transData.prodId}]]';
+    map["langCd"] = '[[${transData.langCd}]]';
+	if (isEmpty(map["prodId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/productsLang/getProductsLang.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvProductsLangPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="prodId" id="prodId">
+				<input type="hidden" name="langCd" id="langCd">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">상품명</th>
+							<td><span name="prodNm" id="prodNm"></span></td>
+							<th scope="row">상품스킨</th>
+							<td><span name="prodSkin" id="prodSkin"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품모바일스킨</th>
+							<td><span name="prodMobiSkin" id="prodMobiSkin"></span></td>
+							<th scope="row">상품제조사</th>
+							<td><span name="prodMfr" id="prodMfr"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품원산지</th>
+							<td><span name="prodOrigin" id="prodOrigin"></span></td>
+							<th scope="row">상품브랜드</th>
+							<td><span name="prodBrand" id="prodBrand"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품모델</th>
+							<td><span name="prodModel" id="prodModel"></span></td>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

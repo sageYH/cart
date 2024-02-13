@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cartOptionMapper">
+	<sql id="where-cartOption">
+		WHERE 1=1
+			<if test="cartId != null and cartId != '' ">
+			AND CO.CART_ID = #{cartId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND CO.PROD_ID = #{prodId}
+			</if>
+			<if test="optId != null and optId != '' ">
+			AND CO.OPT_ID = #{optId}
+			</if>
+			<if test="optDtlCont != null and optDtlCont != '' ">
+			AND CO.OPT_DTL_CONT = #{optDtlCont}
+			</if>
+			<if test="optQty != null and optQty != '' ">
+			AND CO.OPT_QTY = #{optQty}
+			</if>
+			<if test="optAmt != null and optAmt != '' ">
+			AND CO.OPT_AMT = #{optAmt}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CO.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCartOptionListCount" parameterType="CartOptionExDto" resultType="Integer">
+	/* cartOptionMapper.getCartOptionListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CART_OPTION CO
+		<include refid="where-cartOption" />
+	</select>
+
+	<select id="getCartOptionList" parameterType="CartOptionExDto" resultType="CartOptionExDto">
+	/* cartOptionMapper.getCartOptionList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CO.CART_ID
+			,CO.PROD_ID
+			,CO.OPT_ID
+			,CO.OPT_DTL_CONT
+			,CO.OPT_QTY
+			,CO.OPT_AMT
+			,CO.USE_YN
+			,CO.REG_USER_ID
+			,REG_DTM
+			,CO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART_OPTION CO
+		<include refid="where-cartOption" />
+		ORDER BY
+			CO.CART_ID
+			,CO.PROD_ID
+			,CO.OPT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCartOption" parameterType="CartOptionExDto" resultType="CartOptionExDto">
+	/* cartOptionMapper.getCartOption */
+		SELECT
+			CO.CART_ID
+			,CO.PROD_ID
+			,CO.OPT_ID
+			,CO.OPT_DTL_CONT
+			,CO.OPT_QTY
+			,CO.OPT_AMT
+			,CO.USE_YN
+			,CO.REG_USER_ID
+			,REG_DTM
+			,CO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART_OPTION CO
+		WHERE
+			CO.CART_ID = #{cartId}
+			AND CO.PROD_ID = #{prodId}
+			AND CO.OPT_ID = #{optId}
+	</select>
+
+	<insert id="insertCartOption" parameterType="CartOptionExDto">
+	/* cartOptionMapper.insertCartOption */
+		INSERT INTO CW_CART_OPTION (
+			CART_ID
+			,PROD_ID
+			,OPT_ID
+			,OPT_DTL_CONT
+			,OPT_QTY
+			,OPT_AMT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cartId}
+			,#{prodId}
+			,#{optId}
+			,#{optDtlCont}
+			,#{optQty}
+			,#{optAmt}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCartOption" parameterType="CartOptionExDto">
+	/* cartOptionMapper.updateCartOption */
+		UPDATE CW_CART_OPTION
+		<set>
+		<if test="optDtlCont != null">
+		OPT_DTL_CONT = #{optDtlCont},
+		</if>
+		<if test="optQty != null">
+		OPT_QTY = #{optQty},
+		</if>
+		<if test="optAmt != null">
+		OPT_AMT = #{optAmt},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CART_ID = #{cartId}
+			AND PROD_ID = #{prodId}
+			AND OPT_ID = #{optId}
+	</update>
+
+	<delete id="deleteCartOption" parameterType="CartOptionExDto">
+	/* cartOptionMapper.deleteCartOption */
+	DELETE FROM CW_CART_OPTION
+	WHERE
+		CART_ID = #{cartId}
+		AND PROD_ID = #{prodId}
+		AND OPT_ID = #{optId}
+	</delete>
+</mapper>

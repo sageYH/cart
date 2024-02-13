@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrId"] = '[[${transData.mbrId}]]';
+    map["cardNo"] = '[[${transData.cardNo}]]';
+	if (isEmpty(map["mbrId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("mbrId").setAttribute('readonly', true);
+		getEleByObj("cardNo").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/mbrPymtMeth/getMbrPymtMeth.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["cardNo","","자료(카드번호)를 확인하세요."]
+		["cwPymtAgcyCompCd","","자료(결제대행사코드)를 확인하세요."]
+		["billKey","","자료(정산키)를 확인하세요."]
+		["mnPymtCardYn","","자료(주결제카드여부)를 확인하세요."]
+		["bin","","자료(카드식별번호)를 확인하세요."]
+		["cardRegDtm","","자료(카드등록일시)를 확인하세요."]
+		["cardValdYm","","자료(카드유효년월)를 확인하세요."]
+		["issueCompKindCd","","자료(발급사종류코드)를 확인하세요."]
+		["cardBrandCd","","자료(카드브랜드코드)를 확인하세요."]
+		["cardTypCd","","자료(카드유형코드)를 확인하세요."]
+		["cardStopDtm","","자료(카드중지일시)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/mbrPymtMeth/updateMbrPymtMeth.do";
+	if (mode=="NEW"){
+		url = "/app/mbrPymtMeth/insertMbrPymtMeth.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formMbrPymtMethPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvMbrPymtMethPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formMbrPymtMethPop" name="formMbrPymtMethPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">멤버ID</th>
+						<td><input type="text" name="mbrId" id="mbrId" style="width:70%" readonly >
+						</td>
+					<th scope="row">카드번호</th>
+					<td><input type="text" name="cardNo" id="cardNo" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결제대행사코드</th>
+						<td><input type="text" name="cwPymtAgcyCompCd" id="cwPymtAgcyCompCd" style="width:70%" >
+						</td>
+					<th scope="row">정산키</th>
+					<td><input type="text" name="billKey" id="billKey" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주결제카드여부</th>
+						<td><input type="text" name="mnPymtCardYn" id="mnPymtCardYn" style="width:70%" >
+						</td>
+					<th scope="row">카드식별번호</th>
+					<td><input type="text" name="bin" id="bin" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드등록일시</th>
+						<td><input type="text" name="cardRegDtm" id="cardRegDtm" style="width:70%" >
+						</td>
+					<th scope="row">카드유효년월</th>
+					<td><input type="text" name="cardValdYm" id="cardValdYm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">발급사종류코드</th>
+						<td><input type="text" name="issueCompKindCd" id="issueCompKindCd" style="width:70%" >
+						</td>
+					<th scope="row">카드브랜드코드</th>
+					<td><input type="text" name="cardBrandCd" id="cardBrandCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드유형코드</th>
+						<td><input type="text" name="cardTypCd" id="cardTypCd" style="width:70%" >
+						</td>
+					<th scope="row">카드중지일시</th>
+					<td><input type="text" name="cardStopDtm" id="cardStopDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

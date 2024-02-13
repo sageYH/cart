@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsNotice = new pageCls("dvNoticePageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("noticeId"))==false) params["noticeId"] = getEVal("noticeId");
+	if (isEmpty(getEVal("noticeTypCd"))==false) params["noticeTypCd"] = getEVal("noticeTypCd");
+	if (isEmpty(getEVal("noticeTitle"))==false) params["noticeTitle"] = getEVal("noticeTitle");
+	if (isEmpty(getEVal("noticeCont"))==false) params["noticeCont"] = getEVal("noticeCont");
+	if (isEmpty(getEVal("noticeViews"))==false) params["noticeViews"] = getEVal("noticeViews");
+	if (isEmpty(getEVal("prntNoticeId"))==false) params["prntNoticeId"] = getEVal("prntNoticeId");
+	if (isEmpty(getEVal("grpNoticeId"))==false) params["grpNoticeId"] = getEVal("grpNoticeId");
+	if (isEmpty(getEVal("noticeFrYmd"))==false) params["noticeFrYmd"] = getEVal("noticeFrYmd");
+	if (isEmpty(getEVal("noticeToYmd"))==false) params["noticeToYmd"] = getEVal("noticeToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsNotice.getPageInfo(params);
+
+	var url = "/app/notice/getNoticePageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["noticeId","noticeTypCd","noticeTitle","noticeCont","noticeViews","prntNoticeId","grpNoticeId","noticeFrYmd","noticeToYmd","fileRefId","popupYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,12);
+	pageClsNotice.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsNoticeDown(){
+	var url = "/app/notice/getNoticeExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("noticeId"))==false) paramXls["noticeId"] = getEVal("noticeId");
+	if (isEmpty(getEVal("noticeTypCd"))==false) paramXls["noticeTypCd"] = getEVal("noticeTypCd");
+	if (isEmpty(getEVal("noticeTitle"))==false) paramXls["noticeTitle"] = getEVal("noticeTitle");
+	if (isEmpty(getEVal("noticeCont"))==false) paramXls["noticeCont"] = getEVal("noticeCont");
+	if (isEmpty(getEVal("noticeViews"))==false) paramXls["noticeViews"] = getEVal("noticeViews");
+	if (isEmpty(getEVal("prntNoticeId"))==false) paramXls["prntNoticeId"] = getEVal("prntNoticeId");
+	if (isEmpty(getEVal("grpNoticeId"))==false) paramXls["grpNoticeId"] = getEVal("grpNoticeId");
+	if (isEmpty(getEVal("noticeFrYmd"))==false) paramXls["noticeFrYmd"] = getEVal("noticeFrYmd");
+	if (isEmpty(getEVal("noticeToYmd"))==false) paramXls["noticeToYmd"] = getEVal("noticeToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) paramXls["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) paramXls["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"공지사항"
+		,"sheetName":"시트"
+		,"columnHeaders":["공지ID","공지유형코드","공지제목","공지내용","공지조회수","상위공지ID","그룹공지ID","공지시작일","공지종료일","파일참조ID","팝업여부","사용여부"]
+		,"columnNames":["noticeId","noticeTypCd","noticeTitle","noticeCont","noticeViews","prntNoticeId","grpNoticeId","noticeFrYmd","noticeToYmd","fileRefId","popupYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["noticeId"] = arr[0].trim();
+	}
+	NoticePop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvNoticeSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvNoticeSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsNotice.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">공지ID</th>
+							<th scope="col">공지유형코드</th>
+							<th scope="col">공지제목</th>
+							<th scope="col">공지내용</th>
+							<th scope="col">공지조회수</th>
+							<th scope="col">상위공지ID</th>
+							<th scope="col">그룹공지ID</th>
+							<th scope="col">공지시작일</th>
+							<th scope="col">공지종료일</th>
+							<th scope="col">파일참조ID</th>
+							<th scope="col">팝업여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{noticeId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{noticeId}}</td>
+						<td>{{noticeTypCd}}</td>
+						<td>{{noticeTitle}}</td>
+						<td>{{noticeCont}}</td>
+						<td>{{noticeViews}}</td>
+						<td>{{prntNoticeId}}</td>
+						<td>{{grpNoticeId}}</td>
+						<td>{{noticeFrYmd}}</td>
+						<td>{{noticeToYmd}}</td>
+						<td>{{fileRefId}}</td>
+						<td>{{popupYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvNoticePageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/notice/noticePop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

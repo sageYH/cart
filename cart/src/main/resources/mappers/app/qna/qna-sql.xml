@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qnaMapper">
+	<sql id="where-qna">
+		WHERE 1=1
+			<if test="qnaId != null and qnaId != '' ">
+			AND Q.QNA_ID = #{qnaId}
+			</if>
+			<if test="qnaTypCd != null and qnaTypCd != '' ">
+			AND Q.QNA_TYP_CD = #{qnaTypCd}
+			</if>
+			<if test="qnaTitle != null and qnaTitle != '' ">
+			AND Q.QNA_TITLE = #{qnaTitle}
+			</if>
+			<if test="qnaCont != null and qnaCont != '' ">
+			AND Q.QNA_CONT = #{qnaCont}
+			</if>
+			<if test="qnaViews != null and qnaViews != '' ">
+			AND Q.QNA_VIEWS = #{qnaViews}
+			</if>
+			<if test="prntQnaId != null and prntQnaId != '' ">
+			AND Q.PRNT_QNA_ID = #{prntQnaId}
+			</if>
+			<if test="grpQnaId != null and grpQnaId != '' ">
+			AND Q.GRP_QNA_ID = #{grpQnaId}
+			</if>
+			<if test="qnaFrYmd != null and qnaFrYmd != '' ">
+			AND Q.QNA_FR_YMD = #{qnaFrYmd}
+			</if>
+			<if test="qnaToYmd != null and qnaToYmd != '' ">
+			AND Q.QNA_TO_YMD = #{qnaToYmd}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND Q.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="popupYn != null and popupYn != '' ">
+			AND Q.POPUP_YN = #{popupYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND Q.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getQnaListCount" parameterType="QnaExDto" resultType="Integer">
+	/* qnaMapper.getQnaListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_QNA Q
+		<include refid="where-qna" />
+	</select>
+
+	<select id="getQnaList" parameterType="QnaExDto" resultType="QnaExDto">
+	/* qnaMapper.getQnaList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			Q.QNA_ID
+			,Q.QNA_TYP_CD
+			,Q.QNA_TITLE
+			,Q.QNA_CONT
+			,Q.QNA_VIEWS
+			,Q.PRNT_QNA_ID
+			,Q.GRP_QNA_ID
+			,Q.QNA_FR_YMD
+			,Q.QNA_TO_YMD
+			,Q.FILE_REF_ID
+			,Q.POPUP_YN
+			,Q.USE_YN
+			,Q.REG_USER_ID
+			,REG_DTM
+			,Q.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_QNA Q
+		<include refid="where-qna" />
+		ORDER BY
+			Q.QNA_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getQna" parameterType="QnaExDto" resultType="QnaExDto">
+	/* qnaMapper.getQna */
+		SELECT
+			Q.QNA_ID
+			,Q.QNA_TYP_CD
+			,Q.QNA_TITLE
+			,Q.QNA_CONT
+			,Q.QNA_VIEWS
+			,Q.PRNT_QNA_ID
+			,Q.GRP_QNA_ID
+			,Q.QNA_FR_YMD
+			,Q.QNA_TO_YMD
+			,Q.FILE_REF_ID
+			,Q.POPUP_YN
+			,Q.USE_YN
+			,Q.REG_USER_ID
+			,REG_DTM
+			,Q.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_QNA Q
+		WHERE
+			Q.QNA_ID = #{qnaId}
+	</select>
+
+	<insert id="insertQna" parameterType="QnaExDto">
+	/* qnaMapper.insertQna */
+		INSERT INTO CW_QNA (
+			QNA_ID
+			,QNA_TYP_CD
+			,QNA_TITLE
+			,QNA_CONT
+			,QNA_VIEWS
+			,PRNT_QNA_ID
+			,GRP_QNA_ID
+			,QNA_FR_YMD
+			,QNA_TO_YMD
+			,FILE_REF_ID
+			,POPUP_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{qnaId}
+			,#{qnaTypCd}
+			,#{qnaTitle}
+			,#{qnaCont}
+			,#{qnaViews}
+			,#{prntQnaId}
+			,#{grpQnaId}
+			,#{qnaFrYmd}
+			,#{qnaToYmd}
+			,#{fileRefId}
+			,#{popupYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateQna" parameterType="QnaExDto">
+	/* qnaMapper.updateQna */
+		UPDATE CW_QNA
+		<set>
+		<if test="qnaTypCd != null">
+		QNA_TYP_CD = #{qnaTypCd},
+		</if>
+		<if test="qnaTitle != null">
+		QNA_TITLE = #{qnaTitle},
+		</if>
+		<if test="qnaCont != null">
+		QNA_CONT = #{qnaCont},
+		</if>
+		<if test="qnaViews != null">
+		QNA_VIEWS = #{qnaViews},
+		</if>
+		<if test="prntQnaId != null">
+		PRNT_QNA_ID = #{prntQnaId},
+		</if>
+		<if test="grpQnaId != null">
+		GRP_QNA_ID = #{grpQnaId},
+		</if>
+		<if test="qnaFrYmd != null">
+		QNA_FR_YMD = #{qnaFrYmd},
+		</if>
+		<if test="qnaToYmd != null">
+		QNA_TO_YMD = #{qnaToYmd},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="popupYn != null">
+		POPUP_YN = #{popupYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			QNA_ID = #{qnaId}
+	</update>
+
+	<delete id="deleteQna" parameterType="QnaExDto">
+	/* qnaMapper.deleteQna */
+	DELETE FROM CW_QNA
+	WHERE
+		QNA_ID = #{qnaId}
+	</delete>
+</mapper>

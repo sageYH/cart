@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/termsDetsLang/termsDetsLangGrid.js"></script>
+<script>
+var gridTermsDetsLang = null;
+window.onload = function() {
+	gridTermsDetsLang = setGridTermsDetsLang("dvGridTermsDetsLangSearch");
+	gridTermsDetsLang.setBodyHeight(300);
+	fixedColGrid(gridTermsDetsLang);
+
+	gridTermsDetsLang.on("click",function(ev){
+		toggleGrid(gridTermsDetsLang,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridTermsDetsLang.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridTermsDetsLang)==false){
+			dblClickGridTermsDetsLang();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridTermsDetsLang(){
+	getResultData();
+}
+
+//page
+var pageClsTermsDetsLang = new pageCls("dvTermsDetsLangPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridTermsDetsLang);
+
+	var params = {};
+	if (isEmpty(getEVal("termsId"))==false) params["termsId"] = getEVal("termsId");
+	if (isEmpty(getEVal("termsDtlId"))==false) params["termsDtlId"] = getEVal("termsDtlId");
+	if (isEmpty(getEVal("langCd"))==false) params["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("termsDtlNm"))==false) params["termsDtlNm"] = getEVal("termsDtlNm");
+	if (isEmpty(getEVal("termsDtlCont"))==false) params["termsDtlCont"] = getEVal("termsDtlCont");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsTermsDetsLang.getPageInfo(params);
+
+	var url = "/app/termsDetsLang/getTermsDetsLangPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridTermsDetsLang,result.payloads);
+		//set total
+		pageClsTermsDetsLang.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridTermsDetsLang);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvTermsDetsLangSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridTermsDetsLangSearch" class="addr-list" ></div>
+					<div id="dvTermsDetsLangPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

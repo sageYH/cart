@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrLoginHistMapper">
+	<sql id="where-mbrLoginHist">
+		WHERE 1=1
+			<if test="mbrLoginSeqNo != null and mbrLoginSeqNo != '' ">
+			AND MLH.MBR_LOGIN_SEQ_NO = #{mbrLoginSeqNo}
+			</if>
+			<if test="accYmd != null and accYmd != '' ">
+			AND MLH.ACC_YMD = #{accYmd}
+			</if>
+			<if test="accHms != null and accHms != '' ">
+			AND MLH.ACC_HMS = #{accHms}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND MLH.MBR_ID = #{mbrId}
+			</if>
+			<if test="accDevCd != null and accDevCd != '' ">
+			AND MLH.ACC_DEV_CD = #{accDevCd}
+			</if>
+			<if test="accChanCd != null and accChanCd != '' ">
+			AND MLH.ACC_CHAN_CD = #{accChanCd}
+			</if>
+	</sql>
+
+	<select id="getMbrLoginHistListCount" parameterType="MbrLoginHistExDto" resultType="Integer">
+	/* mbrLoginHistMapper.getMbrLoginHistListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_LOGIN_HIST MLH
+		<include refid="where-mbrLoginHist" />
+	</select>
+
+	<select id="getMbrLoginHistList" parameterType="MbrLoginHistExDto" resultType="MbrLoginHistExDto">
+	/* mbrLoginHistMapper.getMbrLoginHistList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MLH.MBR_LOGIN_SEQ_NO
+			,MLH.ACC_YMD
+			,MLH.ACC_HMS
+			,MLH.MBR_ID
+			,MLH.ACC_DEV_CD
+			,MLH.ACC_CHAN_CD
+			,REG_DTM
+		FROM CW_MBR_LOGIN_HIST MLH
+		<include refid="where-mbrLoginHist" />
+		ORDER BY
+			MLH.MBR_LOGIN_SEQ_NO
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrLoginHist" parameterType="MbrLoginHistExDto" resultType="MbrLoginHistExDto">
+	/* mbrLoginHistMapper.getMbrLoginHist */
+		SELECT
+			MLH.MBR_LOGIN_SEQ_NO
+			,MLH.ACC_YMD
+			,MLH.ACC_HMS
+			,MLH.MBR_ID
+			,MLH.ACC_DEV_CD
+			,MLH.ACC_CHAN_CD
+			,REG_DTM
+		FROM CW_MBR_LOGIN_HIST MLH
+		WHERE
+			MLH.MBR_LOGIN_SEQ_NO = #{mbrLoginSeqNo}
+	</select>
+
+	<insert id="insertMbrLoginHist" parameterType="MbrLoginHistExDto">
+	/* mbrLoginHistMapper.insertMbrLoginHist */
+		INSERT INTO CW_MBR_LOGIN_HIST (
+			MBR_LOGIN_SEQ_NO
+			,ACC_YMD
+			,ACC_HMS
+			,MBR_ID
+			,ACC_DEV_CD
+			,ACC_CHAN_CD
+			,REG_DTM
+		) VALUES (
+			#{mbrLoginSeqNo}
+			,#{accYmd}
+			,#{accHms}
+			,#{mbrId}
+			,#{accDevCd}
+			,#{accChanCd}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrLoginHist" parameterType="MbrLoginHistExDto">
+	/* mbrLoginHistMapper.updateMbrLoginHist */
+		UPDATE CW_MBR_LOGIN_HIST
+		<set>
+		<if test="accYmd != null">
+		ACC_YMD = #{accYmd},
+		</if>
+		<if test="accHms != null">
+		ACC_HMS = #{accHms},
+		</if>
+		<if test="mbrId != null">
+		MBR_ID = #{mbrId},
+		</if>
+		<if test="accDevCd != null">
+		ACC_DEV_CD = #{accDevCd},
+		</if>
+		<if test="accChanCd != null">
+		ACC_CHAN_CD = #{accChanCd},
+		</if>
+		</set>
+		WHERE
+			MBR_LOGIN_SEQ_NO = #{mbrLoginSeqNo}
+	</update>
+
+	<delete id="deleteMbrLoginHist" parameterType="MbrLoginHistExDto">
+	/* mbrLoginHistMapper.deleteMbrLoginHist */
+	DELETE FROM CW_MBR_LOGIN_HIST
+	WHERE
+		MBR_LOGIN_SEQ_NO = #{mbrLoginSeqNo}
+	</delete>
+</mapper>

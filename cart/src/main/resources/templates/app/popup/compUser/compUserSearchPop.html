@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/compUser/compUserGrid.js"></script>
+<script>
+var gridCompUser = null;
+window.onload = function() {
+	gridCompUser = setGridCompUser("dvGridCompUserSearch");
+	gridCompUser.setBodyHeight(300);
+	fixedColGrid(gridCompUser);
+
+	gridCompUser.on("click",function(ev){
+		toggleGrid(gridCompUser,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCompUser.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCompUser)==false){
+			dblClickGridCompUser();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCompUser(){
+	getResultData();
+}
+
+//page
+var pageClsCompUser = new pageCls("dvCompUserPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCompUser);
+
+	var params = {};
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("userId"))==false) params["userId"] = getEVal("userId");
+	//page set
+	params = pageClsCompUser.getPageInfo(params);
+
+	var url = "/app/compUser/getCompUserPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCompUser,result.payloads);
+		//set total
+		pageClsCompUser.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCompUser);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCompUserSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCompUserSearch" class="addr-list" ></div>
+					<div id="dvCompUserPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

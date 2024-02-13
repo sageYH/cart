@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/prodIncOg/prodIncOgGrid.js"></script>
+<script>
+var gridProdIncOg = null;
+window.onload = function() {
+	gridProdIncOg = setGridProdIncOg("dvGridProdIncOgSearch");
+	gridProdIncOg.setBodyHeight(300);
+	fixedColGrid(gridProdIncOg);
+
+	gridProdIncOg.on("click",function(ev){
+		toggleGrid(gridProdIncOg,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridProdIncOg.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridProdIncOg)==false){
+			dblClickGridProdIncOg();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridProdIncOg(){
+	getResultData();
+}
+
+//page
+var pageClsProdIncOg = new pageCls("dvProdIncOgPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridProdIncOg);
+
+	var params = {};
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodIncOgDtm"))==false) params["prodIncOgDtm"] = getEVal("prodIncOgDtm");
+	if (isEmpty(getEVal("incOgDivCd"))==false) params["incOgDivCd"] = getEVal("incOgDivCd");
+	if (isEmpty(getEVal("prodIncQty"))==false) params["prodIncQty"] = getEVal("prodIncQty");
+	if (isEmpty(getEVal("prodOgQty"))==false) params["prodOgQty"] = getEVal("prodOgQty");
+	//page set
+	params = pageClsProdIncOg.getPageInfo(params);
+
+	var url = "/app/prodIncOg/getProdIncOgPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridProdIncOg,result.payloads);
+		//set total
+		pageClsProdIncOg.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridProdIncOg);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvProdIncOgSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridProdIncOgSearch" class="addr-list" ></div>
+					<div id="dvProdIncOgPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

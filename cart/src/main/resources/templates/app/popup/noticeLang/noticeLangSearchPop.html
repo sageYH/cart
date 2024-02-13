@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/noticeLang/noticeLangGrid.js"></script>
+<script>
+var gridNoticeLang = null;
+window.onload = function() {
+	gridNoticeLang = setGridNoticeLang("dvGridNoticeLangSearch");
+	gridNoticeLang.setBodyHeight(300);
+	fixedColGrid(gridNoticeLang);
+
+	gridNoticeLang.on("click",function(ev){
+		toggleGrid(gridNoticeLang,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridNoticeLang.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridNoticeLang)==false){
+			dblClickGridNoticeLang();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridNoticeLang(){
+	getResultData();
+}
+
+//page
+var pageClsNoticeLang = new pageCls("dvNoticeLangPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridNoticeLang);
+
+	var params = {};
+	if (isEmpty(getEVal("noticeId"))==false) params["noticeId"] = getEVal("noticeId");
+	if (isEmpty(getEVal("langCd"))==false) params["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("noticeTitle"))==false) params["noticeTitle"] = getEVal("noticeTitle");
+	if (isEmpty(getEVal("noticeCont"))==false) params["noticeCont"] = getEVal("noticeCont");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsNoticeLang.getPageInfo(params);
+
+	var url = "/app/noticeLang/getNoticeLangPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridNoticeLang,result.payloads);
+		//set total
+		pageClsNoticeLang.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridNoticeLang);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvNoticeLangSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridNoticeLangSearch" class="addr-list" ></div>
+					<div id="dvNoticeLangPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

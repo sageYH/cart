@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsOrder = new pageCls("dvOrderPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("ordProgCd"))==false) params["ordProgCd"] = getEVal("ordProgCd");
+	if (isEmpty(getEVal("prodQty"))==false) params["prodQty"] = getEVal("prodQty");
+	if (isEmpty(getEVal("prodTotAmt"))==false) params["prodTotAmt"] = getEVal("prodTotAmt");
+	if (isEmpty(getEVal("optTotAmt"))==false) params["optTotAmt"] = getEVal("optTotAmt");
+	if (isEmpty(getEVal("delivTotAmt"))==false) params["delivTotAmt"] = getEVal("delivTotAmt");
+	if (isEmpty(getEVal("delivFreeAmt"))==false) params["delivFreeAmt"] = getEVal("delivFreeAmt");
+	if (isEmpty(getEVal("delivChrgAmt"))==false) params["delivChrgAmt"] = getEVal("delivChrgAmt");
+	if (isEmpty(getEVal("delivChrgWeight"))==false) params["delivChrgWeight"] = getEVal("delivChrgWeight");
+	if (isEmpty(getEVal("delivChrgQty"))==false) params["delivChrgQty"] = getEVal("delivChrgQty");
+	if (isEmpty(getEVal("ordTotAmt"))==false) params["ordTotAmt"] = getEVal("ordTotAmt");
+	if (isEmpty(getEVal("pymtPoint"))==false) params["pymtPoint"] = getEVal("pymtPoint");
+	if (isEmpty(getEVal("usePoint"))==false) params["usePoint"] = getEVal("usePoint");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnAmt"))==false) params["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("pymtTotAmt"))==false) params["pymtTotAmt"] = getEVal("pymtTotAmt");
+	if (isEmpty(getEVal("pymtMethCd"))==false) params["pymtMethCd"] = getEVal("pymtMethCd");
+	if (isEmpty(getEVal("ordDtm"))==false) params["ordDtm"] = getEVal("ordDtm");
+	if (isEmpty(getEVal("taxCd"))==false) params["taxCd"] = getEVal("taxCd");
+	if (isEmpty(getEVal("finalDelivYmd"))==false) params["finalDelivYmd"] = getEVal("finalDelivYmd");
+	if (isEmpty(getEVal("ordDueYmd"))==false) params["ordDueYmd"] = getEVal("ordDueYmd");
+	if (isEmpty(getEVal("mbrCfmDtm"))==false) params["mbrCfmDtm"] = getEVal("mbrCfmDtm");
+	if (isEmpty(getEVal("exchReqDtm"))==false) params["exchReqDtm"] = getEVal("exchReqDtm");
+	if (isEmpty(getEVal("ordCancReqDtm"))==false) params["ordCancReqDtm"] = getEVal("ordCancReqDtm");
+	if (isEmpty(getEVal("ordCancAmt"))==false) params["ordCancAmt"] = getEVal("ordCancAmt");
+	if (isEmpty(getEVal("finalPymtAmt"))==false) params["finalPymtAmt"] = getEVal("finalPymtAmt");
+	//page set
+	params = pageClsOrder.getPageInfo(params);
+
+	var url = "/app/order/getOrderPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["ordId","mbrId","ordProgCd","prodQty","prodTotAmt","optTotAmt","delivTotAmt","delivFreeAmt","delivChrgAmt","delivChrgWeight","delivChrgQty","ordTotAmt","pymtPoint","usePoint","cpnId","cpnAmt","pymtTotAmt","pymtMethCd","ordDtm","taxCd","finalDelivYmd","ordDueYmd","mbrCfmDtm","exchReqDtm","ordCancReqDtm","ordCancAmt","finalPymtAmt"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,27);
+	pageClsOrder.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsOrderDown(){
+	var url = "/app/order/getOrderExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("ordProgCd"))==false) paramXls["ordProgCd"] = getEVal("ordProgCd");
+	if (isEmpty(getEVal("prodQty"))==false) paramXls["prodQty"] = getEVal("prodQty");
+	if (isEmpty(getEVal("prodTotAmt"))==false) paramXls["prodTotAmt"] = getEVal("prodTotAmt");
+	if (isEmpty(getEVal("optTotAmt"))==false) paramXls["optTotAmt"] = getEVal("optTotAmt");
+	if (isEmpty(getEVal("delivTotAmt"))==false) paramXls["delivTotAmt"] = getEVal("delivTotAmt");
+	if (isEmpty(getEVal("delivFreeAmt"))==false) paramXls["delivFreeAmt"] = getEVal("delivFreeAmt");
+	if (isEmpty(getEVal("delivChrgAmt"))==false) paramXls["delivChrgAmt"] = getEVal("delivChrgAmt");
+	if (isEmpty(getEVal("delivChrgWeight"))==false) paramXls["delivChrgWeight"] = getEVal("delivChrgWeight");
+	if (isEmpty(getEVal("delivChrgQty"))==false) paramXls["delivChrgQty"] = getEVal("delivChrgQty");
+	if (isEmpty(getEVal("ordTotAmt"))==false) paramXls["ordTotAmt"] = getEVal("ordTotAmt");
+	if (isEmpty(getEVal("pymtPoint"))==false) paramXls["pymtPoint"] = getEVal("pymtPoint");
+	if (isEmpty(getEVal("usePoint"))==false) paramXls["usePoint"] = getEVal("usePoint");
+	if (isEmpty(getEVal("cpnId"))==false) paramXls["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnAmt"))==false) paramXls["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("pymtTotAmt"))==false) paramXls["pymtTotAmt"] = getEVal("pymtTotAmt");
+	if (isEmpty(getEVal("pymtMethCd"))==false) paramXls["pymtMethCd"] = getEVal("pymtMethCd");
+	if (isEmpty(getEVal("ordDtm"))==false) paramXls["ordDtm"] = getEVal("ordDtm");
+	if (isEmpty(getEVal("taxCd"))==false) paramXls["taxCd"] = getEVal("taxCd");
+	if (isEmpty(getEVal("finalDelivYmd"))==false) paramXls["finalDelivYmd"] = getEVal("finalDelivYmd");
+	if (isEmpty(getEVal("ordDueYmd"))==false) paramXls["ordDueYmd"] = getEVal("ordDueYmd");
+	if (isEmpty(getEVal("mbrCfmDtm"))==false) paramXls["mbrCfmDtm"] = getEVal("mbrCfmDtm");
+	if (isEmpty(getEVal("exchReqDtm"))==false) paramXls["exchReqDtm"] = getEVal("exchReqDtm");
+	if (isEmpty(getEVal("ordCancReqDtm"))==false) paramXls["ordCancReqDtm"] = getEVal("ordCancReqDtm");
+	if (isEmpty(getEVal("ordCancAmt"))==false) paramXls["ordCancAmt"] = getEVal("ordCancAmt");
+	if (isEmpty(getEVal("finalPymtAmt"))==false) paramXls["finalPymtAmt"] = getEVal("finalPymtAmt");
+
+	var params = {"xlsName":"주문"
+		,"sheetName":"시트"
+		,"columnHeaders":["주문ID","멤버ID","주문진행코드[OD01]","상품수량","상품총액","옵션총액","배송비총액","배송비무료액","배송비부과액","배송부과무게","배송부과수량","주문총액","지급포인트","사용포인트","쿠폰ID","쿠폰금액","결제총액","결제수단코드[OD02]","주문일시","과세코드[OD03]","최종배송일","주문마감일","고객확정일시","교환요청일시","주문취소요청일시","주문취소액","최종결제액"]
+		,"columnNames":["ordId","mbrId","ordProgCd","prodQty","prodTotAmt","optTotAmt","delivTotAmt","delivFreeAmt","delivChrgAmt","delivChrgWeight","delivChrgQty","ordTotAmt","pymtPoint","usePoint","cpnId","cpnAmt","pymtTotAmt","pymtMethCd","ordDtm","taxCd","finalDelivYmd","ordDueYmd","mbrCfmDtm","exchReqDtm","ordCancReqDtm","ordCancAmt","finalPymtAmt"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["ordId"] = arr[0].trim();
+	}
+	OrderPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvOrderSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvOrderSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsOrder.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">주문ID</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">주문진행코드[OD01]</th>
+							<th scope="col">상품수량</th>
+							<th scope="col">상품총액</th>
+							<th scope="col">옵션총액</th>
+							<th scope="col">배송비총액</th>
+							<th scope="col">배송비무료액</th>
+							<th scope="col">배송비부과액</th>
+							<th scope="col">배송부과무게</th>
+							<th scope="col">배송부과수량</th>
+							<th scope="col">주문총액</th>
+							<th scope="col">지급포인트</th>
+							<th scope="col">사용포인트</th>
+							<th scope="col">쿠폰ID</th>
+							<th scope="col">쿠폰금액</th>
+							<th scope="col">결제총액</th>
+							<th scope="col">결제수단코드[OD02]</th>
+							<th scope="col">주문일시</th>
+							<th scope="col">과세코드[OD03]</th>
+							<th scope="col">최종배송일</th>
+							<th scope="col">주문마감일</th>
+							<th scope="col">고객확정일시</th>
+							<th scope="col">교환요청일시</th>
+							<th scope="col">주문취소요청일시</th>
+							<th scope="col">주문취소액</th>
+							<th scope="col">최종결제액</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{ordId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{ordId}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{ordProgCd}}</td>
+						<td>{{prodQty}}</td>
+						<td>{{prodTotAmt}}</td>
+						<td>{{optTotAmt}}</td>
+						<td>{{delivTotAmt}}</td>
+						<td>{{delivFreeAmt}}</td>
+						<td>{{delivChrgAmt}}</td>
+						<td>{{delivChrgWeight}}</td>
+						<td>{{delivChrgQty}}</td>
+						<td>{{ordTotAmt}}</td>
+						<td>{{pymtPoint}}</td>
+						<td>{{usePoint}}</td>
+						<td>{{cpnId}}</td>
+						<td>{{cpnAmt}}</td>
+						<td>{{pymtTotAmt}}</td>
+						<td>{{pymtMethCd}}</td>
+						<td>{{ordDtm}}</td>
+						<td>{{taxCd}}</td>
+						<td>{{finalDelivYmd}}</td>
+						<td>{{ordDueYmd}}</td>
+						<td>{{mbrCfmDtm}}</td>
+						<td>{{exchReqDtm}}</td>
+						<td>{{ordCancReqDtm}}</td>
+						<td>{{ordCancAmt}}</td>
+						<td>{{finalPymtAmt}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvOrderPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/order/orderPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

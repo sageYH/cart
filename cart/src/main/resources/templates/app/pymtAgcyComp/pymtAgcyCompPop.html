@@ -1,0 +1,209 @@
+<div id="divPymtAgcyCompPop" class="sub_wrap" style="display:none;width:92%" title="결제대행사 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>결제대행사 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cwPymtAgcyCompCd_g1">결제대행사코드</label>
+						<div class="wrap">
+							<input type="text" id="cwPymtAgcyCompCd_g1" name="cwPymtAgcyCompCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cwPymtAgcyCompNm_g1">결제대행사명</label>
+						<div class="wrap">
+							<input type="text" id="cwPymtAgcyCompNm_g1" name="cwPymtAgcyCompNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardCompCd_g1">카드사코드</label>
+						<div class="wrap">
+							<input type="text" id="cardCompCd_g1" name="cardCompCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pymtTypCd_g1">결제유형코드</label>
+						<div class="wrap">
+							<input type="text" id="pymtTypCd_g1" name="pymtTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="storeId_g1">상점ID</label>
+						<div class="wrap">
+							<input type="text" id="storeId_g1" name="storeId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="storeKey_g1">상점Key</label>
+						<div class="wrap">
+							<input type="text" id="storeKey_g1" name="storeKey_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="txnCancPwd_g1">거래취소비밀번호</label>
+						<div class="wrap">
+							<input type="text" id="txnCancPwd_g1" name="txnCancPwd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="vanAuthnKey_g1">VAN인증키</label>
+						<div class="wrap">
+							<input type="text" id="vanAuthnKey_g1" name="vanAuthnKey_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pgRepCompYn_g1">PG대표사여부</label>
+						<div class="wrap">
+							<input type="text" id="pgRepCompYn_g1" name="pgRepCompYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="vanRepCompYn_g1">VAN대표사여부</label>
+						<div class="wrap">
+							<input type="text" id="vanRepCompYn_g1" name="vanRepCompYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pgUrl_g1">PG사Url</label>
+						<div class="wrap">
+							<input type="text" id="pgUrl_g1" name="pgUrl_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pgTestUrl_g1">PG사TestUrl</label>
+						<div class="wrap">
+							<input type="text" id="pgTestUrl_g1" name="pgTestUrl_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="PymtAgcyCompPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="PymtAgcyCompPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="PymtAgcyCompPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var PymtAgcyCompPop = new $W.load("divPymtAgcyCompPop");
+PymtAgcyCompPop.ready(function(){
+	//
+});
+
+PymtAgcyCompPop.fnOpen = function(mode, params, func) {
+	clearObjects("divPymtAgcyCompPop");
+	PymtAgcyCompPop.mode = mode;
+	if (!isEmpty(func)){
+		PymtAgcyCompPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divPymtAgcyCompPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cwPymtAgcyCompCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/pymtAgcyComp/getPymtAgcyComp.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cwPymtAgcyCompNm_g1").focus();
+	}else{
+		readOnlyFalse(["cwPymtAgcyCompCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+PymtAgcyCompPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cwPymtAgcyCompCd_g1","","자료(결제대행사코드)를 확인하세요."]
+		,["cwPymtAgcyCompNm_g1","","자료(결제대행사명)를 확인하세요."]
+		,["cardCompCd_g1","","자료(카드사코드)를 확인하세요."]
+		,["pymtTypCd_g1","","자료(결제유형코드)를 확인하세요."]
+		,["storeId_g1","","자료(상점ID)를 확인하세요."]
+		,["storeKey_g1","","자료(상점Key)를 확인하세요."]
+		,["txnCancPwd_g1","","자료(거래취소비밀번호)를 확인하세요."]
+		,["vanAuthnKey_g1","","자료(VAN인증키)를 확인하세요."]
+		,["pgRepCompYn_g1","","자료(PG대표사여부)를 확인하세요."]
+		,["vanRepCompYn_g1","","자료(VAN대표사여부)를 확인하세요."]
+		,["pgUrl_g1","","자료(PG사Url)를 확인하세요."]
+		,["pgTestUrl_g1","","자료(PG사TestUrl)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divPymtAgcyCompPop");
+	var url = "/app/pymtAgcyComp/updatePymtAgcyComp.do";
+	if (PymtAgcyCompPop.mode=="CREATE"){
+		url = "/app/pymtAgcyComp/insertPymtAgcyComp.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PymtAgcyCompPop.func)){
+			PymtAgcyCompPop.func();
+			PymtAgcyCompPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+PymtAgcyCompPop.fnDelete = function(){
+	if (PymtAgcyCompPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/pymtAgcyComp/deletePymtAgcyComp.do";
+	var params = {};
+	params["cwPymtAgcyCompCd"] = getElement("cwPymtAgcyCompCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PymtAgcyCompPop.func)){
+			PymtAgcyCompPop.func();
+			PymtAgcyCompPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+PymtAgcyCompPop.fnClose = function(){
+	layerToggle("divPymtAgcyCompPop",{"mode":0});
+};
+</script>

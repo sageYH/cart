@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sampleMapper">
+
+	<select id="getDeptList" parameterType="hashmap" resultType="hashmap">
+	/* sampleMapper.getDeptList */
+		WITH RECURSIVE CTE AS (
+			SELECT  DEPT_CD, DEPT_NM, UP_DEPT_CD, 1 DEPTH,
+					  DEPT_CD AS PATH, DEPT_NM PATH_NM
+			  FROM PJ_DEPT 
+			 WHERE DEPT_CD = #{deptCd}
+			UNION ALL
+			SELECT P.DEPT_CD, P.DEPT_NM, P.UP_DEPT_CD, DEPTH + 1,
+					 CONCAT(M.PATH, ",", P.DEPT_CD), CONCAT(M.PATH_NM, ",", P.DEPT_NM)
+			  FROM CTE M JOIN PJ_DEPT P ON P.UP_DEPT_CD = M.DEPT_CD 
+		)
+		SELECT DEPT_CD, DEPT_NM, UP_DEPT_CD, DEPTH, PATH, PATH_NM FROM CTE
+		ORDER BY PATH;
+	</select>
+
+</mapper>

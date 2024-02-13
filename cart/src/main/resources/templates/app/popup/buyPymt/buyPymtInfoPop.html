@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["pgBuyId"] = '[[${transData.pgBuyId}]]';
+	if (isEmpty(map["pgBuyId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/buyPymt/getBuyPymt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvBuyPymtPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="pgBuyId" id="pgBuyId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">주문ID</th>
+							<td><span name="ordId" id="ordId"></span></td>
+							<th scope="row">주문취소ID</th>
+							<td><span name="ordCnclId" id="ordCnclId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">멤버ID</th>
+							<td><span name="mbrId" id="mbrId"></span></td>
+							<th scope="row">카드번호</th>
+							<td><span name="cardNo" id="cardNo"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제구분코드</th>
+							<td><span name="pymtDivCd" id="pymtDivCd"></span></td>
+							<th scope="row">결제진행코드</th>
+							<td><span name="pymtProgCd" id="pymtProgCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제대행사코드</th>
+							<td><span name="pymtAgcyCompCd" id="pymtAgcyCompCd"></span></td>
+							<th scope="row">카드사코드</th>
+							<td><span name="cardCompCd" id="cardCompCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">카드할부기간</th>
+							<td><span name="cardInstalPeriod" id="cardInstalPeriod"></span></td>
+							<th scope="row">카드결제금액</th>
+							<td><span name="cardPymtAmt" id="cardPymtAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">정산키</th>
+							<td><span name="billKey" id="billKey"></span></td>
+							<th scope="row">승인번호</th>
+							<td><span name="apvlNo" id="apvlNo"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">거래ID</th>
+							<td><span name="txnId" id="txnId"></span></td>
+							<th scope="row">상점ID</th>
+							<td><span name="storeId" id="storeId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상점Key</th>
+							<td><span name="storeKey" id="storeKey"></span></td>
+							<th scope="row">상품명</th>
+							<td><span name="prodNm" id="prodNm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">구매자명</th>
+							<td><span name="consrNm" id="consrNm"></span></td>
+							<th scope="row">구매자이메일</th>
+							<td><span name="consrEmail" id="consrEmail"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">공급가액금액</th>
+							<td><span name="splyPrice" id="splyPrice"></span></td>
+							<th scope="row">부가가치세</th>
+							<td><span name="vat" id="vat"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">면세금액</th>
+							<td><span name="taxExptAmt" id="taxExptAmt"></span></td>
+							<th scope="row">무이자여부</th>
+							<td><span name="intFreeYn" id="intFreeYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">할부개월수</th>
+							<td><span name="instalMos" id="instalMos"></span></td>
+							<th scope="row">몰IP</th>
+							<td><span name="mallIp" id="mallIp"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">카드사명</th>
+							<td><span name="cardCompNm" id="cardCompNm"></span></td>
+							<th scope="row">결과코드</th>
+							<td><span name="rstlCd" id="rstlCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결과내용</th>
+							<td><span name="rstlCont" id="rstlCont"></span></td>
+							<th scope="row">승인일시</th>
+							<td><span name="apvlDtm" id="apvlDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">승인코드</th>
+							<td><span name="apvlCd" id="apvlCd"></span></td>
+							<th scope="row">승인여부</th>
+							<td><span name="apvlYn" id="apvlYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">오류코드</th>
+							<td><span name="errCd" id="errCd"></span></td>
+							<th scope="row">오류내용</th>
+							<td><span name="errCont" id="errCont"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제취소여부</th>
+							<td><span name="pymtCancYn" id="pymtCancYn"></span></td>
+							<th scope="row">결제취소금액</th>
+							<td><span name="pymtCancAmt" id="pymtCancAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제취소사유코드</th>
+							<td><span name="pymtCancRsnCd" id="pymtCancRsnCd"></span></td>
+							<th scope="row">결제취소사유</th>
+							<td><span name="pymtCancRsn" id="pymtCancRsn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">거래취소비밀번호</th>
+							<td><span name="txnCancPwd" id="txnCancPwd"></span></td>
+							<th scope="row">취소ID</th>
+							<td><span name="cancId" id="cancId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소IP</th>
+							<td><span name="cancIp" id="cancIp"></span></td>
+							<th scope="row">부분취소여부</th>
+							<td><span name="prtlCancYn" id="prtlCancYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소결과코드</th>
+							<td><span name="cancRstlCd" id="cancRstlCd"></span></td>
+							<th scope="row">취소결과내용</th>
+							<td><span name="cancRstlCont" id="cancRstlCont"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소일시</th>
+							<td><span name="cancDtm" id="cancDtm"></span></td>
+							<th scope="row">취소시분초</th>
+							<td><span name="cancHms" id="cancHms"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소번호</th>
+							<td><span name="cancNo" id="cancNo"></span></td>
+							<th scope="row">취소상세오류코드</th>
+							<td><span name="cancDtlErrCd" id="cancDtlErrCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">취소상세오류내용</th>
+							<td><span name="cancDtlErrCont" id="cancDtlErrCont"></span></td>
+							<th scope="row">정산년월일</th>
+							<td><span name="billYmd" id="billYmd"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

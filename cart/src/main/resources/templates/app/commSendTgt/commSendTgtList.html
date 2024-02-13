@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCommSendTgt = new pageCls("dvCommSendTgtPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("commSendId"))==false) params["commSendId"] = getEVal("commSendId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("sendCpltYn"))==false) params["sendCpltYn"] = getEVal("sendCpltYn");
+	//page set
+	params = pageClsCommSendTgt.getPageInfo(params);
+
+	var url = "/app/commSendTgt/getCommSendTgtPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["commSendId","mbrId","sendCpltYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,3);
+	pageClsCommSendTgt.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCommSendTgtDown(){
+	var url = "/app/commSendTgt/getCommSendTgtExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("commSendId"))==false) paramXls["commSendId"] = getEVal("commSendId");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("sendCpltYn"))==false) paramXls["sendCpltYn"] = getEVal("sendCpltYn");
+
+	var params = {"xlsName":"통신발송대상"
+		,"sheetName":"시트"
+		,"columnHeaders":["통신ID","멤버ID","발송완료여부"]
+		,"columnNames":["commSendId","mbrId","sendCpltYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["commSendId"] = arr[0].trim();
+		params["mbrId"] = arr[1].trim();
+	}
+	CommSendTgtPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCommSendTgtSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCommSendTgtSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCommSendTgt.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">통신ID</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">발송완료여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{commSendId}},{{mbrId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{commSendId}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{sendCpltYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCommSendTgtPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/commSendTgt/commSendTgtPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

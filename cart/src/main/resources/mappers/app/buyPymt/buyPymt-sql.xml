@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="buyPymtMapper">
+	<sql id="where-buyPymt">
+		WHERE 1=1
+			<if test="pgBuyId != null and pgBuyId != '' ">
+			AND BP.PG_BUY_ID = #{pgBuyId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND BP.ORD_ID = #{ordId}
+			</if>
+			<if test="ordCnclId != null and ordCnclId != '' ">
+			AND BP.ORD_CNCL_ID = #{ordCnclId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND BP.MBR_ID = #{mbrId}
+			</if>
+			<if test="cardNo != null and cardNo != '' ">
+			AND BP.CARD_NO = #{cardNo}
+			</if>
+			<if test="pymtDivCd != null and pymtDivCd != '' ">
+			AND BP.PYMT_DIV_CD = #{pymtDivCd}
+			</if>
+			<if test="pymtProgCd != null and pymtProgCd != '' ">
+			AND BP.PYMT_PROG_CD = #{pymtProgCd}
+			</if>
+			<if test="pymtAgcyCompCd != null and pymtAgcyCompCd != '' ">
+			AND BP.PYMT_AGCY_COMP_CD = #{pymtAgcyCompCd}
+			</if>
+			<if test="cardCompCd != null and cardCompCd != '' ">
+			AND BP.CARD_COMP_CD = #{cardCompCd}
+			</if>
+			<if test="cardInstalPeriod != null and cardInstalPeriod != '' ">
+			AND BP.CARD_INSTAL_PERIOD = #{cardInstalPeriod}
+			</if>
+			<if test="cardPymtAmt != null and cardPymtAmt != '' ">
+			AND BP.CARD_PYMT_AMT = #{cardPymtAmt}
+			</if>
+			<if test="billKey != null and billKey != '' ">
+			AND BP.BILL_KEY = #{billKey}
+			</if>
+			<if test="apvlNo != null and apvlNo != '' ">
+			AND BP.APVL_NO = #{apvlNo}
+			</if>
+			<if test="txnId != null and txnId != '' ">
+			AND BP.TXN_ID = #{txnId}
+			</if>
+			<if test="storeId != null and storeId != '' ">
+			AND BP.STORE_ID = #{storeId}
+			</if>
+			<if test="storeKey != null and storeKey != '' ">
+			AND BP.STORE_KEY = #{storeKey}
+			</if>
+			<if test="prodNm != null and prodNm != '' ">
+			AND BP.PROD_NM = #{prodNm}
+			</if>
+			<if test="consrNm != null and consrNm != '' ">
+			AND BP.CONSR_NM = #{consrNm}
+			</if>
+			<if test="consrEmail != null and consrEmail != '' ">
+			AND BP.CONSR_EMAIL = #{consrEmail}
+			</if>
+			<if test="splyPrice != null and splyPrice != '' ">
+			AND BP.SPLY_PRICE = #{splyPrice}
+			</if>
+			<if test="vat != null and vat != '' ">
+			AND BP.VAT = #{vat}
+			</if>
+			<if test="taxExptAmt != null and taxExptAmt != '' ">
+			AND BP.TAX_EXPT_AMT = #{taxExptAmt}
+			</if>
+			<if test="intFreeYn != null and intFreeYn != '' ">
+			AND BP.INT_FREE_YN = #{intFreeYn}
+			</if>
+			<if test="instalMos != null and instalMos != '' ">
+			AND BP.INSTAL_MOS = #{instalMos}
+			</if>
+			<if test="mallIp != null and mallIp != '' ">
+			AND BP.MALL_IP = #{mallIp}
+			</if>
+			<if test="cardCompNm != null and cardCompNm != '' ">
+			AND BP.CARD_COMP_NM = #{cardCompNm}
+			</if>
+			<if test="rstlCd != null and rstlCd != '' ">
+			AND BP.RSTL_CD = #{rstlCd}
+			</if>
+			<if test="rstlCont != null and rstlCont != '' ">
+			AND BP.RSTL_CONT = #{rstlCont}
+			</if>
+			<if test="apvlDtm != null and apvlDtm != '' ">
+			AND BP.APVL_DTM = STR_TO_DATE(#{apvlDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="apvlCd != null and apvlCd != '' ">
+			AND BP.APVL_CD = #{apvlCd}
+			</if>
+			<if test="apvlYn != null and apvlYn != '' ">
+			AND BP.APVL_YN = #{apvlYn}
+			</if>
+			<if test="errCd != null and errCd != '' ">
+			AND BP.ERR_CD = #{errCd}
+			</if>
+			<if test="errCont != null and errCont != '' ">
+			AND BP.ERR_CONT = #{errCont}
+			</if>
+			<if test="pymtCancYn != null and pymtCancYn != '' ">
+			AND BP.PYMT_CANC_YN = #{pymtCancYn}
+			</if>
+			<if test="pymtCancAmt != null and pymtCancAmt != '' ">
+			AND BP.PYMT_CANC_AMT = #{pymtCancAmt}
+			</if>
+			<if test="pymtCancRsnCd != null and pymtCancRsnCd != '' ">
+			AND BP.PYMT_CANC_RSN_CD = #{pymtCancRsnCd}
+			</if>
+			<if test="pymtCancRsn != null and pymtCancRsn != '' ">
+			AND BP.PYMT_CANC_RSN = #{pymtCancRsn}
+			</if>
+			<if test="txnCancPwd != null and txnCancPwd != '' ">
+			AND BP.TXN_CANC_PWD = #{txnCancPwd}
+			</if>
+			<if test="cancId != null and cancId != '' ">
+			AND BP.CANC_ID = #{cancId}
+			</if>
+			<if test="cancIp != null and cancIp != '' ">
+			AND BP.CANC_IP = #{cancIp}
+			</if>
+			<if test="prtlCancYn != null and prtlCancYn != '' ">
+			AND BP.PRTL_CANC_YN = #{prtlCancYn}
+			</if>
+			<if test="cancRstlCd != null and cancRstlCd != '' ">
+			AND BP.CANC_RSTL_CD = #{cancRstlCd}
+			</if>
+			<if test="cancRstlCont != null and cancRstlCont != '' ">
+			AND BP.CANC_RSTL_CONT = #{cancRstlCont}
+			</if>
+			<if test="cancDtm != null and cancDtm != '' ">
+			AND BP.CANC_DTM = STR_TO_DATE(#{cancDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="cancHms != null and cancHms != '' ">
+			AND BP.CANC_HMS = #{cancHms}
+			</if>
+			<if test="cancNo != null and cancNo != '' ">
+			AND BP.CANC_NO = #{cancNo}
+			</if>
+			<if test="cancDtlErrCd != null and cancDtlErrCd != '' ">
+			AND BP.CANC_DTL_ERR_CD = #{cancDtlErrCd}
+			</if>
+			<if test="cancDtlErrCont != null and cancDtlErrCont != '' ">
+			AND BP.CANC_DTL_ERR_CONT = #{cancDtlErrCont}
+			</if>
+			<if test="billYmd != null and billYmd != '' ">
+			AND BP.BILL_YMD = #{billYmd}
+			</if>
+	</sql>
+
+	<select id="getBuyPymtListCount" parameterType="BuyPymtExDto" resultType="Integer">
+	/* buyPymtMapper.getBuyPymtListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_BUY_PYMT BP
+		<include refid="where-buyPymt" />
+	</select>
+
+	<select id="getBuyPymtList" parameterType="BuyPymtExDto" resultType="BuyPymtExDto">
+	/* buyPymtMapper.getBuyPymtList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			BP.PG_BUY_ID
+			,BP.ORD_ID
+			,BP.ORD_CNCL_ID
+			,BP.MBR_ID
+			,BP.CARD_NO
+			,BP.PYMT_DIV_CD
+			,BP.PYMT_PROG_CD
+			,BP.PYMT_AGCY_COMP_CD
+			,BP.CARD_COMP_CD
+			,BP.CARD_INSTAL_PERIOD
+			,BP.CARD_PYMT_AMT
+			,BP.BILL_KEY
+			,BP.APVL_NO
+			,BP.TXN_ID
+			,BP.STORE_ID
+			,BP.STORE_KEY
+			,BP.PROD_NM
+			,BP.CONSR_NM
+			,BP.CONSR_EMAIL
+			,BP.SPLY_PRICE
+			,BP.VAT
+			,BP.TAX_EXPT_AMT
+			,BP.INT_FREE_YN
+			,BP.INSTAL_MOS
+			,BP.MALL_IP
+			,BP.CARD_COMP_NM
+			,BP.RSTL_CD
+			,BP.RSTL_CONT
+			,APVL_DTM
+			,BP.APVL_CD
+			,BP.APVL_YN
+			,BP.ERR_CD
+			,BP.ERR_CONT
+			,BP.PYMT_CANC_YN
+			,BP.PYMT_CANC_AMT
+			,BP.PYMT_CANC_RSN_CD
+			,BP.PYMT_CANC_RSN
+			,BP.TXN_CANC_PWD
+			,BP.CANC_ID
+			,BP.CANC_IP
+			,BP.PRTL_CANC_YN
+			,BP.CANC_RSTL_CD
+			,BP.CANC_RSTL_CONT
+			,CANC_DTM
+			,BP.CANC_HMS
+			,BP.CANC_NO
+			,BP.CANC_DTL_ERR_CD
+			,BP.CANC_DTL_ERR_CONT
+			,BP.BILL_YMD
+			,BP.REG_USER_ID
+			,REG_DTM
+			,BP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_BUY_PYMT BP
+		<include refid="where-buyPymt" />
+		ORDER BY
+			BP.PG_BUY_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getBuyPymt" parameterType="BuyPymtExDto" resultType="BuyPymtExDto">
+	/* buyPymtMapper.getBuyPymt */
+		SELECT
+			BP.PG_BUY_ID
+			,BP.ORD_ID
+			,BP.ORD_CNCL_ID
+			,BP.MBR_ID
+			,BP.CARD_NO
+			,BP.PYMT_DIV_CD
+			,BP.PYMT_PROG_CD
+			,BP.PYMT_AGCY_COMP_CD
+			,BP.CARD_COMP_CD
+			,BP.CARD_INSTAL_PERIOD
+			,BP.CARD_PYMT_AMT
+			,BP.BILL_KEY
+			,BP.APVL_NO
+			,BP.TXN_ID
+			,BP.STORE_ID
+			,BP.STORE_KEY
+			,BP.PROD_NM
+			,BP.CONSR_NM
+			,BP.CONSR_EMAIL
+			,BP.SPLY_PRICE
+			,BP.VAT
+			,BP.TAX_EXPT_AMT
+			,BP.INT_FREE_YN
+			,BP.INSTAL_MOS
+			,BP.MALL_IP
+			,BP.CARD_COMP_NM
+			,BP.RSTL_CD
+			,BP.RSTL_CONT
+			,APVL_DTM
+			,BP.APVL_CD
+			,BP.APVL_YN
+			,BP.ERR_CD
+			,BP.ERR_CONT
+			,BP.PYMT_CANC_YN
+			,BP.PYMT_CANC_AMT
+			,BP.PYMT_CANC_RSN_CD
+			,BP.PYMT_CANC_RSN
+			,BP.TXN_CANC_PWD
+			,BP.CANC_ID
+			,BP.CANC_IP
+			,BP.PRTL_CANC_YN
+			,BP.CANC_RSTL_CD
+			,BP.CANC_RSTL_CONT
+			,CANC_DTM
+			,BP.CANC_HMS
+			,BP.CANC_NO
+			,BP.CANC_DTL_ERR_CD
+			,BP.CANC_DTL_ERR_CONT
+			,BP.BILL_YMD
+			,BP.REG_USER_ID
+			,REG_DTM
+			,BP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_BUY_PYMT BP
+		WHERE
+			BP.PG_BUY_ID = #{pgBuyId}
+	</select>
+
+	<insert id="insertBuyPymt" parameterType="BuyPymtExDto">
+	/* buyPymtMapper.insertBuyPymt */
+		INSERT INTO CW_BUY_PYMT (
+			PG_BUY_ID
+			,ORD_ID
+			,ORD_CNCL_ID
+			,MBR_ID
+			,CARD_NO
+			,PYMT_DIV_CD
+			,PYMT_PROG_CD
+			,PYMT_AGCY_COMP_CD
+			,CARD_COMP_CD
+			,CARD_INSTAL_PERIOD
+			,CARD_PYMT_AMT
+			,BILL_KEY
+			,APVL_NO
+			,TXN_ID
+			,STORE_ID
+			,STORE_KEY
+			,PROD_NM
+			,CONSR_NM
+			,CONSR_EMAIL
+			,SPLY_PRICE
+			,VAT
+			,TAX_EXPT_AMT
+			,INT_FREE_YN
+			,INSTAL_MOS
+			,MALL_IP
+			,CARD_COMP_NM
+			,RSTL_CD
+			,RSTL_CONT
+			,APVL_DTM
+			,APVL_CD
+			,APVL_YN
+			,ERR_CD
+			,ERR_CONT
+			,PYMT_CANC_YN
+			,PYMT_CANC_AMT
+			,PYMT_CANC_RSN_CD
+			,PYMT_CANC_RSN
+			,TXN_CANC_PWD
+			,CANC_ID
+			,CANC_IP
+			,PRTL_CANC_YN
+			,CANC_RSTL_CD
+			,CANC_RSTL_CONT
+			,CANC_DTM
+			,CANC_HMS
+			,CANC_NO
+			,CANC_DTL_ERR_CD
+			,CANC_DTL_ERR_CONT
+			,BILL_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{pgBuyId}
+			,#{ordId}
+			,#{ordCnclId}
+			,#{mbrId}
+			,#{cardNo}
+			,#{pymtDivCd}
+			,#{pymtProgCd}
+			,#{pymtAgcyCompCd}
+			,#{cardCompCd}
+			,#{cardInstalPeriod}
+			,#{cardPymtAmt}
+			,#{billKey}
+			,#{apvlNo}
+			,#{txnId}
+			,#{storeId}
+			,#{storeKey}
+			,#{prodNm}
+			,#{consrNm}
+			,#{consrEmail}
+			,#{splyPrice}
+			,#{vat}
+			,#{taxExptAmt}
+			,#{intFreeYn}
+			,#{instalMos}
+			,#{mallIp}
+			,#{cardCompNm}
+			,#{rstlCd}
+			,#{rstlCont}
+			,STR_TO_DATE(#{apvlDtm}, '%Y%m%d %h%i%s')
+			,#{apvlCd}
+			,#{apvlYn}
+			,#{errCd}
+			,#{errCont}
+			,#{pymtCancYn}
+			,#{pymtCancAmt}
+			,#{pymtCancRsnCd}
+			,#{pymtCancRsn}
+			,#{txnCancPwd}
+			,#{cancId}
+			,#{cancIp}
+			,#{prtlCancYn}
+			,#{cancRstlCd}
+			,#{cancRstlCont}
+			,STR_TO_DATE(#{cancDtm}, '%Y%m%d %h%i%s')
+			,#{cancHms}
+			,#{cancNo}
+			,#{cancDtlErrCd}
+			,#{cancDtlErrCont}
+			,#{billYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateBuyPymt" parameterType="BuyPymtExDto">
+	/* buyPymtMapper.updateBuyPymt */
+		UPDATE CW_BUY_PYMT
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="ordCnclId != null">
+		ORD_CNCL_ID = #{ordCnclId},
+		</if>
+		<if test="mbrId != null">
+		MBR_ID = #{mbrId},
+		</if>
+		<if test="cardNo != null">
+		CARD_NO = #{cardNo},
+		</if>
+		<if test="pymtDivCd != null">
+		PYMT_DIV_CD = #{pymtDivCd},
+		</if>
+		<if test="pymtProgCd != null">
+		PYMT_PROG_CD = #{pymtProgCd},
+		</if>
+		<if test="pymtAgcyCompCd != null">
+		PYMT_AGCY_COMP_CD = #{pymtAgcyCompCd},
+		</if>
+		<if test="cardCompCd != null">
+		CARD_COMP_CD = #{cardCompCd},
+		</if>
+		<if test="cardInstalPeriod != null">
+		CARD_INSTAL_PERIOD = #{cardInstalPeriod},
+		</if>
+		<if test="cardPymtAmt != null">
+		CARD_PYMT_AMT = #{cardPymtAmt},
+		</if>
+		<if test="billKey != null">
+		BILL_KEY = #{billKey},
+		</if>
+		<if test="apvlNo != null">
+		APVL_NO = #{apvlNo},
+		</if>
+		<if test="txnId != null">
+		TXN_ID = #{txnId},
+		</if>
+		<if test="storeId != null">
+		STORE_ID = #{storeId},
+		</if>
+		<if test="storeKey != null">
+		STORE_KEY = #{storeKey},
+		</if>
+		<if test="prodNm != null">
+		PROD_NM = #{prodNm},
+		</if>
+		<if test="consrNm != null">
+		CONSR_NM = #{consrNm},
+		</if>
+		<if test="consrEmail != null">
+		CONSR_EMAIL = #{consrEmail},
+		</if>
+		<if test="splyPrice != null">
+		SPLY_PRICE = #{splyPrice},
+		</if>
+		<if test="vat != null">
+		VAT = #{vat},
+		</if>
+		<if test="taxExptAmt != null">
+		TAX_EXPT_AMT = #{taxExptAmt},
+		</if>
+		<if test="intFreeYn != null">
+		INT_FREE_YN = #{intFreeYn},
+		</if>
+		<if test="instalMos != null">
+		INSTAL_MOS = #{instalMos},
+		</if>
+		<if test="mallIp != null">
+		MALL_IP = #{mallIp},
+		</if>
+		<if test="cardCompNm != null">
+		CARD_COMP_NM = #{cardCompNm},
+		</if>
+		<if test="rstlCd != null">
+		RSTL_CD = #{rstlCd},
+		</if>
+		<if test="rstlCont != null">
+		RSTL_CONT = #{rstlCont},
+		</if>
+		<if test="apvlDtm != null">
+		APVL_DTM = STR_TO_DATE(#{apvlDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="apvlCd != null">
+		APVL_CD = #{apvlCd},
+		</if>
+		<if test="apvlYn != null">
+		APVL_YN = #{apvlYn},
+		</if>
+		<if test="errCd != null">
+		ERR_CD = #{errCd},
+		</if>
+		<if test="errCont != null">
+		ERR_CONT = #{errCont},
+		</if>
+		<if test="pymtCancYn != null">
+		PYMT_CANC_YN = #{pymtCancYn},
+		</if>
+		<if test="pymtCancAmt != null">
+		PYMT_CANC_AMT = #{pymtCancAmt},
+		</if>
+		<if test="pymtCancRsnCd != null">
+		PYMT_CANC_RSN_CD = #{pymtCancRsnCd},
+		</if>
+		<if test="pymtCancRsn != null">
+		PYMT_CANC_RSN = #{pymtCancRsn},
+		</if>
+		<if test="txnCancPwd != null">
+		TXN_CANC_PWD = #{txnCancPwd},
+		</if>
+		<if test="cancId != null">
+		CANC_ID = #{cancId},
+		</if>
+		<if test="cancIp != null">
+		CANC_IP = #{cancIp},
+		</if>
+		<if test="prtlCancYn != null">
+		PRTL_CANC_YN = #{prtlCancYn},
+		</if>
+		<if test="cancRstlCd != null">
+		CANC_RSTL_CD = #{cancRstlCd},
+		</if>
+		<if test="cancRstlCont != null">
+		CANC_RSTL_CONT = #{cancRstlCont},
+		</if>
+		<if test="cancDtm != null">
+		CANC_DTM = STR_TO_DATE(#{cancDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="cancHms != null">
+		CANC_HMS = #{cancHms},
+		</if>
+		<if test="cancNo != null">
+		CANC_NO = #{cancNo},
+		</if>
+		<if test="cancDtlErrCd != null">
+		CANC_DTL_ERR_CD = #{cancDtlErrCd},
+		</if>
+		<if test="cancDtlErrCont != null">
+		CANC_DTL_ERR_CONT = #{cancDtlErrCont},
+		</if>
+		<if test="billYmd != null">
+		BILL_YMD = #{billYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PG_BUY_ID = #{pgBuyId}
+	</update>
+
+	<delete id="deleteBuyPymt" parameterType="BuyPymtExDto">
+	/* buyPymtMapper.deleteBuyPymt */
+	DELETE FROM CW_BUY_PYMT
+	WHERE
+		PG_BUY_ID = #{pgBuyId}
+	</delete>
+</mapper>

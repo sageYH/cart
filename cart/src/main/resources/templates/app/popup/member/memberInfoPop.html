@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["mbrId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/member/getMember.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvMemberPop" class="modal shot-pop" title="멤버 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="mbrId" id="mbrId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">멤버등급코드</th>
+							<td><span name="mbrLvlCd" id="mbrLvlCd"></span></td>
+							<th scope="row">멤버구분코드</th>
+							<td><span name="mbrDivCd" id="mbrDivCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">폰번호</th>
+							<td><span name="phoneNo" id="phoneNo"></span></td>
+							<th scope="row">이메일</th>
+							<td><span name="email" id="email"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">생년월일</th>
+							<td><span name="birthYmd" id="birthYmd"></span></td>
+							<th scope="row">성별구분코드</th>
+							<td><span name="sexDivCd" id="sexDivCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">국가코드</th>
+							<td><span name="cntryCd" id="cntryCd"></span></td>
+							<th scope="row">업체ID</th>
+							<td><span name="compId" id="compId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">가입일시</th>
+							<td><span name="signupDtm" id="signupDtm"></span></td>
+							<th scope="row">우편번호</th>
+							<td><span name="zipCd" id="zipCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주소</th>
+							<td><span name="addr" id="addr"></span></td>
+							<th scope="row">상세주소</th>
+							<td><span name="dtlAddr" id="dtlAddr"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상세주소2</th>
+							<td><span name="dtlAddr2" id="dtlAddr2"></span></td>
+							<th scope="row">가입경로코드</th>
+							<td><span name="signupPathCd" id="signupPathCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">최근접속채널코드</th>
+							<td><span name="latestAccChanCd" id="latestAccChanCd"></span></td>
+							<th scope="row">최종접속일시</th>
+							<td><span name="lastAccDtm" id="lastAccDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">최근접속년월일</th>
+							<td><span name="latestAccYmd" id="latestAccYmd"></span></td>
+							<th scope="row">SMS수신동의여부</th>
+							<td><span name="smsRecvAcptYn" id="smsRecvAcptYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">이메일수신동의여부</th>
+							<td><span name="emailRecvAcptYn" id="emailRecvAcptYn"></span></td>
+							<th scope="row">PUSH수신동의여부</th>
+							<td><span name="pushRecvAcptYn" id="pushRecvAcptYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

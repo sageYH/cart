@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cardBillMapper">
+	<sql id="where-cardBill">
+		WHERE 1=1
+			<if test="cardBillId != null and cardBillId != '' ">
+			AND CB.CARD_BILL_ID = #{cardBillId}
+			</if>
+			<if test="cardBillYmd != null and cardBillYmd != '' ">
+			AND CB.CARD_BILL_YMD = #{cardBillYmd}
+			</if>
+			<if test="pymtAgcyCompCd != null and pymtAgcyCompCd != '' ">
+			AND CB.PYMT_AGCY_COMP_CD = #{pymtAgcyCompCd}
+			</if>
+			<if test="cardCompCd != null and cardCompCd != '' ">
+			AND CB.CARD_COMP_CD = #{cardCompCd}
+			</if>
+			<if test="cardQty != null and cardQty != '' ">
+			AND CB.CARD_QTY = #{cardQty}
+			</if>
+			<if test="cardAmt != null and cardAmt != '' ">
+			AND CB.CARD_AMT = #{cardAmt}
+			</if>
+			<if test="cardFeeAmt != null and cardFeeAmt != '' ">
+			AND CB.CARD_FEE_AMT = #{cardFeeAmt}
+			</if>
+			<if test="cardErrQty != null and cardErrQty != '' ">
+			AND CB.CARD_ERR_QTY = #{cardErrQty}
+			</if>
+			<if test="cardErrAmt != null and cardErrAmt != '' ">
+			AND CB.CARD_ERR_AMT = #{cardErrAmt}
+			</if>
+			<if test="billQty != null and billQty != '' ">
+			AND CB.BILL_QTY = #{billQty}
+			</if>
+			<if test="billAmt != null and billAmt != '' ">
+			AND CB.BILL_AMT = #{billAmt}
+			</if>
+			<if test="billCfmYn != null and billCfmYn != '' ">
+			AND CB.BILL_CFM_YN = #{billCfmYn}
+			</if>
+			<if test="billCfmYmd != null and billCfmYmd != '' ">
+			AND CB.BILL_CFM_YMD = #{billCfmYmd}
+			</if>
+	</sql>
+
+	<select id="getCardBillListCount" parameterType="CardBillExDto" resultType="Integer">
+	/* cardBillMapper.getCardBillListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CARD_BILL CB
+		<include refid="where-cardBill" />
+	</select>
+
+	<select id="getCardBillList" parameterType="CardBillExDto" resultType="CardBillExDto">
+	/* cardBillMapper.getCardBillList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CB.CARD_BILL_ID
+			,CB.CARD_BILL_YMD
+			,CB.PYMT_AGCY_COMP_CD
+			,CB.CARD_COMP_CD
+			,CB.CARD_QTY
+			,CB.CARD_AMT
+			,CB.CARD_FEE_AMT
+			,CB.CARD_ERR_QTY
+			,CB.CARD_ERR_AMT
+			,CB.BILL_QTY
+			,CB.BILL_AMT
+			,CB.BILL_CFM_YN
+			,CB.BILL_CFM_YMD
+			,CB.REG_USER_ID
+			,REG_DTM
+			,CB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CARD_BILL CB
+		<include refid="where-cardBill" />
+		ORDER BY
+			CB.CARD_BILL_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCardBill" parameterType="CardBillExDto" resultType="CardBillExDto">
+	/* cardBillMapper.getCardBill */
+		SELECT
+			CB.CARD_BILL_ID
+			,CB.CARD_BILL_YMD
+			,CB.PYMT_AGCY_COMP_CD
+			,CB.CARD_COMP_CD
+			,CB.CARD_QTY
+			,CB.CARD_AMT
+			,CB.CARD_FEE_AMT
+			,CB.CARD_ERR_QTY
+			,CB.CARD_ERR_AMT
+			,CB.BILL_QTY
+			,CB.BILL_AMT
+			,CB.BILL_CFM_YN
+			,CB.BILL_CFM_YMD
+			,CB.REG_USER_ID
+			,REG_DTM
+			,CB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CARD_BILL CB
+		WHERE
+			CB.CARD_BILL_ID = #{cardBillId}
+	</select>
+
+	<insert id="insertCardBill" parameterType="CardBillExDto">
+	/* cardBillMapper.insertCardBill */
+		INSERT INTO CW_CARD_BILL (
+			CARD_BILL_ID
+			,CARD_BILL_YMD
+			,PYMT_AGCY_COMP_CD
+			,CARD_COMP_CD
+			,CARD_QTY
+			,CARD_AMT
+			,CARD_FEE_AMT
+			,CARD_ERR_QTY
+			,CARD_ERR_AMT
+			,BILL_QTY
+			,BILL_AMT
+			,BILL_CFM_YN
+			,BILL_CFM_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cardBillId}
+			,#{cardBillYmd}
+			,#{pymtAgcyCompCd}
+			,#{cardCompCd}
+			,#{cardQty}
+			,#{cardAmt}
+			,#{cardFeeAmt}
+			,#{cardErrQty}
+			,#{cardErrAmt}
+			,#{billQty}
+			,#{billAmt}
+			,#{billCfmYn}
+			,#{billCfmYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCardBill" parameterType="CardBillExDto">
+	/* cardBillMapper.updateCardBill */
+		UPDATE CW_CARD_BILL
+		<set>
+		<if test="cardBillYmd != null">
+		CARD_BILL_YMD = #{cardBillYmd},
+		</if>
+		<if test="pymtAgcyCompCd != null">
+		PYMT_AGCY_COMP_CD = #{pymtAgcyCompCd},
+		</if>
+		<if test="cardCompCd != null">
+		CARD_COMP_CD = #{cardCompCd},
+		</if>
+		<if test="cardQty != null">
+		CARD_QTY = #{cardQty},
+		</if>
+		<if test="cardAmt != null">
+		CARD_AMT = #{cardAmt},
+		</if>
+		<if test="cardFeeAmt != null">
+		CARD_FEE_AMT = #{cardFeeAmt},
+		</if>
+		<if test="cardErrQty != null">
+		CARD_ERR_QTY = #{cardErrQty},
+		</if>
+		<if test="cardErrAmt != null">
+		CARD_ERR_AMT = #{cardErrAmt},
+		</if>
+		<if test="billQty != null">
+		BILL_QTY = #{billQty},
+		</if>
+		<if test="billAmt != null">
+		BILL_AMT = #{billAmt},
+		</if>
+		<if test="billCfmYn != null">
+		BILL_CFM_YN = #{billCfmYn},
+		</if>
+		<if test="billCfmYmd != null">
+		BILL_CFM_YMD = #{billCfmYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CARD_BILL_ID = #{cardBillId}
+	</update>
+
+	<delete id="deleteCardBill" parameterType="CardBillExDto">
+	/* cardBillMapper.deleteCardBill */
+	DELETE FROM CW_CARD_BILL
+	WHERE
+		CARD_BILL_ID = #{cardBillId}
+	</delete>
+</mapper>

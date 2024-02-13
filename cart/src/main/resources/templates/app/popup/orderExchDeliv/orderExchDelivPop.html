@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordExchDelivId"] = '[[${transData.ordExchDelivId}]]';
+	if (isEmpty(map["ordExchDelivId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ordExchDelivId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderExchDeliv/getOrderExchDeliv.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ordExchDelivId","","자료(주문교환배송ID)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["collDelivCompId","","자료(수거배송업체ID)를 확인하세요."]
+		["collDelivFee","","자료(수거배송비)를 확인하세요."]
+		["collPymtCompId","","자료(수거지급사ID)를 확인하세요."]
+		["collDelivYn","","자료(수거배송여부)를 확인하세요."]
+		["collDelivExpectedYmd","","자료(수거배송예정일)를 확인하세요."]
+		["collDelivYmd","","자료(수거배송일)를 확인하세요."]
+		["exchDelivCompId","","자료(교환배송업체ID)를 확인하세요."]
+		["exchDelivFee","","자료(교환배송비)를 확인하세요."]
+		["exchPymtCompId","","자료(교환지급사ID)를 확인하세요."]
+		["exchDelivYn","","자료(교환배송여부)를 확인하세요."]
+		["exchDelivExpectedYmd","","자료(교환배송예정일)를 확인하세요."]
+		["exchDelivYmd","","자료(교환배송일)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/orderExchDeliv/updateOrderExchDeliv.do";
+	if (mode=="NEW"){
+		url = "/app/orderExchDeliv/insertOrderExchDeliv.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formOrderExchDelivPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvOrderExchDelivPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formOrderExchDelivPop" name="formOrderExchDelivPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문교환배송ID</th>
+						<td><input type="text" name="ordExchDelivId" id="ordExchDelivId" style="width:70%" readonly >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">수거배송업체ID</th>
+						<td><input type="text" name="collDelivCompId" id="collDelivCompId" style="width:70%" >
+						</td>
+					<th scope="row">수거배송비</th>
+					<td><input type="text" name="collDelivFee" id="collDelivFee" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">수거지급사ID</th>
+						<td><input type="text" name="collPymtCompId" id="collPymtCompId" style="width:70%" >
+						</td>
+					<th scope="row">수거배송여부</th>
+					<td><input type="text" name="collDelivYn" id="collDelivYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">수거배송예정일</th>
+						<td><input type="text" name="collDelivExpectedYmd" id="collDelivExpectedYmd" style="width:70%" >
+						</td>
+					<th scope="row">수거배송일</th>
+					<td><input type="text" name="collDelivYmd" id="collDelivYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환배송업체ID</th>
+						<td><input type="text" name="exchDelivCompId" id="exchDelivCompId" style="width:70%" >
+						</td>
+					<th scope="row">교환배송비</th>
+					<td><input type="text" name="exchDelivFee" id="exchDelivFee" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환지급사ID</th>
+						<td><input type="text" name="exchPymtCompId" id="exchPymtCompId" style="width:70%" >
+						</td>
+					<th scope="row">교환배송여부</th>
+					<td><input type="text" name="exchDelivYn" id="exchDelivYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환배송예정일</th>
+						<td><input type="text" name="exchDelivExpectedYmd" id="exchDelivExpectedYmd" style="width:70%" >
+						</td>
+					<th scope="row">교환배송일</th>
+					<td><input type="text" name="exchDelivYmd" id="exchDelivYmd" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

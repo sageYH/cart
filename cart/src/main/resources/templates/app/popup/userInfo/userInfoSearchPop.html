@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/userInfo/userInfoGrid.js"></script>
+<script>
+var gridUserInfo = null;
+window.onload = function() {
+	gridUserInfo = setGridUserInfo("dvGridUserInfoSearch");
+	gridUserInfo.setBodyHeight(300);
+	fixedColGrid(gridUserInfo);
+
+	gridUserInfo.on("click",function(ev){
+		toggleGrid(gridUserInfo,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridUserInfo.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridUserInfo)==false){
+			dblClickGridUserInfo();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridUserInfo(){
+	getResultData();
+}
+
+//page
+var pageClsUserInfo = new pageCls("dvUserInfoPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridUserInfo);
+
+	var params = {};
+	if (isEmpty(getEVal("userId"))==false) params["userId"] = getEVal("userId");
+	if (isEmpty(getEVal("userNm"))==false) params["userNm"] = getEVal("userNm");
+	if (isEmpty(getEVal("userPwd"))==false) params["userPwd"] = getEVal("userPwd");
+	if (isEmpty(getEVal("cntryCd"))==false) params["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
+	if (isEmpty(getEVal("deptCd"))==false) params["deptCd"] = getEVal("deptCd");
+	if (isEmpty(getEVal("deptNm"))==false) params["deptNm"] = getEVal("deptNm");
+	if (isEmpty(getEVal("telNo"))==false) params["telNo"] = getEVal("telNo");
+	if (isEmpty(getEVal("phoneNo"))==false) params["phoneNo"] = getEVal("phoneNo");
+	if (isEmpty(getEVal("email"))==false) params["email"] = getEVal("email");
+	if (isEmpty(getEVal("pswdErrCnt"))==false) params["pswdErrCnt"] = getEVal("pswdErrCnt");
+	if (isEmpty(getEVal("grade"))==false) params["grade"] = getEVal("grade");
+	if (isEmpty(getEVal("pswdExpectedYmd"))==false) params["pswdExpectedYmd"] = getEVal("pswdExpectedYmd");
+	if (isEmpty(getEVal("initUserPswd"))==false) params["initUserPswd"] = getEVal("initUserPswd");
+	if (isEmpty(getEVal("mailAgreeYn"))==false) params["mailAgreeYn"] = getEVal("mailAgreeYn");
+	if (isEmpty(getEVal("smsAgreeYn"))==false) params["smsAgreeYn"] = getEVal("smsAgreeYn");
+	if (isEmpty(getEVal("ref1"))==false) params["ref1"] = getEVal("ref1");
+	if (isEmpty(getEVal("ref2"))==false) params["ref2"] = getEVal("ref2");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	if (isEmpty(getEVal("cid"))==false) params["cid"] = getEVal("cid");
+	if (isEmpty(getEVal("certDn"))==false) params["certDn"] = getEVal("certDn");
+	if (isEmpty(getEVal("certSign"))==false) params["certSign"] = getEVal("certSign");
+	//page set
+	params = pageClsUserInfo.getPageInfo(params);
+
+	var url = "/app/userInfo/getUserInfoPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridUserInfo,result.payloads);
+		//set total
+		pageClsUserInfo.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridUserInfo);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvUserInfoSearchPop" class="modal shot-pop" title="사용자정보 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridUserInfoSearch" class="addr-list" ></div>
+					<div id="dvUserInfoPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

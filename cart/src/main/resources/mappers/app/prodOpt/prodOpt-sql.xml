@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodOptMapper">
+	<sql id="where-prodOpt">
+		WHERE 1=1
+			<if test="optId != null and optId != '' ">
+			AND PO.OPT_ID = #{optId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND PO.PROD_ID = #{prodId}
+			</if>
+			<if test="optNm != null and optNm != '' ">
+			AND PO.OPT_NM = #{optNm}
+			</if>
+			<if test="optTypCd != null and optTypCd != '' ">
+			AND PO.OPT_TYP_CD = #{optTypCd}
+			</if>
+			<if test="optCont != null and optCont != '' ">
+			AND PO.OPT_CONT = #{optCont}
+			</if>
+			<if test="mobiOptCont != null and mobiOptCont != '' ">
+			AND PO.MOBI_OPT_CONT = #{mobiOptCont}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND PO.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="mobiFileRefId != null and mobiFileRefId != '' ">
+			AND PO.MOBI_FILE_REF_ID = #{mobiFileRefId}
+			</if>
+			<if test="optAmt != null and optAmt != '' ">
+			AND PO.OPT_AMT = #{optAmt}
+			</if>
+			<if test="optInvQty != null and optInvQty != '' ">
+			AND PO.OPT_INV_QTY = #{optInvQty}
+			</if>
+			<if test="optUseQty != null and optUseQty != '' ">
+			AND PO.OPT_USE_QTY = #{optUseQty}
+			</if>
+			<if test="optInQty != null and optInQty != '' ">
+			AND PO.OPT_IN_QTY = #{optInQty}
+			</if>
+			<if test="prntOptId != null and prntOptId != '' ">
+			AND PO.PRNT_OPT_ID = #{prntOptId}
+			</if>
+			<if test="chdOptId != null and chdOptId != '' ">
+			AND PO.CHD_OPT_ID = #{chdOptId}
+			</if>
+			<if test="optLvl != null and optLvl != '' ">
+			AND PO.OPT_LVL = #{optLvl}
+			</if>
+			<if test="chdYn != null and chdYn != '' ">
+			AND PO.CHD_YN = #{chdYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PO.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdOptListCount" parameterType="ProdOptExDto" resultType="Integer">
+	/* prodOptMapper.getProdOptListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_OPT PO
+		<include refid="where-prodOpt" />
+	</select>
+
+	<select id="getProdOptList" parameterType="ProdOptExDto" resultType="ProdOptExDto">
+	/* prodOptMapper.getProdOptList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PO.OPT_ID
+			,PO.PROD_ID
+			,PO.OPT_NM
+			,PO.OPT_TYP_CD
+			,PO.OPT_CONT
+			,PO.MOBI_OPT_CONT
+			,PO.FILE_REF_ID
+			,PO.MOBI_FILE_REF_ID
+			,PO.OPT_AMT
+			,PO.OPT_INV_QTY
+			,PO.OPT_USE_QTY
+			,PO.OPT_IN_QTY
+			,PO.PRNT_OPT_ID
+			,PO.CHD_OPT_ID
+			,PO.OPT_LVL
+			,PO.CHD_YN
+			,PO.USE_YN
+			,PO.REG_USER_ID
+			,REG_DTM
+			,PO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT PO
+		<include refid="where-prodOpt" />
+		ORDER BY
+			PO.OPT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdOpt" parameterType="ProdOptExDto" resultType="ProdOptExDto">
+	/* prodOptMapper.getProdOpt */
+		SELECT
+			PO.OPT_ID
+			,PO.PROD_ID
+			,PO.OPT_NM
+			,PO.OPT_TYP_CD
+			,PO.OPT_CONT
+			,PO.MOBI_OPT_CONT
+			,PO.FILE_REF_ID
+			,PO.MOBI_FILE_REF_ID
+			,PO.OPT_AMT
+			,PO.OPT_INV_QTY
+			,PO.OPT_USE_QTY
+			,PO.OPT_IN_QTY
+			,PO.PRNT_OPT_ID
+			,PO.CHD_OPT_ID
+			,PO.OPT_LVL
+			,PO.CHD_YN
+			,PO.USE_YN
+			,PO.REG_USER_ID
+			,REG_DTM
+			,PO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT PO
+		WHERE
+			PO.OPT_ID = #{optId}
+	</select>
+
+	<insert id="insertProdOpt" parameterType="ProdOptExDto">
+	/* prodOptMapper.insertProdOpt */
+		INSERT INTO CW_PROD_OPT (
+			OPT_ID
+			,PROD_ID
+			,OPT_NM
+			,OPT_TYP_CD
+			,OPT_CONT
+			,MOBI_OPT_CONT
+			,FILE_REF_ID
+			,MOBI_FILE_REF_ID
+			,OPT_AMT
+			,OPT_INV_QTY
+			,OPT_USE_QTY
+			,OPT_IN_QTY
+			,PRNT_OPT_ID
+			,CHD_OPT_ID
+			,OPT_LVL
+			,CHD_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{optId}
+			,#{prodId}
+			,#{optNm}
+			,#{optTypCd}
+			,#{optCont}
+			,#{mobiOptCont}
+			,#{fileRefId}
+			,#{mobiFileRefId}
+			,#{optAmt}
+			,#{optInvQty}
+			,#{optUseQty}
+			,#{optInQty}
+			,#{prntOptId}
+			,#{chdOptId}
+			,#{optLvl}
+			,#{chdYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdOpt" parameterType="ProdOptExDto">
+	/* prodOptMapper.updateProdOpt */
+		UPDATE CW_PROD_OPT
+		<set>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="optNm != null">
+		OPT_NM = #{optNm},
+		</if>
+		<if test="optTypCd != null">
+		OPT_TYP_CD = #{optTypCd},
+		</if>
+		<if test="optCont != null">
+		OPT_CONT = #{optCont},
+		</if>
+		<if test="mobiOptCont != null">
+		MOBI_OPT_CONT = #{mobiOptCont},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="mobiFileRefId != null">
+		MOBI_FILE_REF_ID = #{mobiFileRefId},
+		</if>
+		<if test="optAmt != null">
+		OPT_AMT = #{optAmt},
+		</if>
+		<if test="optInvQty != null">
+		OPT_INV_QTY = #{optInvQty},
+		</if>
+		<if test="optUseQty != null">
+		OPT_USE_QTY = #{optUseQty},
+		</if>
+		<if test="optInQty != null">
+		OPT_IN_QTY = #{optInQty},
+		</if>
+		<if test="prntOptId != null">
+		PRNT_OPT_ID = #{prntOptId},
+		</if>
+		<if test="chdOptId != null">
+		CHD_OPT_ID = #{chdOptId},
+		</if>
+		<if test="optLvl != null">
+		OPT_LVL = #{optLvl},
+		</if>
+		<if test="chdYn != null">
+		CHD_YN = #{chdYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			OPT_ID = #{optId}
+	</update>
+
+	<delete id="deleteProdOpt" parameterType="ProdOptExDto">
+	/* prodOptMapper.deleteProdOpt */
+	DELETE FROM CW_PROD_OPT
+	WHERE
+		OPT_ID = #{optId}
+	</delete>
+</mapper>

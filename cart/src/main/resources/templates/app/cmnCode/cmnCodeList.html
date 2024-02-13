@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCmnCode = new pageCls("dvCmnCodePageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cmnCd"))==false) params["cmnCd"] = getEVal("cmnCd");
+	if (isEmpty(getEVal("cmnCdNm"))==false) params["cmnCdNm"] = getEVal("cmnCdNm");
+	if (isEmpty(getEVal("grpCd"))==false) params["grpCd"] = getEVal("grpCd");
+	if (isEmpty(getEVal("ref1"))==false) params["ref1"] = getEVal("ref1");
+	if (isEmpty(getEVal("ref2"))==false) params["ref2"] = getEVal("ref2");
+	if (isEmpty(getEVal("ref3"))==false) params["ref3"] = getEVal("ref3");
+	if (isEmpty(getEVal("sortSeq"))==false) params["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsCmnCode.getPageInfo(params);
+
+	var url = "/app/cmnCode/getCmnCodePageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cmnCd","cmnCdNm","grpCd","ref1","ref2","ref3","sortSeq","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,8);
+	pageClsCmnCode.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCmnCodeDown(){
+	var url = "/app/cmnCode/getCmnCodeExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cmnCd"))==false) paramXls["cmnCd"] = getEVal("cmnCd");
+	if (isEmpty(getEVal("cmnCdNm"))==false) paramXls["cmnCdNm"] = getEVal("cmnCdNm");
+	if (isEmpty(getEVal("grpCd"))==false) paramXls["grpCd"] = getEVal("grpCd");
+	if (isEmpty(getEVal("ref1"))==false) paramXls["ref1"] = getEVal("ref1");
+	if (isEmpty(getEVal("ref2"))==false) paramXls["ref2"] = getEVal("ref2");
+	if (isEmpty(getEVal("ref3"))==false) paramXls["ref3"] = getEVal("ref3");
+	if (isEmpty(getEVal("sortSeq"))==false) paramXls["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"공통코드"
+		,"sheetName":"시트"
+		,"columnHeaders":["공통코드","공통코드명","그룹코드","참조1","참조2","참조3","정렬순서","사용여부"]
+		,"columnNames":["cmnCd","cmnCdNm","grpCd","ref1","ref2","ref3","sortSeq","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cmnCd"] = arr[0].trim();
+		params["grpCd"] = arr[1].trim();
+	}
+	CmnCodePop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCmnCodeSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCmnCodeSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCmnCode.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">공통코드</th>
+							<th scope="col">공통코드명</th>
+							<th scope="col">그룹코드</th>
+							<th scope="col">참조1</th>
+							<th scope="col">참조2</th>
+							<th scope="col">참조3</th>
+							<th scope="col">정렬순서</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cmnCd}},{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cmnCd}}</td>
+						<td>{{cmnCdNm}}</td>
+						<td>{{grpCd}}</td>
+						<td>{{ref1}}</td>
+						<td>{{ref2}}</td>
+						<td>{{ref3}}</td>
+						<td>{{sortSeq}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCmnCodePageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/cmnCode/cmnCodePop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

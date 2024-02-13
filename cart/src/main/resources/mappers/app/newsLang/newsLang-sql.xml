@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="newsLangMapper">
+	<sql id="where-newsLang">
+		WHERE 1=1
+			<if test="newsId != null and newsId != '' ">
+			AND NL.NEWS_ID = #{newsId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND NL.LANG_CD = #{langCd}
+			</if>
+			<if test="newsTitle != null and newsTitle != '' ">
+			AND NL.NEWS_TITLE = #{newsTitle}
+			</if>
+			<if test="newsCont != null and newsCont != '' ">
+			AND NL.NEWS_CONT = #{newsCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND NL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getNewsLangListCount" parameterType="NewsLangExDto" resultType="Integer">
+	/* newsLangMapper.getNewsLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_NEWS_LANG NL
+		<include refid="where-newsLang" />
+	</select>
+
+	<select id="getNewsLangList" parameterType="NewsLangExDto" resultType="NewsLangExDto">
+	/* newsLangMapper.getNewsLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			NL.NEWS_ID
+			,NL.LANG_CD
+			,NL.NEWS_TITLE
+			,NL.NEWS_CONT
+			,NL.USE_YN
+			,NL.REG_USER_ID
+			,REG_DTM
+			,NL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NEWS_LANG NL
+		<include refid="where-newsLang" />
+		ORDER BY
+			NL.NEWS_ID
+			,NL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getNewsLang" parameterType="NewsLangExDto" resultType="NewsLangExDto">
+	/* newsLangMapper.getNewsLang */
+		SELECT
+			NL.NEWS_ID
+			,NL.LANG_CD
+			,NL.NEWS_TITLE
+			,NL.NEWS_CONT
+			,NL.USE_YN
+			,NL.REG_USER_ID
+			,REG_DTM
+			,NL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NEWS_LANG NL
+		WHERE
+			NL.NEWS_ID = #{newsId}
+			AND NL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertNewsLang" parameterType="NewsLangExDto">
+	/* newsLangMapper.insertNewsLang */
+		INSERT INTO CW_NEWS_LANG (
+			NEWS_ID
+			,LANG_CD
+			,NEWS_TITLE
+			,NEWS_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{newsId}
+			,#{langCd}
+			,#{newsTitle}
+			,#{newsCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateNewsLang" parameterType="NewsLangExDto">
+	/* newsLangMapper.updateNewsLang */
+		UPDATE CW_NEWS_LANG
+		<set>
+		<if test="newsTitle != null">
+		NEWS_TITLE = #{newsTitle},
+		</if>
+		<if test="newsCont != null">
+		NEWS_CONT = #{newsCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			NEWS_ID = #{newsId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteNewsLang" parameterType="NewsLangExDto">
+	/* newsLangMapper.deleteNewsLang */
+	DELETE FROM CW_NEWS_LANG
+	WHERE
+		NEWS_ID = #{newsId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

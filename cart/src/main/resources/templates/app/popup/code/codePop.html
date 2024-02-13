@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cdId"] = '[[${transData.cdId}]]';
+	map["grpId"] = '[[${transData.grpId}]]';
+	if (isEmpty(map["cdId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cdId").setAttribute('readonly', true);
+		getEleByObj("grpId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/code/getCode.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cdId","","코드를 확인하세요."]
+		,["cdNm","","코드명을 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/code/updateCode.do";
+	if (mode=="NEW"){
+		url = "/app/code/insertCode.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCodePop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCodePop" class="modal shot-pop" title="코드 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCodePop" name="formCodePop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">코드<span class="require">*</span></th>
+						<td><input type="text" name="cdId" id="cdId" style="width:70%">
+						</td>
+						<th scope="row">코드명</th>
+						<td><input type="text" name="cdNm" id="cdNm"></td>
+					</tr>
+					<tr>
+						<th scope="row">그룹코드<span class="require">*</span></th>
+						<td><input type="text" name="grpId" id="grpId" style="width:70%">
+						</td>
+						<th>사용여부<span class="require">*</span></th>
+						<td>
+						<select name="useYn" id="useYn" style="width:30%">
+						<option value="Y" selected>사용</option>
+						<option value="N">미사용</option>
+						</select>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

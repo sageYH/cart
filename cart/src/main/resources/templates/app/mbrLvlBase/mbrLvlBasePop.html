@@ -1,0 +1,152 @@
+<div id="divMbrLvlBasePop" class="sub_wrap" style="display:none;width:92%" title="멤버등급기준 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>멤버등급기준 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="mbrLvlCd_g1">멤버등급코드</label>
+						<div class="wrap">
+							<input type="text" id="mbrLvlCd_g1" name="mbrLvlCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="signupCondDets_g1">가입조건내역</label>
+						<div class="wrap">
+							<input type="text" id="signupCondDets_g1" name="signupCondDets_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="benfCont_g1">혜택내용</label>
+						<div class="wrap">
+							<input type="text" id="benfCont_g1" name="benfCont_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="MbrLvlBasePop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="MbrLvlBasePop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="MbrLvlBasePop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var MbrLvlBasePop = new $W.load("divMbrLvlBasePop");
+MbrLvlBasePop.ready(function(){
+	//
+});
+
+MbrLvlBasePop.fnOpen = function(mode, params, func) {
+	clearObjects("divMbrLvlBasePop");
+	MbrLvlBasePop.mode = mode;
+	if (!isEmpty(func)){
+		MbrLvlBasePop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divMbrLvlBasePop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["mbrLvlCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/mbrLvlBase/getMbrLvlBase.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("signupCondDets_g1").focus();
+	}else{
+		readOnlyFalse(["mbrLvlCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+MbrLvlBasePop.fnSave = function(){
+
+	var valid = 0 || [
+		["mbrLvlCd_g1","","자료(멤버등급코드)를 확인하세요."]
+		,["signupCondDets_g1","","자료(가입조건내역)를 확인하세요."]
+		,["benfCont_g1","","자료(혜택내용)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divMbrLvlBasePop");
+	var url = "/app/mbrLvlBase/updateMbrLvlBase.do";
+	if (MbrLvlBasePop.mode=="CREATE"){
+		url = "/app/mbrLvlBase/insertMbrLvlBase.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrLvlBasePop.func)){
+			MbrLvlBasePop.func();
+			MbrLvlBasePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+MbrLvlBasePop.fnDelete = function(){
+	if (MbrLvlBasePop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/mbrLvlBase/deleteMbrLvlBase.do";
+	var params = {};
+	params["mbrLvlCd"] = getElement("mbrLvlCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrLvlBasePop.func)){
+			MbrLvlBasePop.func();
+			MbrLvlBasePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+MbrLvlBasePop.fnClose = function(){
+	layerToggle("divMbrLvlBasePop",{"mode":0});
+};
+</script>

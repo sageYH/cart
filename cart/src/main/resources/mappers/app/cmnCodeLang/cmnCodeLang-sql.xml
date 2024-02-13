@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cmnCodeLangMapper">
+	<sql id="where-cmnCodeLang">
+		WHERE 1=1
+			<if test="cmnCd != null and cmnCd != '' ">
+			AND CCL.CMN_CD = #{cmnCd}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND CCL.LANG_CD = #{langCd}
+			</if>
+			<if test="cmnCdNm != null and cmnCdNm != '' ">
+			AND CCL.CMN_CD_NM = #{cmnCdNm}
+			</if>
+			<if test="grpCd != null and grpCd != '' ">
+			AND CCL.GRP_CD = #{grpCd}
+			</if>
+			<if test="ref1 != null and ref1 != '' ">
+			AND CCL.REF1 = #{ref1}
+			</if>
+			<if test="ref2 != null and ref2 != '' ">
+			AND CCL.REF2 = #{ref2}
+			</if>
+			<if test="ref3 != null and ref3 != '' ">
+			AND CCL.REF3 = #{ref3}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CCL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCmnCodeLangListCount" parameterType="CmnCodeLangExDto" resultType="Integer">
+	/* cmnCodeLangMapper.getCmnCodeLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CMN_CODE_LANG CCL
+		<include refid="where-cmnCodeLang" />
+	</select>
+
+	<select id="getCmnCodeLangList" parameterType="CmnCodeLangExDto" resultType="CmnCodeLangExDto">
+	/* cmnCodeLangMapper.getCmnCodeLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CCL.CMN_CD
+			,CCL.LANG_CD
+			,CCL.CMN_CD_NM
+			,CCL.GRP_CD
+			,CCL.REF1
+			,CCL.REF2
+			,CCL.REF3
+			,CCL.USE_YN
+			,CCL.REG_USER_ID
+			,REG_DTM
+			,CCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CMN_CODE_LANG CCL
+		<include refid="where-cmnCodeLang" />
+		ORDER BY
+			CCL.CMN_CD
+			,CCL.LANG_CD
+			,CCL.GRP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCmnCodeLang" parameterType="CmnCodeLangExDto" resultType="CmnCodeLangExDto">
+	/* cmnCodeLangMapper.getCmnCodeLang */
+		SELECT
+			CCL.CMN_CD
+			,CCL.LANG_CD
+			,CCL.CMN_CD_NM
+			,CCL.GRP_CD
+			,CCL.REF1
+			,CCL.REF2
+			,CCL.REF3
+			,CCL.USE_YN
+			,CCL.REG_USER_ID
+			,REG_DTM
+			,CCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CMN_CODE_LANG CCL
+		WHERE
+			CCL.CMN_CD = #{cmnCd}
+			AND CCL.LANG_CD = #{langCd}
+			AND CCL.GRP_CD = #{grpCd}
+	</select>
+
+	<insert id="insertCmnCodeLang" parameterType="CmnCodeLangExDto">
+	/* cmnCodeLangMapper.insertCmnCodeLang */
+		INSERT INTO CW_CMN_CODE_LANG (
+			CMN_CD
+			,LANG_CD
+			,CMN_CD_NM
+			,GRP_CD
+			,REF1
+			,REF2
+			,REF3
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cmnCd}
+			,#{langCd}
+			,#{cmnCdNm}
+			,#{grpCd}
+			,#{ref1}
+			,#{ref2}
+			,#{ref3}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCmnCodeLang" parameterType="CmnCodeLangExDto">
+	/* cmnCodeLangMapper.updateCmnCodeLang */
+		UPDATE CW_CMN_CODE_LANG
+		<set>
+		<if test="cmnCdNm != null">
+		CMN_CD_NM = #{cmnCdNm},
+		</if>
+		<if test="ref1 != null">
+		REF1 = #{ref1},
+		</if>
+		<if test="ref2 != null">
+		REF2 = #{ref2},
+		</if>
+		<if test="ref3 != null">
+		REF3 = #{ref3},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CMN_CD = #{cmnCd}
+			AND LANG_CD = #{langCd}
+			AND GRP_CD = #{grpCd}
+	</update>
+
+	<delete id="deleteCmnCodeLang" parameterType="CmnCodeLangExDto">
+	/* cmnCodeLangMapper.deleteCmnCodeLang */
+	DELETE FROM CW_CMN_CODE_LANG
+	WHERE
+		CMN_CD = #{cmnCd}
+		AND LANG_CD = #{langCd}
+		AND GRP_CD = #{grpCd}
+	</delete>
+</mapper>

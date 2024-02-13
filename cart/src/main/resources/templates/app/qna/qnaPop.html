@@ -1,0 +1,216 @@
+<div id="divQnaPop" class="sub_wrap" style="display:none;width:92%" title="QNA 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>QNA 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="qnaId_g1">QNA_ID</label>
+						<div class="wrap">
+							<input type="text" id="qnaId_g1" name="qnaId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="qnaTypCd_g1">QNA유형코드</label>
+						<div class="wrap">
+							<input type="text" id="qnaTypCd_g1" name="qnaTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="qnaTitle_g1">제목</label>
+						<div class="wrap">
+							<input type="text" id="qnaTitle_g1" name="qnaTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="qnaCont_g1">QNA내용</label>
+						<div class="wrap">
+							<input type="text" id="qnaCont_g1" name="qnaCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="qnaViews_g1">QNA조회수</label>
+						<div class="wrap">
+							<input type="text" id="qnaViews_g1" name="qnaViews_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prntQnaId_g1">상위QNA_ID</label>
+						<div class="wrap">
+							<input type="text" id="prntQnaId_g1" name="prntQnaId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="grpQnaId_g1">그룹QNA_ID</label>
+						<div class="wrap">
+							<input type="text" id="grpQnaId_g1" name="grpQnaId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="qnaFrYmd_g1">QNA시작일</label>
+						<div class="wrap">
+							<input type="text" id="qnaFrYmd_g1" name="qnaFrYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="qnaToYmd_g1">QNA종료일</label>
+						<div class="wrap">
+							<input type="text" id="qnaToYmd_g1" name="qnaToYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="popupYn_g1">팝업여부</label>
+						<div class="wrap">
+							<input type="text" id="popupYn_g1" name="popupYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="QnaPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="QnaPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="QnaPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var QnaPop = new $W.load("divQnaPop");
+QnaPop.ready(function(){
+	//
+});
+
+QnaPop.fnOpen = function(mode, params, func) {
+	clearObjects("divQnaPop");
+	QnaPop.mode = mode;
+	if (!isEmpty(func)){
+		QnaPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divQnaPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["qnaId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/qna/getQna.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("qnaTypCd_g1").focus();
+	}else{
+		readOnlyFalse(["qnaId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+QnaPop.fnSave = function(){
+
+	var valid = 0 || [
+		["qnaId_g1","","자료(QNA_ID)를 확인하세요."]
+		,["qnaTypCd_g1","","자료(QNA유형코드)를 확인하세요."]
+		,["qnaTitle_g1","","자료(제목)를 확인하세요."]
+		,["qnaCont_g1","","자료(QNA내용)를 확인하세요."]
+		,["qnaViews_g1","","자료(QNA조회수)를 확인하세요."]
+		,["prntQnaId_g1","","자료(상위QNA_ID)를 확인하세요."]
+		,["grpQnaId_g1","","자료(그룹QNA_ID)를 확인하세요."]
+		,["qnaFrYmd_g1","","자료(QNA시작일)를 확인하세요."]
+		,["qnaToYmd_g1","","자료(QNA종료일)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["popupYn_g1","","자료(팝업여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divQnaPop");
+	var url = "/app/qna/updateQna.do";
+	if (QnaPop.mode=="CREATE"){
+		url = "/app/qna/insertQna.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(QnaPop.func)){
+			QnaPop.func();
+			QnaPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+QnaPop.fnDelete = function(){
+	if (QnaPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/qna/deleteQna.do";
+	var params = {};
+	params["qnaId"] = getElement("qnaId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(QnaPop.func)){
+			QnaPop.func();
+			QnaPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+QnaPop.fnClose = function(){
+	layerToggle("divQnaPop",{"mode":0});
+};
+</script>

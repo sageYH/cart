@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pymtAgcyCompMapper">
+	<sql id="where-pymtAgcyComp">
+		WHERE 1=1
+			<if test="cwPymtAgcyCompCd != null and cwPymtAgcyCompCd != '' ">
+			AND PAC.CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd}
+			</if>
+			<if test="cwPymtAgcyCompNm != null and cwPymtAgcyCompNm != '' ">
+			AND PAC.CW_PYMT_AGCY_COMP_NM = #{cwPymtAgcyCompNm}
+			</if>
+			<if test="cardCompCd != null and cardCompCd != '' ">
+			AND PAC.CARD_COMP_CD = #{cardCompCd}
+			</if>
+			<if test="pymtTypCd != null and pymtTypCd != '' ">
+			AND PAC.PYMT_TYP_CD = #{pymtTypCd}
+			</if>
+			<if test="storeId != null and storeId != '' ">
+			AND PAC.STORE_ID = #{storeId}
+			</if>
+			<if test="storeKey != null and storeKey != '' ">
+			AND PAC.STORE_KEY = #{storeKey}
+			</if>
+			<if test="txnCancPwd != null and txnCancPwd != '' ">
+			AND PAC.TXN_CANC_PWD = #{txnCancPwd}
+			</if>
+			<if test="vanAuthnKey != null and vanAuthnKey != '' ">
+			AND PAC.VAN_AUTHN_KEY = #{vanAuthnKey}
+			</if>
+			<if test="pgRepCompYn != null and pgRepCompYn != '' ">
+			AND PAC.PG_REP_COMP_YN = #{pgRepCompYn}
+			</if>
+			<if test="vanRepCompYn != null and vanRepCompYn != '' ">
+			AND PAC.VAN_REP_COMP_YN = #{vanRepCompYn}
+			</if>
+			<if test="pgUrl != null and pgUrl != '' ">
+			AND PAC.PG_URL = #{pgUrl}
+			</if>
+			<if test="pgTestUrl != null and pgTestUrl != '' ">
+			AND PAC.PG_TEST_URL = #{pgTestUrl}
+			</if>
+	</sql>
+
+	<select id="getPymtAgcyCompListCount" parameterType="PymtAgcyCompExDto" resultType="Integer">
+	/* pymtAgcyCompMapper.getPymtAgcyCompListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PYMT_AGCY_COMP PAC
+		<include refid="where-pymtAgcyComp" />
+	</select>
+
+	<select id="getPymtAgcyCompList" parameterType="PymtAgcyCompExDto" resultType="PymtAgcyCompExDto">
+	/* pymtAgcyCompMapper.getPymtAgcyCompList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PAC.CW_PYMT_AGCY_COMP_CD
+			,PAC.CW_PYMT_AGCY_COMP_NM
+			,PAC.CARD_COMP_CD
+			,PAC.PYMT_TYP_CD
+			,PAC.STORE_ID
+			,PAC.STORE_KEY
+			,PAC.TXN_CANC_PWD
+			,PAC.VAN_AUTHN_KEY
+			,PAC.PG_REP_COMP_YN
+			,PAC.VAN_REP_COMP_YN
+			,PAC.PG_URL
+			,PAC.PG_TEST_URL
+			,PAC.REG_USER_ID
+			,REG_DTM
+			,PAC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PYMT_AGCY_COMP PAC
+		<include refid="where-pymtAgcyComp" />
+		ORDER BY
+			PAC.CW_PYMT_AGCY_COMP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getPymtAgcyComp" parameterType="PymtAgcyCompExDto" resultType="PymtAgcyCompExDto">
+	/* pymtAgcyCompMapper.getPymtAgcyComp */
+		SELECT
+			PAC.CW_PYMT_AGCY_COMP_CD
+			,PAC.CW_PYMT_AGCY_COMP_NM
+			,PAC.CARD_COMP_CD
+			,PAC.PYMT_TYP_CD
+			,PAC.STORE_ID
+			,PAC.STORE_KEY
+			,PAC.TXN_CANC_PWD
+			,PAC.VAN_AUTHN_KEY
+			,PAC.PG_REP_COMP_YN
+			,PAC.VAN_REP_COMP_YN
+			,PAC.PG_URL
+			,PAC.PG_TEST_URL
+			,PAC.REG_USER_ID
+			,REG_DTM
+			,PAC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PYMT_AGCY_COMP PAC
+		WHERE
+			PAC.CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd}
+	</select>
+
+	<insert id="insertPymtAgcyComp" parameterType="PymtAgcyCompExDto">
+	/* pymtAgcyCompMapper.insertPymtAgcyComp */
+		INSERT INTO CW_PYMT_AGCY_COMP (
+			CW_PYMT_AGCY_COMP_CD
+			,CW_PYMT_AGCY_COMP_NM
+			,CARD_COMP_CD
+			,PYMT_TYP_CD
+			,STORE_ID
+			,STORE_KEY
+			,TXN_CANC_PWD
+			,VAN_AUTHN_KEY
+			,PG_REP_COMP_YN
+			,VAN_REP_COMP_YN
+			,PG_URL
+			,PG_TEST_URL
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cwPymtAgcyCompCd}
+			,#{cwPymtAgcyCompNm}
+			,#{cardCompCd}
+			,#{pymtTypCd}
+			,#{storeId}
+			,#{storeKey}
+			,#{txnCancPwd}
+			,#{vanAuthnKey}
+			,#{pgRepCompYn}
+			,#{vanRepCompYn}
+			,#{pgUrl}
+			,#{pgTestUrl}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updatePymtAgcyComp" parameterType="PymtAgcyCompExDto">
+	/* pymtAgcyCompMapper.updatePymtAgcyComp */
+		UPDATE CW_PYMT_AGCY_COMP
+		<set>
+		<if test="cwPymtAgcyCompNm != null">
+		CW_PYMT_AGCY_COMP_NM = #{cwPymtAgcyCompNm},
+		</if>
+		<if test="cardCompCd != null">
+		CARD_COMP_CD = #{cardCompCd},
+		</if>
+		<if test="pymtTypCd != null">
+		PYMT_TYP_CD = #{pymtTypCd},
+		</if>
+		<if test="storeId != null">
+		STORE_ID = #{storeId},
+		</if>
+		<if test="storeKey != null">
+		STORE_KEY = #{storeKey},
+		</if>
+		<if test="txnCancPwd != null">
+		TXN_CANC_PWD = #{txnCancPwd},
+		</if>
+		<if test="vanAuthnKey != null">
+		VAN_AUTHN_KEY = #{vanAuthnKey},
+		</if>
+		<if test="pgRepCompYn != null">
+		PG_REP_COMP_YN = #{pgRepCompYn},
+		</if>
+		<if test="vanRepCompYn != null">
+		VAN_REP_COMP_YN = #{vanRepCompYn},
+		</if>
+		<if test="pgUrl != null">
+		PG_URL = #{pgUrl},
+		</if>
+		<if test="pgTestUrl != null">
+		PG_TEST_URL = #{pgTestUrl},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd}
+	</update>
+
+	<delete id="deletePymtAgcyComp" parameterType="PymtAgcyCompExDto">
+	/* pymtAgcyCompMapper.deletePymtAgcyComp */
+	DELETE FROM CW_PYMT_AGCY_COMP
+	WHERE
+		CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd}
+	</delete>
+</mapper>

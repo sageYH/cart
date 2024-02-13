@@ -1,0 +1,20 @@
+<meta charset="utf-8" />
+<header style="z-index:20000;">
+	<div class="header-wrap">
+		<button type="button" class="btn-gnb menu"></button>
+		<h1 class="logo"><a href="/">TEST</a></h1>
+
+		<div class="user-wrap">
+			<select id="quick-link" class="quick-link">
+				<option value="">Quick Link</option>
+			</select>
+			<dl>
+				<dt th:text="${USERNM}"></dt>
+				<dd>
+					<img src="/img/assets/user-img-icon.png" alt="홍길동" />
+				</dd>
+			</dl>
+			<button type="button" class="logout" th:if="${USERNM != null and USERNM != ''}" th:onclick="|location.href='@{/logout.do}'|">로그아웃</button>
+		</div>
+	</div>
+</header>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderCnclDelivMapper">
+	<sql id="where-orderCnclDeliv">
+		WHERE 1=1
+			<if test="ordCnclDelivId != null and ordCnclDelivId != '' ">
+			AND OCD.ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OCD.ORD_ID = #{ordId}
+			</if>
+			<if test="cnclDelivCompId != null and cnclDelivCompId != '' ">
+			AND OCD.CNCL_DELIV_COMP_ID = #{cnclDelivCompId}
+			</if>
+			<if test="cnclDelivFee != null and cnclDelivFee != '' ">
+			AND OCD.CNCL_DELIV_FEE = #{cnclDelivFee}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND OCD.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+			<if test="delivYn != null and delivYn != '' ">
+			AND OCD.DELIV_YN = #{delivYn}
+			</if>
+			<if test="delivExpectedYmd != null and delivExpectedYmd != '' ">
+			AND OCD.DELIV_EXPECTED_YMD = #{delivExpectedYmd}
+			</if>
+			<if test="delivYmd != null and delivYmd != '' ">
+			AND OCD.DELIV_YMD = #{delivYmd}
+			</if>
+	</sql>
+
+	<select id="getOrderCnclDelivListCount" parameterType="OrderCnclDelivExDto" resultType="Integer">
+	/* orderCnclDelivMapper.getOrderCnclDelivListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_CNCL_DELIV OCD
+		<include refid="where-orderCnclDeliv" />
+	</select>
+
+	<select id="getOrderCnclDelivList" parameterType="OrderCnclDelivExDto" resultType="OrderCnclDelivExDto">
+	/* orderCnclDelivMapper.getOrderCnclDelivList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OCD.ORD_CNCL_DELIV_ID
+			,OCD.ORD_ID
+			,OCD.CNCL_DELIV_COMP_ID
+			,OCD.CNCL_DELIV_FEE
+			,OCD.PYMT_COMP_ID
+			,OCD.DELIV_YN
+			,OCD.DELIV_EXPECTED_YMD
+			,OCD.DELIV_YMD
+			,OCD.REG_USER_ID
+			,REG_DTM
+			,OCD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CNCL_DELIV OCD
+		<include refid="where-orderCnclDeliv" />
+		ORDER BY
+			OCD.ORD_CNCL_DELIV_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderCnclDeliv" parameterType="OrderCnclDelivExDto" resultType="OrderCnclDelivExDto">
+	/* orderCnclDelivMapper.getOrderCnclDeliv */
+		SELECT
+			OCD.ORD_CNCL_DELIV_ID
+			,OCD.ORD_ID
+			,OCD.CNCL_DELIV_COMP_ID
+			,OCD.CNCL_DELIV_FEE
+			,OCD.PYMT_COMP_ID
+			,OCD.DELIV_YN
+			,OCD.DELIV_EXPECTED_YMD
+			,OCD.DELIV_YMD
+			,OCD.REG_USER_ID
+			,REG_DTM
+			,OCD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CNCL_DELIV OCD
+		WHERE
+			OCD.ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+	</select>
+
+	<insert id="insertOrderCnclDeliv" parameterType="OrderCnclDelivExDto">
+	/* orderCnclDelivMapper.insertOrderCnclDeliv */
+		INSERT INTO CW_ORDER_CNCL_DELIV (
+			ORD_CNCL_DELIV_ID
+			,ORD_ID
+			,CNCL_DELIV_COMP_ID
+			,CNCL_DELIV_FEE
+			,PYMT_COMP_ID
+			,DELIV_YN
+			,DELIV_EXPECTED_YMD
+			,DELIV_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordCnclDelivId}
+			,#{ordId}
+			,#{cnclDelivCompId}
+			,#{cnclDelivFee}
+			,#{pymtCompId}
+			,#{delivYn}
+			,#{delivExpectedYmd}
+			,#{delivYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderCnclDeliv" parameterType="OrderCnclDelivExDto">
+	/* orderCnclDelivMapper.updateOrderCnclDeliv */
+		UPDATE CW_ORDER_CNCL_DELIV
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="cnclDelivCompId != null">
+		CNCL_DELIV_COMP_ID = #{cnclDelivCompId},
+		</if>
+		<if test="cnclDelivFee != null">
+		CNCL_DELIV_FEE = #{cnclDelivFee},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="delivYn != null">
+		DELIV_YN = #{delivYn},
+		</if>
+		<if test="delivExpectedYmd != null">
+		DELIV_EXPECTED_YMD = #{delivExpectedYmd},
+		</if>
+		<if test="delivYmd != null">
+		DELIV_YMD = #{delivYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+	</update>
+
+	<delete id="deleteOrderCnclDeliv" parameterType="OrderCnclDelivExDto">
+	/* orderCnclDelivMapper.deleteOrderCnclDeliv */
+	DELETE FROM CW_ORDER_CNCL_DELIV
+	WHERE
+		ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+	</delete>
+</mapper>

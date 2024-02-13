@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="productsMapper">
+	<sql id="where-products">
+		WHERE 1=1
+			<if test="prodId != null and prodId != '' ">
+			AND P.PROD_ID = #{prodId}
+			</if>
+			<if test="prodNm != null and prodNm != '' ">
+			AND P.PROD_NM = #{prodNm}
+			</if>
+			<if test="prntProdId != null and prntProdId != '' ">
+			AND P.PRNT_PROD_ID = #{prntProdId}
+			</if>
+			<if test="compId != null and compId != '' ">
+			AND P.COMP_ID = #{compId}
+			</if>
+			<if test="prodSkin != null and prodSkin != '' ">
+			AND P.PROD_SKIN = #{prodSkin}
+			</if>
+			<if test="prodMobiSkin != null and prodMobiSkin != '' ">
+			AND P.PROD_MOBI_SKIN = #{prodMobiSkin}
+			</if>
+			<if test="prodMfr != null and prodMfr != '' ">
+			AND P.PROD_MFR = #{prodMfr}
+			</if>
+			<if test="prodOrigin != null and prodOrigin != '' ">
+			AND P.PROD_ORIGIN = #{prodOrigin}
+			</if>
+			<if test="prodBrand != null and prodBrand != '' ">
+			AND P.PROD_BRAND = #{prodBrand}
+			</if>
+			<if test="prodModel != null and prodModel != '' ">
+			AND P.PROD_MODEL = #{prodModel}
+			</if>
+			<if test="prodAmt != null and prodAmt != '' ">
+			AND P.PROD_AMT = #{prodAmt}
+			</if>
+			<if test="prodInvQty != null and prodInvQty != '' ">
+			AND P.PROD_INV_QTY = #{prodInvQty}
+			</if>
+			<if test="prodUseQty != null and prodUseQty != '' ">
+			AND P.PROD_USE_QTY = #{prodUseQty}
+			</if>
+			<if test="prodInQty != null and prodInQty != '' ">
+			AND P.PROD_IN_QTY = #{prodInQty}
+			</if>
+			<if test="soldOutYn != null and soldOutYn != '' ">
+			AND P.SOLD_OUT_YN = #{soldOutYn}
+			</if>
+			<if test="pointId != null and pointId != '' ">
+			AND P.POINT_ID = #{pointId}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND P.CPN_ID = #{cpnId}
+			</if>
+			<if test="prodWeight != null and prodWeight != '' ">
+			AND P.PROD_WEIGHT = #{prodWeight}
+			</if>
+			<if test="prodInclQty != null and prodInclQty != '' ">
+			AND P.PROD_INCL_QTY = #{prodInclQty}
+			</if>
+			<if test="delivFeeTypCd != null and delivFeeTypCd != '' ">
+			AND P.DELIV_FEE_TYP_CD = #{delivFeeTypCd}
+			</if>
+			<if test="baseDelivFee != null and baseDelivFee != '' ">
+			AND P.BASE_DELIV_FEE = #{baseDelivFee}
+			</if>
+			<if test="delivFreeMinAmt != null and delivFreeMinAmt != '' ">
+			AND P.DELIV_FREE_MIN_AMT = #{delivFreeMinAmt}
+			</if>
+			<if test="delivBaseWeight != null and delivBaseWeight != '' ">
+			AND P.DELIV_BASE_WEIGHT = #{delivBaseWeight}
+			</if>
+			<if test="delivBaseQty != null and delivBaseQty != '' ">
+			AND P.DELIV_BASE_QTY = #{delivBaseQty}
+			</if>
+			<if test="prodViews != null and prodViews != '' ">
+			AND P.PROD_VIEWS = #{prodViews}
+			</if>
+			<if test="prodRegDtm != null and prodRegDtm != '' ">
+			AND P.PROD_REG_DTM = STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="prodUpdDtm != null and prodUpdDtm != '' ">
+			AND P.PROD_UPD_DTM = STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="regIp != null and regIp != '' ">
+			AND P.REG_IP = #{regIp}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND P.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="salesQty != null and salesQty != '' ">
+			AND P.SALES_QTY = #{salesQty}
+			</if>
+			<if test="incSmsNotifYn != null and incSmsNotifYn != '' ">
+			AND P.INC_SMS_NOTIF_YN = #{incSmsNotifYn}
+			</if>
+			<if test="reviewNum != null and reviewNum != '' ">
+			AND P.REVIEW_NUM = #{reviewNum}
+			</if>
+			<if test="reviewRtgAvg != null and reviewRtgAvg != '' ">
+			AND P.REVIEW_RTG_AVG = #{reviewRtgAvg}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND P.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProductsListCount" parameterType="ProductsExDto" resultType="Integer">
+	/* productsMapper.getProductsListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PRODUCTS P
+		<include refid="where-products" />
+	</select>
+
+	<select id="getProductsList" parameterType="ProductsExDto" resultType="ProductsExDto">
+	/* productsMapper.getProductsList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			P.PROD_ID
+			,P.PROD_NM
+			,P.PRNT_PROD_ID
+			,P.COMP_ID
+			,P.PROD_SKIN
+			,P.PROD_MOBI_SKIN
+			,P.PROD_MFR
+			,P.PROD_ORIGIN
+			,P.PROD_BRAND
+			,P.PROD_MODEL
+			,P.PROD_AMT
+			,P.PROD_INV_QTY
+			,P.PROD_USE_QTY
+			,P.PROD_IN_QTY
+			,P.SOLD_OUT_YN
+			,P.POINT_ID
+			,P.CPN_ID
+			,P.PROD_WEIGHT
+			,P.PROD_INCL_QTY
+			,P.DELIV_FEE_TYP_CD
+			,P.BASE_DELIV_FEE
+			,P.DELIV_FREE_MIN_AMT
+			,P.DELIV_BASE_WEIGHT
+			,P.DELIV_BASE_QTY
+			,P.PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,P.REG_IP
+			,P.SORT_SEQ
+			,P.SALES_QTY
+			,P.INC_SMS_NOTIF_YN
+			,P.REVIEW_NUM
+			,P.REVIEW_RTG_AVG
+			,P.USE_YN
+			,P.REG_USER_ID
+			,REG_DTM
+			,P.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PRODUCTS P
+		<include refid="where-products" />
+		ORDER BY
+			P.PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProducts" parameterType="ProductsExDto" resultType="ProductsExDto">
+	/* productsMapper.getProducts */
+		SELECT
+			P.PROD_ID
+			,P.PROD_NM
+			,P.PRNT_PROD_ID
+			,P.COMP_ID
+			,P.PROD_SKIN
+			,P.PROD_MOBI_SKIN
+			,P.PROD_MFR
+			,P.PROD_ORIGIN
+			,P.PROD_BRAND
+			,P.PROD_MODEL
+			,P.PROD_AMT
+			,P.PROD_INV_QTY
+			,P.PROD_USE_QTY
+			,P.PROD_IN_QTY
+			,P.SOLD_OUT_YN
+			,P.POINT_ID
+			,P.CPN_ID
+			,P.PROD_WEIGHT
+			,P.PROD_INCL_QTY
+			,P.DELIV_FEE_TYP_CD
+			,P.BASE_DELIV_FEE
+			,P.DELIV_FREE_MIN_AMT
+			,P.DELIV_BASE_WEIGHT
+			,P.DELIV_BASE_QTY
+			,P.PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,P.REG_IP
+			,P.SORT_SEQ
+			,P.SALES_QTY
+			,P.INC_SMS_NOTIF_YN
+			,P.REVIEW_NUM
+			,P.REVIEW_RTG_AVG
+			,P.USE_YN
+			,P.REG_USER_ID
+			,REG_DTM
+			,P.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PRODUCTS P
+		WHERE
+			P.PROD_ID = #{prodId}
+	</select>
+
+	<insert id="insertProducts" parameterType="ProductsExDto">
+	/* productsMapper.insertProducts */
+		INSERT INTO CW_PRODUCTS (
+			PROD_ID
+			,PROD_NM
+			,PRNT_PROD_ID
+			,COMP_ID
+			,PROD_SKIN
+			,PROD_MOBI_SKIN
+			,PROD_MFR
+			,PROD_ORIGIN
+			,PROD_BRAND
+			,PROD_MODEL
+			,PROD_AMT
+			,PROD_INV_QTY
+			,PROD_USE_QTY
+			,PROD_IN_QTY
+			,SOLD_OUT_YN
+			,POINT_ID
+			,CPN_ID
+			,PROD_WEIGHT
+			,PROD_INCL_QTY
+			,DELIV_FEE_TYP_CD
+			,BASE_DELIV_FEE
+			,DELIV_FREE_MIN_AMT
+			,DELIV_BASE_WEIGHT
+			,DELIV_BASE_QTY
+			,PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,REG_IP
+			,SORT_SEQ
+			,SALES_QTY
+			,INC_SMS_NOTIF_YN
+			,REVIEW_NUM
+			,REVIEW_RTG_AVG
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodId}
+			,#{prodNm}
+			,#{prntProdId}
+			,#{compId}
+			,#{prodSkin}
+			,#{prodMobiSkin}
+			,#{prodMfr}
+			,#{prodOrigin}
+			,#{prodBrand}
+			,#{prodModel}
+			,#{prodAmt}
+			,#{prodInvQty}
+			,#{prodUseQty}
+			,#{prodInQty}
+			,#{soldOutYn}
+			,#{pointId}
+			,#{cpnId}
+			,#{prodWeight}
+			,#{prodInclQty}
+			,#{delivFeeTypCd}
+			,#{baseDelivFee}
+			,#{delivFreeMinAmt}
+			,#{delivBaseWeight}
+			,#{delivBaseQty}
+			,#{prodViews}
+			,STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s')
+			,#{regIp}
+			,#{sortSeq}
+			,#{salesQty}
+			,#{incSmsNotifYn}
+			,#{reviewNum}
+			,#{reviewRtgAvg}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProducts" parameterType="ProductsExDto">
+	/* productsMapper.updateProducts */
+		UPDATE CW_PRODUCTS
+		<set>
+		<if test="prodNm != null">
+		PROD_NM = #{prodNm},
+		</if>
+		<if test="prntProdId != null">
+		PRNT_PROD_ID = #{prntProdId},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
+		</if>
+		<if test="prodSkin != null">
+		PROD_SKIN = #{prodSkin},
+		</if>
+		<if test="prodMobiSkin != null">
+		PROD_MOBI_SKIN = #{prodMobiSkin},
+		</if>
+		<if test="prodMfr != null">
+		PROD_MFR = #{prodMfr},
+		</if>
+		<if test="prodOrigin != null">
+		PROD_ORIGIN = #{prodOrigin},
+		</if>
+		<if test="prodBrand != null">
+		PROD_BRAND = #{prodBrand},
+		</if>
+		<if test="prodModel != null">
+		PROD_MODEL = #{prodModel},
+		</if>
+		<if test="prodAmt != null">
+		PROD_AMT = #{prodAmt},
+		</if>
+		<if test="prodInvQty != null">
+		PROD_INV_QTY = #{prodInvQty},
+		</if>
+		<if test="prodUseQty != null">
+		PROD_USE_QTY = #{prodUseQty},
+		</if>
+		<if test="prodInQty != null">
+		PROD_IN_QTY = #{prodInQty},
+		</if>
+		<if test="soldOutYn != null">
+		SOLD_OUT_YN = #{soldOutYn},
+		</if>
+		<if test="pointId != null">
+		POINT_ID = #{pointId},
+		</if>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="prodWeight != null">
+		PROD_WEIGHT = #{prodWeight},
+		</if>
+		<if test="prodInclQty != null">
+		PROD_INCL_QTY = #{prodInclQty},
+		</if>
+		<if test="delivFeeTypCd != null">
+		DELIV_FEE_TYP_CD = #{delivFeeTypCd},
+		</if>
+		<if test="baseDelivFee != null">
+		BASE_DELIV_FEE = #{baseDelivFee},
+		</if>
+		<if test="delivFreeMinAmt != null">
+		DELIV_FREE_MIN_AMT = #{delivFreeMinAmt},
+		</if>
+		<if test="delivBaseWeight != null">
+		DELIV_BASE_WEIGHT = #{delivBaseWeight},
+		</if>
+		<if test="delivBaseQty != null">
+		DELIV_BASE_QTY = #{delivBaseQty},
+		</if>
+		<if test="prodViews != null">
+		PROD_VIEWS = #{prodViews},
+		</if>
+		<if test="prodRegDtm != null">
+		PROD_REG_DTM = STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="prodUpdDtm != null">
+		PROD_UPD_DTM = STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="regIp != null">
+		REG_IP = #{regIp},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="salesQty != null">
+		SALES_QTY = #{salesQty},
+		</if>
+		<if test="incSmsNotifYn != null">
+		INC_SMS_NOTIF_YN = #{incSmsNotifYn},
+		</if>
+		<if test="reviewNum != null">
+		REVIEW_NUM = #{reviewNum},
+		</if>
+		<if test="reviewRtgAvg != null">
+		REVIEW_RTG_AVG = #{reviewRtgAvg},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_ID = #{prodId}
+	</update>
+
+	<delete id="deleteProducts" parameterType="ProductsExDto">
+	/* productsMapper.deleteProducts */
+	DELETE FROM CW_PRODUCTS
+	WHERE
+		PROD_ID = #{prodId}
+	</delete>
+</mapper>

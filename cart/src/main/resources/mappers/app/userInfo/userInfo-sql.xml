@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userInfoMapper">
+	<sql id="where-userInfo">
+		WHERE 1=1
+			<if test="userId != null and userId != '' ">
+			AND UI.USER_ID = #{userId}
+			</if>
+			<if test="userNm != null and userNm != '' ">
+			AND UI.USER_NM = #{userNm}
+			</if>
+			<if test="userPwd != null and userPwd != '' ">
+			AND UI.USER_PWD = #{userPwd}
+			</if>
+			<if test="cntryCd != null and cntryCd != '' ">
+			AND UI.CNTRY_CD = #{cntryCd}
+			</if>
+			<if test="compId != null and compId != '' ">
+			AND UI.COMP_ID = #{compId}
+			</if>
+			<if test="deptCd != null and deptCd != '' ">
+			AND UI.DEPT_CD = #{deptCd}
+			</if>
+			<if test="deptNm != null and deptNm != '' ">
+			AND UI.DEPT_NM = #{deptNm}
+			</if>
+			<if test="telNo != null and telNo != '' ">
+			AND UI.TEL_NO = #{telNo}
+			</if>
+			<if test="phoneNo != null and phoneNo != '' ">
+			AND UI.PHONE_NO = #{phoneNo}
+			</if>
+			<if test="email != null and email != '' ">
+			AND UI.EMAIL = #{email}
+			</if>
+			<if test="pswdErrCnt != null and pswdErrCnt != '' ">
+			AND UI.PSWD_ERR_CNT = #{pswdErrCnt}
+			</if>
+			<if test="grade != null and grade != '' ">
+			AND UI.GRADE = #{grade}
+			</if>
+			<if test="pswdExpectedYmd != null and pswdExpectedYmd != '' ">
+			AND UI.PSWD_EXPECTED_YMD = #{pswdExpectedYmd}
+			</if>
+			<if test="initUserPswd != null and initUserPswd != '' ">
+			AND UI.INIT_USER_PSWD = #{initUserPswd}
+			</if>
+			<if test="mailAgreeYn != null and mailAgreeYn != '' ">
+			AND UI.MAIL_AGREE_YN = #{mailAgreeYn}
+			</if>
+			<if test="smsAgreeYn != null and smsAgreeYn != '' ">
+			AND UI.SMS_AGREE_YN = #{smsAgreeYn}
+			</if>
+			<if test="ref1 != null and ref1 != '' ">
+			AND UI.REF1 = #{ref1}
+			</if>
+			<if test="ref2 != null and ref2 != '' ">
+			AND UI.REF2 = #{ref2}
+			</if>
+			<if test="lockYn != null and lockYn != '' ">
+			AND UI.LOCK_YN = #{lockYn}
+			</if>
+			<if test="expectedYn != null and expectedYn != '' ">
+			AND UI.EXPECTED_YN = #{expectedYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND UI.USE_YN = #{useYn}
+			</if>
+			<if test="cid != null and cid != '' ">
+			AND UI.CID = #{cid}
+			</if>
+			<if test="certDn != null and certDn != '' ">
+			AND UI.CERT_DN = #{certDn}
+			</if>
+			<if test="certSign != null and certSign != '' ">
+			AND UI.CERT_SIGN = #{certSign}
+			</if>
+	</sql>
+
+	<select id="getUserInfoListCount" parameterType="UserInfoExDto" resultType="Integer">
+	/* userInfoMapper.getUserInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_USER_INFO UI
+		<include refid="where-userInfo" />
+	</select>
+
+	<select id="getUserInfoList" parameterType="UserInfoExDto" resultType="UserInfoExDto">
+	/* userInfoMapper.getUserInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			UI.USER_ID
+			,UI.USER_NM
+			,UI.USER_PWD
+			,UI.CNTRY_CD
+			,UI.COMP_ID
+			,UI.DEPT_CD
+			,UI.DEPT_NM
+			,UI.TEL_NO
+			,UI.PHONE_NO
+			,UI.EMAIL
+			,UI.PSWD_ERR_CNT
+			,UI.GRADE
+			,UI.PSWD_EXPECTED_YMD
+			,UI.INIT_USER_PSWD
+			,UI.MAIL_AGREE_YN
+			,UI.SMS_AGREE_YN
+			,UI.REF1
+			,UI.REF2
+			,UI.LOCK_YN
+			,UI.EXPECTED_YN
+			,UI.USE_YN
+			,UI.CID
+			,UI.CERT_DN
+			,UI.CERT_SIGN
+			,UI.REG_USER_ID
+			,REG_DTM
+			,UI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_INFO UI
+		<include refid="where-userInfo" />
+		ORDER BY
+			UI.USER_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getUserInfo" parameterType="UserInfoExDto" resultType="UserInfoExDto">
+	/* userInfoMapper.getUserInfo */
+		SELECT
+			UI.USER_ID
+			,UI.USER_NM
+			,UI.USER_PWD
+			,UI.CNTRY_CD
+			,UI.COMP_ID
+			,UI.DEPT_CD
+			,UI.DEPT_NM
+			,UI.TEL_NO
+			,UI.PHONE_NO
+			,UI.EMAIL
+			,UI.PSWD_ERR_CNT
+			,UI.GRADE
+			,UI.PSWD_EXPECTED_YMD
+			,UI.INIT_USER_PSWD
+			,UI.MAIL_AGREE_YN
+			,UI.SMS_AGREE_YN
+			,UI.REF1
+			,UI.REF2
+			,UI.LOCK_YN
+			,UI.EXPECTED_YN
+			,UI.USE_YN
+			,UI.CID
+			,UI.CERT_DN
+			,UI.CERT_SIGN
+			,UI.REG_USER_ID
+			,REG_DTM
+			,UI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_INFO UI
+		WHERE
+			UI.USER_ID = #{userId}
+	</select>
+
+	<insert id="insertUserInfo" parameterType="UserInfoExDto">
+	/* userInfoMapper.insertUserInfo */
+		INSERT INTO CW_USER_INFO (
+			USER_ID
+			,USER_NM
+			,USER_PWD
+			,CNTRY_CD
+			,COMP_ID
+			,DEPT_CD
+			,DEPT_NM
+			,TEL_NO
+			,PHONE_NO
+			,EMAIL
+			,PSWD_ERR_CNT
+			,GRADE
+			,PSWD_EXPECTED_YMD
+			,INIT_USER_PSWD
+			,MAIL_AGREE_YN
+			,SMS_AGREE_YN
+			,REF1
+			,REF2
+			,LOCK_YN
+			,EXPECTED_YN
+			,USE_YN
+			,CID
+			,CERT_DN
+			,CERT_SIGN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{userId}
+			,#{userNm}
+			,#{userPwd}
+			,#{cntryCd}
+			,#{compId}
+			,#{deptCd}
+			,#{deptNm}
+			,#{telNo}
+			,#{phoneNo}
+			,#{email}
+			,#{pswdErrCnt}
+			,#{grade}
+			,#{pswdExpectedYmd}
+			,#{initUserPswd}
+			,#{mailAgreeYn}
+			,#{smsAgreeYn}
+			,#{ref1}
+			,#{ref2}
+			,#{lockYn}
+			,#{expectedYn}
+			,#{useYn}
+			,#{cid}
+			,#{certDn}
+			,#{certSign}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateUserInfo" parameterType="UserInfoExDto">
+	/* userInfoMapper.updateUserInfo */
+		UPDATE CW_USER_INFO
+		<set>
+		<if test="userNm != null">
+		USER_NM = #{userNm},
+		</if>
+		<if test="userPwd != null">
+		USER_PWD = #{userPwd},
+		</if>
+		<if test="cntryCd != null">
+		CNTRY_CD = #{cntryCd},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
+		</if>
+		<if test="deptCd != null">
+		DEPT_CD = #{deptCd},
+		</if>
+		<if test="deptNm != null">
+		DEPT_NM = #{deptNm},
+		</if>
+		<if test="telNo != null">
+		TEL_NO = #{telNo},
+		</if>
+		<if test="phoneNo != null">
+		PHONE_NO = #{phoneNo},
+		</if>
+		<if test="email != null">
+		EMAIL = #{email},
+		</if>
+		<if test="pswdErrCnt != null">
+		PSWD_ERR_CNT = #{pswdErrCnt},
+		</if>
+		<if test="grade != null">
+		GRADE = #{grade},
+		</if>
+		<if test="pswdExpectedYmd != null">
+		PSWD_EXPECTED_YMD = #{pswdExpectedYmd},
+		</if>
+		<if test="initUserPswd != null">
+		INIT_USER_PSWD = #{initUserPswd},
+		</if>
+		<if test="mailAgreeYn != null">
+		MAIL_AGREE_YN = #{mailAgreeYn},
+		</if>
+		<if test="smsAgreeYn != null">
+		SMS_AGREE_YN = #{smsAgreeYn},
+		</if>
+		<if test="ref1 != null">
+		REF1 = #{ref1},
+		</if>
+		<if test="ref2 != null">
+		REF2 = #{ref2},
+		</if>
+		<if test="lockYn != null">
+		LOCK_YN = #{lockYn},
+		</if>
+		<if test="expectedYn != null">
+		EXPECTED_YN = #{expectedYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="cid != null">
+		CID = #{cid},
+		</if>
+		<if test="certDn != null">
+		CERT_DN = #{certDn},
+		</if>
+		<if test="certSign != null">
+		CERT_SIGN = #{certSign},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			USER_ID = #{userId}
+	</update>
+
+	<delete id="deleteUserInfo" parameterType="UserInfoExDto">
+	/* userInfoMapper.deleteUserInfo */
+	DELETE FROM CW_USER_INFO
+	WHERE
+		USER_ID = #{userId}
+	</delete>
+</mapper>

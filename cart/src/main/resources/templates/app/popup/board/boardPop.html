@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["boardId"] = '[[${transData.boardId}]]';
+	if (isEmpty(map["boardId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("boardId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/board/getBoard.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["boardId","","자료(게시ID)를 확인하세요."]
+		["boardTypCd","","자료(게시유형코드)를 확인하세요."]
+		["boardTitle","","자료(게시제목)를 확인하세요."]
+		["boardCont","","자료(게시내용)를 확인하세요."]
+		["boardViews","","자료(게시조회수)를 확인하세요."]
+		["prntBoardId","","자료(상위게시ID)를 확인하세요."]
+		["grpBoardId","","자료(그룹게시ID)를 확인하세요."]
+		["boardFrYmd","","자료(게시시작일)를 확인하세요."]
+		["boardToYmd","","자료(게시종료일)를 확인하세요."]
+		["fileRefId","","자료(파일참조ID)를 확인하세요."]
+		["popupYn","","자료(팝업여부)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/board/updateBoard.do";
+	if (mode=="NEW"){
+		url = "/app/board/insertBoard.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formBoardPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvBoardPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formBoardPop" name="formBoardPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">게시ID</th>
+						<td><input type="text" name="boardId" id="boardId" style="width:70%" readonly >
+						</td>
+					<th scope="row">게시유형코드</th>
+					<td><input type="text" name="boardTypCd" id="boardTypCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">게시제목</th>
+						<td><input type="text" name="boardTitle" id="boardTitle" style="width:70%" >
+						</td>
+					<th scope="row">게시내용</th>
+					<td><input type="text" name="boardCont" id="boardCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">게시조회수</th>
+						<td><input type="text" name="boardViews" id="boardViews" style="width:70%" >
+						</td>
+					<th scope="row">상위게시ID</th>
+					<td><input type="text" name="prntBoardId" id="prntBoardId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">그룹게시ID</th>
+						<td><input type="text" name="grpBoardId" id="grpBoardId" style="width:70%" >
+						</td>
+					<th scope="row">게시시작일</th>
+					<td><input type="text" name="boardFrYmd" id="boardFrYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">게시종료일</th>
+						<td><input type="text" name="boardToYmd" id="boardToYmd" style="width:70%" >
+						</td>
+					<th scope="row">파일참조ID</th>
+					<td><input type="text" name="fileRefId" id="fileRefId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">팝업여부</th>
+						<td><input type="text" name="popupYn" id="popupYn" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

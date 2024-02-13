@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commInfoLangMapper">
+	<sql id="where-commInfoLang">
+		WHERE 1=1
+			<if test="commId != null and commId != '' ">
+			AND CIL.COMM_ID = #{commId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND CIL.LANG_CD = #{langCd}
+			</if>
+			<if test="commCont != null and commCont != '' ">
+			AND CIL.COMM_CONT = #{commCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CIL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCommInfoLangListCount" parameterType="CommInfoLangExDto" resultType="Integer">
+	/* commInfoLangMapper.getCommInfoLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMM_INFO_LANG CIL
+		<include refid="where-commInfoLang" />
+	</select>
+
+	<select id="getCommInfoLangList" parameterType="CommInfoLangExDto" resultType="CommInfoLangExDto">
+	/* commInfoLangMapper.getCommInfoLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CIL.COMM_ID
+			,CIL.LANG_CD
+			,CIL.COMM_CONT
+			,CIL.USE_YN
+			,CIL.REG_USER_ID
+			,REG_DTM
+			,CIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_INFO_LANG CIL
+		<include refid="where-commInfoLang" />
+		ORDER BY
+			CIL.COMM_ID
+			,CIL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCommInfoLang" parameterType="CommInfoLangExDto" resultType="CommInfoLangExDto">
+	/* commInfoLangMapper.getCommInfoLang */
+		SELECT
+			CIL.COMM_ID
+			,CIL.LANG_CD
+			,CIL.COMM_CONT
+			,CIL.USE_YN
+			,CIL.REG_USER_ID
+			,REG_DTM
+			,CIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_INFO_LANG CIL
+		WHERE
+			CIL.COMM_ID = #{commId}
+			AND CIL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertCommInfoLang" parameterType="CommInfoLangExDto">
+	/* commInfoLangMapper.insertCommInfoLang */
+		INSERT INTO CW_COMM_INFO_LANG (
+			COMM_ID
+			,LANG_CD
+			,COMM_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{commId}
+			,#{langCd}
+			,#{commCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCommInfoLang" parameterType="CommInfoLangExDto">
+	/* commInfoLangMapper.updateCommInfoLang */
+		UPDATE CW_COMM_INFO_LANG
+		<set>
+		<if test="commCont != null">
+		COMM_CONT = #{commCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMM_ID = #{commId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteCommInfoLang" parameterType="CommInfoLangExDto">
+	/* commInfoLangMapper.deleteCommInfoLang */
+	DELETE FROM CW_COMM_INFO_LANG
+	WHERE
+		COMM_ID = #{commId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

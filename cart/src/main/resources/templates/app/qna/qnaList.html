@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsQna = new pageCls("dvQnaPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("qnaId"))==false) params["qnaId"] = getEVal("qnaId");
+	if (isEmpty(getEVal("qnaTypCd"))==false) params["qnaTypCd"] = getEVal("qnaTypCd");
+	if (isEmpty(getEVal("qnaTitle"))==false) params["qnaTitle"] = getEVal("qnaTitle");
+	if (isEmpty(getEVal("qnaCont"))==false) params["qnaCont"] = getEVal("qnaCont");
+	if (isEmpty(getEVal("qnaViews"))==false) params["qnaViews"] = getEVal("qnaViews");
+	if (isEmpty(getEVal("prntQnaId"))==false) params["prntQnaId"] = getEVal("prntQnaId");
+	if (isEmpty(getEVal("grpQnaId"))==false) params["grpQnaId"] = getEVal("grpQnaId");
+	if (isEmpty(getEVal("qnaFrYmd"))==false) params["qnaFrYmd"] = getEVal("qnaFrYmd");
+	if (isEmpty(getEVal("qnaToYmd"))==false) params["qnaToYmd"] = getEVal("qnaToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsQna.getPageInfo(params);
+
+	var url = "/app/qna/getQnaPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["qnaId","qnaTypCd","qnaTitle","qnaCont","qnaViews","prntQnaId","grpQnaId","qnaFrYmd","qnaToYmd","fileRefId","popupYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,12);
+	pageClsQna.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsQnaDown(){
+	var url = "/app/qna/getQnaExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("qnaId"))==false) paramXls["qnaId"] = getEVal("qnaId");
+	if (isEmpty(getEVal("qnaTypCd"))==false) paramXls["qnaTypCd"] = getEVal("qnaTypCd");
+	if (isEmpty(getEVal("qnaTitle"))==false) paramXls["qnaTitle"] = getEVal("qnaTitle");
+	if (isEmpty(getEVal("qnaCont"))==false) paramXls["qnaCont"] = getEVal("qnaCont");
+	if (isEmpty(getEVal("qnaViews"))==false) paramXls["qnaViews"] = getEVal("qnaViews");
+	if (isEmpty(getEVal("prntQnaId"))==false) paramXls["prntQnaId"] = getEVal("prntQnaId");
+	if (isEmpty(getEVal("grpQnaId"))==false) paramXls["grpQnaId"] = getEVal("grpQnaId");
+	if (isEmpty(getEVal("qnaFrYmd"))==false) paramXls["qnaFrYmd"] = getEVal("qnaFrYmd");
+	if (isEmpty(getEVal("qnaToYmd"))==false) paramXls["qnaToYmd"] = getEVal("qnaToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) paramXls["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) paramXls["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"QNA"
+		,"sheetName":"시트"
+		,"columnHeaders":["QNA_ID","QNA유형코드","제목","QNA내용","QNA조회수","상위QNA_ID","그룹QNA_ID","QNA시작일","QNA종료일","파일참조ID","팝업여부","사용여부"]
+		,"columnNames":["qnaId","qnaTypCd","qnaTitle","qnaCont","qnaViews","prntQnaId","grpQnaId","qnaFrYmd","qnaToYmd","fileRefId","popupYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["qnaId"] = arr[0].trim();
+	}
+	QnaPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvQnaSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvQnaSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsQna.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">QNA_ID</th>
+							<th scope="col">QNA유형코드</th>
+							<th scope="col">제목</th>
+							<th scope="col">QNA내용</th>
+							<th scope="col">QNA조회수</th>
+							<th scope="col">상위QNA_ID</th>
+							<th scope="col">그룹QNA_ID</th>
+							<th scope="col">QNA시작일</th>
+							<th scope="col">QNA종료일</th>
+							<th scope="col">파일참조ID</th>
+							<th scope="col">팝업여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{qnaId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{qnaId}}</td>
+						<td>{{qnaTypCd}}</td>
+						<td>{{qnaTitle}}</td>
+						<td>{{qnaCont}}</td>
+						<td>{{qnaViews}}</td>
+						<td>{{prntQnaId}}</td>
+						<td>{{grpQnaId}}</td>
+						<td>{{qnaFrYmd}}</td>
+						<td>{{qnaToYmd}}</td>
+						<td>{{fileRefId}}</td>
+						<td>{{popupYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvQnaPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/qna/qnaPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

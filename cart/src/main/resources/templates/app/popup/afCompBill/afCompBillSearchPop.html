@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/afCompBill/afCompBillGrid.js"></script>
+<script>
+var gridAfCompBill = null;
+window.onload = function() {
+	gridAfCompBill = setGridAfCompBill("dvGridAfCompBillSearch");
+	gridAfCompBill.setBodyHeight(300);
+	fixedColGrid(gridAfCompBill);
+
+	gridAfCompBill.on("click",function(ev){
+		toggleGrid(gridAfCompBill,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridAfCompBill.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridAfCompBill)==false){
+			dblClickGridAfCompBill();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridAfCompBill(){
+	getResultData();
+}
+
+//page
+var pageClsAfCompBill = new pageCls("dvAfCompBillPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridAfCompBill);
+
+	var params = {};
+	if (isEmpty(getEVal("afCompBillId"))==false) params["afCompBillId"] = getEVal("afCompBillId");
+	if (isEmpty(getEVal("afCompBillYmd"))==false) params["afCompBillYmd"] = getEVal("afCompBillYmd");
+	if (isEmpty(getEVal("afCompId"))==false) params["afCompId"] = getEVal("afCompId");
+	if (isEmpty(getEVal("afDivCd"))==false) params["afDivCd"] = getEVal("afDivCd");
+	if (isEmpty(getEVal("afBillQty"))==false) params["afBillQty"] = getEVal("afBillQty");
+	if (isEmpty(getEVal("afBillAmt"))==false) params["afBillAmt"] = getEVal("afBillAmt");
+	if (isEmpty(getEVal("billCfmYn"))==false) params["billCfmYn"] = getEVal("billCfmYn");
+	if (isEmpty(getEVal("billCfmYmd"))==false) params["billCfmYmd"] = getEVal("billCfmYmd");
+	//page set
+	params = pageClsAfCompBill.getPageInfo(params);
+
+	var url = "/app/afCompBill/getAfCompBillPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridAfCompBill,result.payloads);
+		//set total
+		pageClsAfCompBill.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridAfCompBill);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvAfCompBillSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridAfCompBillSearch" class="addr-list" ></div>
+					<div id="dvAfCompBillPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

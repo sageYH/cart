@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="menuAuthMapper">
+	<sql id="where-menuAuth">
+		WHERE 1=1
+			<if test="userGrpCd != null and userGrpCd != '' ">
+			AND MA.USER_GRP_CD = #{userGrpCd}
+			</if>
+			<if test="menuId != null and menuId != '' ">
+			AND MA.MENU_ID = #{menuId}
+			</if>
+			<if test="readOnlyYn != null and readOnlyYn != '' ">
+			AND MA.READ_ONLY_YN = #{readOnlyYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND MA.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMenuAuthListCount" parameterType="MenuAuthExDto" resultType="Integer">
+	/* menuAuthMapper.getMenuAuthListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MENU_AUTH MA
+		<include refid="where-menuAuth" />
+	</select>
+
+	<select id="getMenuAuthList" parameterType="MenuAuthExDto" resultType="MenuAuthExDto">
+	/* menuAuthMapper.getMenuAuthList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MA.USER_GRP_CD
+			,MA.MENU_ID
+			,MA.READ_ONLY_YN
+			,MA.USE_YN
+			,MA.REG_USER_ID
+			,REG_DTM
+			,MA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU_AUTH MA
+		<include refid="where-menuAuth" />
+		ORDER BY
+			MA.USER_GRP_CD
+			,MA.MENU_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMenuAuth" parameterType="MenuAuthExDto" resultType="MenuAuthExDto">
+	/* menuAuthMapper.getMenuAuth */
+		SELECT
+			MA.USER_GRP_CD
+			,MA.MENU_ID
+			,MA.READ_ONLY_YN
+			,MA.USE_YN
+			,MA.REG_USER_ID
+			,REG_DTM
+			,MA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU_AUTH MA
+		WHERE
+			MA.USER_GRP_CD = #{userGrpCd}
+			AND MA.MENU_ID = #{menuId}
+	</select>
+
+	<insert id="insertMenuAuth" parameterType="MenuAuthExDto">
+	/* menuAuthMapper.insertMenuAuth */
+		INSERT INTO CW_MENU_AUTH (
+			USER_GRP_CD
+			,MENU_ID
+			,READ_ONLY_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{userGrpCd}
+			,#{menuId}
+			,#{readOnlyYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMenuAuth" parameterType="MenuAuthExDto">
+	/* menuAuthMapper.updateMenuAuth */
+		UPDATE CW_MENU_AUTH
+		<set>
+		<if test="readOnlyYn != null">
+		READ_ONLY_YN = #{readOnlyYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			USER_GRP_CD = #{userGrpCd}
+			AND MENU_ID = #{menuId}
+	</update>
+
+	<delete id="deleteMenuAuth" parameterType="MenuAuthExDto">
+	/* menuAuthMapper.deleteMenuAuth */
+	DELETE FROM CW_MENU_AUTH
+	WHERE
+		USER_GRP_CD = #{userGrpCd}
+		AND MENU_ID = #{menuId}
+	</delete>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="commonMapper">
+	<sql id="pagingPrefix">
+	</sql>
+
+	<sql id="pagingPostfix">
+		<if test=" startRow != null and pageRows != null ">
+				LIMIT #{startRow}, #{pageRows}
+		</if>
+	</sql>
+
+</mapper>

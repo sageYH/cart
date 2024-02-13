@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodId"] = '[[${transData.prodId}]]';
+    map["langCd"] = '[[${transData.langCd}]]';
+	if (isEmpty(map["prodId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("prodId").setAttribute('readonly', true);
+		getEleByObj("langCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/productsLang/getProductsLang.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["prodId","","자료(상품ID)를 확인하세요."]
+		["langCd","","자료(상품ID)를 확인하세요."]
+		["prodNm","","자료(상품명)를 확인하세요."]
+		["prodSkin","","자료(상품스킨)를 확인하세요."]
+		["prodMobiSkin","","자료(상품모바일스킨)를 확인하세요."]
+		["prodMfr","","자료(상품제조사)를 확인하세요."]
+		["prodOrigin","","자료(상품원산지)를 확인하세요."]
+		["prodBrand","","자료(상품브랜드)를 확인하세요."]
+		["prodModel","","자료(상품모델)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/productsLang/updateProductsLang.do";
+	if (mode=="NEW"){
+		url = "/app/productsLang/insertProductsLang.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formProductsLangPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvProductsLangPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formProductsLangPop" name="formProductsLangPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" readonly >
+						</td>
+					<th scope="row">상품ID</th>
+					<td><input type="text" name="langCd" id="langCd" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품명</th>
+						<td><input type="text" name="prodNm" id="prodNm" style="width:70%" >
+						</td>
+					<th scope="row">상품스킨</th>
+					<td><input type="text" name="prodSkin" id="prodSkin" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품모바일스킨</th>
+						<td><input type="text" name="prodMobiSkin" id="prodMobiSkin" style="width:70%" >
+						</td>
+					<th scope="row">상품제조사</th>
+					<td><input type="text" name="prodMfr" id="prodMfr" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품원산지</th>
+						<td><input type="text" name="prodOrigin" id="prodOrigin" style="width:70%" >
+						</td>
+					<th scope="row">상품브랜드</th>
+					<td><input type="text" name="prodBrand" id="prodBrand" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품모델</th>
+						<td><input type="text" name="prodModel" id="prodModel" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

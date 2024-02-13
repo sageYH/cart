@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cmnCodeMapper">
+	<sql id="where-cmnCode">
+		WHERE 1=1
+			<if test="cmnCd != null and cmnCd != '' ">
+			AND CC.CMN_CD = #{cmnCd}
+			</if>
+			<if test="cmnCdNm != null and cmnCdNm != '' ">
+			AND CC.CMN_CD_NM = #{cmnCdNm}
+			</if>
+			<if test="grpCd != null and grpCd != '' ">
+			AND CC.GRP_CD = #{grpCd}
+			</if>
+			<if test="ref1 != null and ref1 != '' ">
+			AND CC.REF1 = #{ref1}
+			</if>
+			<if test="ref2 != null and ref2 != '' ">
+			AND CC.REF2 = #{ref2}
+			</if>
+			<if test="ref3 != null and ref3 != '' ">
+			AND CC.REF3 = #{ref3}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND CC.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CC.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCmnCodeListCount" parameterType="CmnCodeExDto" resultType="Integer">
+	/* cmnCodeMapper.getCmnCodeListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CMN_CODE CC
+		<include refid="where-cmnCode" />
+	</select>
+
+	<select id="getCmnCodeList" parameterType="CmnCodeExDto" resultType="CmnCodeExDto">
+	/* cmnCodeMapper.getCmnCodeList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CC.CMN_CD
+			,CC.CMN_CD_NM
+			,CC.GRP_CD
+			,CC.REF1
+			,CC.REF2
+			,CC.REF3
+			,CC.SORT_SEQ
+			,CC.USE_YN
+			,CC.REG_USER_ID
+			,REG_DTM
+			,CC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CMN_CODE CC
+		<include refid="where-cmnCode" />
+		ORDER BY
+			CC.CMN_CD
+			,CC.GRP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCmnCode" parameterType="CmnCodeExDto" resultType="CmnCodeExDto">
+	/* cmnCodeMapper.getCmnCode */
+		SELECT
+			CC.CMN_CD
+			,CC.CMN_CD_NM
+			,CC.GRP_CD
+			,CC.REF1
+			,CC.REF2
+			,CC.REF3
+			,CC.SORT_SEQ
+			,CC.USE_YN
+			,CC.REG_USER_ID
+			,REG_DTM
+			,CC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CMN_CODE CC
+		WHERE
+			CC.CMN_CD = #{cmnCd}
+			AND CC.GRP_CD = #{grpCd}
+	</select>
+
+	<insert id="insertCmnCode" parameterType="CmnCodeExDto">
+	/* cmnCodeMapper.insertCmnCode */
+		INSERT INTO CW_CMN_CODE (
+			CMN_CD
+			,CMN_CD_NM
+			,GRP_CD
+			,REF1
+			,REF2
+			,REF3
+			,SORT_SEQ
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cmnCd}
+			,#{cmnCdNm}
+			,#{grpCd}
+			,#{ref1}
+			,#{ref2}
+			,#{ref3}
+			,#{sortSeq}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCmnCode" parameterType="CmnCodeExDto">
+	/* cmnCodeMapper.updateCmnCode */
+		UPDATE CW_CMN_CODE
+		<set>
+		<if test="cmnCdNm != null">
+		CMN_CD_NM = #{cmnCdNm},
+		</if>
+		<if test="ref1 != null">
+		REF1 = #{ref1},
+		</if>
+		<if test="ref2 != null">
+		REF2 = #{ref2},
+		</if>
+		<if test="ref3 != null">
+		REF3 = #{ref3},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CMN_CD = #{cmnCd}
+			AND GRP_CD = #{grpCd}
+	</update>
+
+	<delete id="deleteCmnCode" parameterType="CmnCodeExDto">
+	/* cmnCodeMapper.deleteCmnCode */
+	DELETE FROM CW_CMN_CODE
+	WHERE
+		CMN_CD = #{cmnCd}
+		AND GRP_CD = #{grpCd}
+	</delete>
+</mapper>

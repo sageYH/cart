@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberMapper">
+	<sql id="where-member">
+		WHERE 1=1
+			<if test="mbrId != null and mbrId != '' ">
+			AND M.MBR_ID = #{mbrId}
+			</if>
+			<if test="mbrLvlCd != null and mbrLvlCd != '' ">
+			AND M.MBR_LVL_CD = #{mbrLvlCd}
+			</if>
+			<if test="mbrDivCd != null and mbrDivCd != '' ">
+			AND M.MBR_DIV_CD = #{mbrDivCd}
+			</if>
+			<if test="phoneNo != null and phoneNo != '' ">
+			AND M.PHONE_NO = #{phoneNo}
+			</if>
+			<if test="email != null and email != '' ">
+			AND M.EMAIL = #{email}
+			</if>
+			<if test="birthYmd != null and birthYmd != '' ">
+			AND M.BIRTH_YMD = #{birthYmd}
+			</if>
+			<if test="sexDivCd != null and sexDivCd != '' ">
+			AND M.SEX_DIV_CD = #{sexDivCd}
+			</if>
+			<if test="cntryCd != null and cntryCd != '' ">
+			AND M.CNTRY_CD = #{cntryCd}
+			</if>
+			<if test="compId != null and compId != '' ">
+			AND M.COMP_ID = #{compId}
+			</if>
+			<if test="signupDtm != null and signupDtm != '' ">
+			AND M.SIGNUP_DTM = STR_TO_DATE(#{signupDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="zipCd != null and zipCd != '' ">
+			AND M.ZIP_CD = #{zipCd}
+			</if>
+			<if test="addr != null and addr != '' ">
+			AND M.ADDR = #{addr}
+			</if>
+			<if test="dtlAddr != null and dtlAddr != '' ">
+			AND M.DTL_ADDR = #{dtlAddr}
+			</if>
+			<if test="dtlAddr2 != null and dtlAddr2 != '' ">
+			AND M.DTL_ADDR2 = #{dtlAddr2}
+			</if>
+			<if test="signupPathCd != null and signupPathCd != '' ">
+			AND M.SIGNUP_PATH_CD = #{signupPathCd}
+			</if>
+			<if test="latestAccChanCd != null and latestAccChanCd != '' ">
+			AND M.LATEST_ACC_CHAN_CD = #{latestAccChanCd}
+			</if>
+			<if test="lastAccDtm != null and lastAccDtm != '' ">
+			AND M.LAST_ACC_DTM = STR_TO_DATE(#{lastAccDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="latestAccYmd != null and latestAccYmd != '' ">
+			AND M.LATEST_ACC_YMD = #{latestAccYmd}
+			</if>
+			<if test="smsRecvAcptYn != null and smsRecvAcptYn != '' ">
+			AND M.SMS_RECV_ACPT_YN = #{smsRecvAcptYn}
+			</if>
+			<if test="emailRecvAcptYn != null and emailRecvAcptYn != '' ">
+			AND M.EMAIL_RECV_ACPT_YN = #{emailRecvAcptYn}
+			</if>
+			<if test="pushRecvAcptYn != null and pushRecvAcptYn != '' ">
+			AND M.PUSH_RECV_ACPT_YN = #{pushRecvAcptYn}
+			</if>
+	</sql>
+
+	<select id="getMemberListCount" parameterType="MemberExDto" resultType="Integer">
+	/* memberMapper.getMemberListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MEMBER M
+		<include refid="where-member" />
+	</select>
+
+	<select id="getMemberList" parameterType="MemberExDto" resultType="MemberExDto">
+	/* memberMapper.getMemberList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			M.MBR_ID
+			,M.MBR_LVL_CD
+			,M.MBR_DIV_CD
+			,M.PHONE_NO
+			,M.EMAIL
+			,M.BIRTH_YMD
+			,M.SEX_DIV_CD
+			,M.CNTRY_CD
+			,M.COMP_ID
+			,SIGNUP_DTM
+			,M.ZIP_CD
+			,M.ADDR
+			,M.DTL_ADDR
+			,M.DTL_ADDR2
+			,M.SIGNUP_PATH_CD
+			,M.LATEST_ACC_CHAN_CD
+			,LAST_ACC_DTM
+			,M.LATEST_ACC_YMD
+			,M.SMS_RECV_ACPT_YN
+			,M.EMAIL_RECV_ACPT_YN
+			,M.PUSH_RECV_ACPT_YN
+			,M.REG_USER_ID
+			,REG_DTM
+			,M.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MEMBER M
+		<include refid="where-member" />
+		ORDER BY
+			M.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMember" parameterType="MemberExDto" resultType="MemberExDto">
+	/* memberMapper.getMember */
+		SELECT
+			M.MBR_ID
+			,M.MBR_LVL_CD
+			,M.MBR_DIV_CD
+			,M.PHONE_NO
+			,M.EMAIL
+			,M.BIRTH_YMD
+			,M.SEX_DIV_CD
+			,M.CNTRY_CD
+			,M.COMP_ID
+			,SIGNUP_DTM
+			,M.ZIP_CD
+			,M.ADDR
+			,M.DTL_ADDR
+			,M.DTL_ADDR2
+			,M.SIGNUP_PATH_CD
+			,M.LATEST_ACC_CHAN_CD
+			,LAST_ACC_DTM
+			,M.LATEST_ACC_YMD
+			,M.SMS_RECV_ACPT_YN
+			,M.EMAIL_RECV_ACPT_YN
+			,M.PUSH_RECV_ACPT_YN
+			,M.REG_USER_ID
+			,REG_DTM
+			,M.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MEMBER M
+		WHERE
+			M.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertMember" parameterType="MemberExDto">
+	/* memberMapper.insertMember */
+		INSERT INTO CW_MEMBER (
+			MBR_ID
+			,MBR_LVL_CD
+			,MBR_DIV_CD
+			,PHONE_NO
+			,EMAIL
+			,BIRTH_YMD
+			,SEX_DIV_CD
+			,CNTRY_CD
+			,COMP_ID
+			,SIGNUP_DTM
+			,ZIP_CD
+			,ADDR
+			,DTL_ADDR
+			,DTL_ADDR2
+			,SIGNUP_PATH_CD
+			,LATEST_ACC_CHAN_CD
+			,LAST_ACC_DTM
+			,LATEST_ACC_YMD
+			,SMS_RECV_ACPT_YN
+			,EMAIL_RECV_ACPT_YN
+			,PUSH_RECV_ACPT_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrId}
+			,#{mbrLvlCd}
+			,#{mbrDivCd}
+			,#{phoneNo}
+			,#{email}
+			,#{birthYmd}
+			,#{sexDivCd}
+			,#{cntryCd}
+			,#{compId}
+			,STR_TO_DATE(#{signupDtm}, '%Y%m%d %h%i%s')
+			,#{zipCd}
+			,#{addr}
+			,#{dtlAddr}
+			,#{dtlAddr2}
+			,#{signupPathCd}
+			,#{latestAccChanCd}
+			,STR_TO_DATE(#{lastAccDtm}, '%Y%m%d %h%i%s')
+			,#{latestAccYmd}
+			,#{smsRecvAcptYn}
+			,#{emailRecvAcptYn}
+			,#{pushRecvAcptYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMember" parameterType="MemberExDto">
+	/* memberMapper.updateMember */
+		UPDATE CW_MEMBER
+		<set>
+		<if test="mbrLvlCd != null">
+		MBR_LVL_CD = #{mbrLvlCd},
+		</if>
+		<if test="mbrDivCd != null">
+		MBR_DIV_CD = #{mbrDivCd},
+		</if>
+		<if test="phoneNo != null">
+		PHONE_NO = #{phoneNo},
+		</if>
+		<if test="email != null">
+		EMAIL = #{email},
+		</if>
+		<if test="birthYmd != null">
+		BIRTH_YMD = #{birthYmd},
+		</if>
+		<if test="sexDivCd != null">
+		SEX_DIV_CD = #{sexDivCd},
+		</if>
+		<if test="cntryCd != null">
+		CNTRY_CD = #{cntryCd},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
+		</if>
+		<if test="signupDtm != null">
+		SIGNUP_DTM = STR_TO_DATE(#{signupDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="zipCd != null">
+		ZIP_CD = #{zipCd},
+		</if>
+		<if test="addr != null">
+		ADDR = #{addr},
+		</if>
+		<if test="dtlAddr != null">
+		DTL_ADDR = #{dtlAddr},
+		</if>
+		<if test="dtlAddr2 != null">
+		DTL_ADDR2 = #{dtlAddr2},
+		</if>
+		<if test="signupPathCd != null">
+		SIGNUP_PATH_CD = #{signupPathCd},
+		</if>
+		<if test="latestAccChanCd != null">
+		LATEST_ACC_CHAN_CD = #{latestAccChanCd},
+		</if>
+		<if test="lastAccDtm != null">
+		LAST_ACC_DTM = STR_TO_DATE(#{lastAccDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="latestAccYmd != null">
+		LATEST_ACC_YMD = #{latestAccYmd},
+		</if>
+		<if test="smsRecvAcptYn != null">
+		SMS_RECV_ACPT_YN = #{smsRecvAcptYn},
+		</if>
+		<if test="emailRecvAcptYn != null">
+		EMAIL_RECV_ACPT_YN = #{emailRecvAcptYn},
+		</if>
+		<if test="pushRecvAcptYn != null">
+		PUSH_RECV_ACPT_YN = #{pushRecvAcptYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteMember" parameterType="MemberExDto">
+	/* memberMapper.deleteMember */
+	DELETE FROM CW_MEMBER
+	WHERE
+		MBR_ID = #{mbrId}
+	</delete>
+</mapper>

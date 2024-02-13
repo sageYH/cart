@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="menuMapper">
+	<sql id="where-menu">
+		WHERE 1=1
+			<if test="menuId != null and menuId != '' ">
+			AND M.MENU_ID = #{menuId}
+			</if>
+			<if test="menuNm != null and menuNm != '' ">
+			AND M.MENU_NM = #{menuNm}
+			</if>
+			<if test="link != null and link != '' ">
+			AND M.LINK = #{link}
+			</if>
+			<if test="menuDesc != null and menuDesc != '' ">
+			AND M.MENU_DESC = #{menuDesc}
+			</if>
+			<if test="menuImg != null and menuImg != '' ">
+			AND M.MENU_IMG = #{menuImg}
+			</if>
+			<if test="prntMenuId != null and prntMenuId != '' ">
+			AND M.PRNT_MENU_ID = #{prntMenuId}
+			</if>
+			<if test="menuLvl != null and menuLvl != '' ">
+			AND M.MENU_LVL = #{menuLvl}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND M.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="displayYn != null and displayYn != '' ">
+			AND M.DISPLAY_YN = #{displayYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND M.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMenuListCount" parameterType="MenuExDto" resultType="Integer">
+	/* menuMapper.getMenuListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MENU M
+		<include refid="where-menu" />
+	</select>
+
+	<select id="getMenuList" parameterType="MenuExDto" resultType="MenuExDto">
+	/* menuMapper.getMenuList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			M.MENU_ID
+			,M.MENU_NM
+			,M.LINK
+			,M.MENU_DESC
+			,M.MENU_IMG
+			,M.PRNT_MENU_ID
+			,M.MENU_LVL
+			,M.SORT_SEQ
+			,M.DISPLAY_YN
+			,M.USE_YN
+			,M.REG_USER_ID
+			,REG_DTM
+			,M.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU M
+		<include refid="where-menu" />
+		ORDER BY
+			M.MENU_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMenu" parameterType="MenuExDto" resultType="MenuExDto">
+	/* menuMapper.getMenu */
+		SELECT
+			M.MENU_ID
+			,M.MENU_NM
+			,M.LINK
+			,M.MENU_DESC
+			,M.MENU_IMG
+			,M.PRNT_MENU_ID
+			,M.MENU_LVL
+			,M.SORT_SEQ
+			,M.DISPLAY_YN
+			,M.USE_YN
+			,M.REG_USER_ID
+			,REG_DTM
+			,M.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU M
+		WHERE
+			M.MENU_ID = #{menuId}
+	</select>
+
+	<insert id="insertMenu" parameterType="MenuExDto">
+	/* menuMapper.insertMenu */
+		INSERT INTO CW_MENU (
+			MENU_ID
+			,MENU_NM
+			,LINK
+			,MENU_DESC
+			,MENU_IMG
+			,PRNT_MENU_ID
+			,MENU_LVL
+			,SORT_SEQ
+			,DISPLAY_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{menuId}
+			,#{menuNm}
+			,#{link}
+			,#{menuDesc}
+			,#{menuImg}
+			,#{prntMenuId}
+			,#{menuLvl}
+			,#{sortSeq}
+			,#{displayYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMenu" parameterType="MenuExDto">
+	/* menuMapper.updateMenu */
+		UPDATE CW_MENU
+		<set>
+		<if test="menuNm != null">
+		MENU_NM = #{menuNm},
+		</if>
+		<if test="link != null">
+		LINK = #{link},
+		</if>
+		<if test="menuDesc != null">
+		MENU_DESC = #{menuDesc},
+		</if>
+		<if test="menuImg != null">
+		MENU_IMG = #{menuImg},
+		</if>
+		<if test="prntMenuId != null">
+		PRNT_MENU_ID = #{prntMenuId},
+		</if>
+		<if test="menuLvl != null">
+		MENU_LVL = #{menuLvl},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="displayYn != null">
+		DISPLAY_YN = #{displayYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MENU_ID = #{menuId}
+	</update>
+
+	<delete id="deleteMenu" parameterType="MenuExDto">
+	/* menuMapper.deleteMenu */
+	DELETE FROM CW_MENU
+	WHERE
+		MENU_ID = #{menuId}
+	</delete>
+</mapper>

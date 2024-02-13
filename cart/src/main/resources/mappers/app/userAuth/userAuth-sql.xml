@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userAuthMapper">
+	<sql id="where-userAuth">
+		WHERE 1=1
+			<if test="userId != null and userId != '' ">
+			AND UA.USER_ID = #{userId}
+			</if>
+			<if test="userGrpCd != null and userGrpCd != '' ">
+			AND UA.USER_GRP_CD = #{userGrpCd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND UA.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getUserAuthListCount" parameterType="UserAuthExDto" resultType="Integer">
+	/* userAuthMapper.getUserAuthListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_USER_AUTH UA
+		<include refid="where-userAuth" />
+	</select>
+
+	<select id="getUserAuthList" parameterType="UserAuthExDto" resultType="UserAuthExDto">
+	/* userAuthMapper.getUserAuthList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			UA.USER_ID
+			,UA.USER_GRP_CD
+			,UA.USE_YN
+			,UA.REG_USER_ID
+			,REG_DTM
+			,UA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_AUTH UA
+		<include refid="where-userAuth" />
+		ORDER BY
+			UA.USER_ID
+			,UA.USER_GRP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getUserAuth" parameterType="UserAuthExDto" resultType="UserAuthExDto">
+	/* userAuthMapper.getUserAuth */
+		SELECT
+			UA.USER_ID
+			,UA.USER_GRP_CD
+			,UA.USE_YN
+			,UA.REG_USER_ID
+			,REG_DTM
+			,UA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_AUTH UA
+		WHERE
+			UA.USER_ID = #{userId}
+			AND UA.USER_GRP_CD = #{userGrpCd}
+	</select>
+
+	<insert id="insertUserAuth" parameterType="UserAuthExDto">
+	/* userAuthMapper.insertUserAuth */
+		INSERT INTO CW_USER_AUTH (
+			USER_ID
+			,USER_GRP_CD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{userId}
+			,#{userGrpCd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateUserAuth" parameterType="UserAuthExDto">
+	/* userAuthMapper.updateUserAuth */
+		UPDATE CW_USER_AUTH
+		<set>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			USER_ID = #{userId}
+			AND USER_GRP_CD = #{userGrpCd}
+	</update>
+
+	<delete id="deleteUserAuth" parameterType="UserAuthExDto">
+	/* userAuthMapper.deleteUserAuth */
+	DELETE FROM CW_USER_AUTH
+	WHERE
+		USER_ID = #{userId}
+		AND USER_GRP_CD = #{userGrpCd}
+	</delete>
+</mapper>

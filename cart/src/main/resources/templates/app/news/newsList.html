@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsNews = new pageCls("dvNewsPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("newsId"))==false) params["newsId"] = getEVal("newsId");
+	if (isEmpty(getEVal("newsTypCd"))==false) params["newsTypCd"] = getEVal("newsTypCd");
+	if (isEmpty(getEVal("newsTitle"))==false) params["newsTitle"] = getEVal("newsTitle");
+	if (isEmpty(getEVal("newsCont"))==false) params["newsCont"] = getEVal("newsCont");
+	if (isEmpty(getEVal("newsViews"))==false) params["newsViews"] = getEVal("newsViews");
+	if (isEmpty(getEVal("prntNewsId"))==false) params["prntNewsId"] = getEVal("prntNewsId");
+	if (isEmpty(getEVal("grpNewsId"))==false) params["grpNewsId"] = getEVal("grpNewsId");
+	if (isEmpty(getEVal("newsFrYmd"))==false) params["newsFrYmd"] = getEVal("newsFrYmd");
+	if (isEmpty(getEVal("newsToYmd"))==false) params["newsToYmd"] = getEVal("newsToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsNews.getPageInfo(params);
+
+	var url = "/app/news/getNewsPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["newsId","newsTypCd","newsTitle","newsCont","newsViews","prntNewsId","grpNewsId","newsFrYmd","newsToYmd","fileRefId","popupYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,12);
+	pageClsNews.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsNewsDown(){
+	var url = "/app/news/getNewsExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("newsId"))==false) paramXls["newsId"] = getEVal("newsId");
+	if (isEmpty(getEVal("newsTypCd"))==false) paramXls["newsTypCd"] = getEVal("newsTypCd");
+	if (isEmpty(getEVal("newsTitle"))==false) paramXls["newsTitle"] = getEVal("newsTitle");
+	if (isEmpty(getEVal("newsCont"))==false) paramXls["newsCont"] = getEVal("newsCont");
+	if (isEmpty(getEVal("newsViews"))==false) paramXls["newsViews"] = getEVal("newsViews");
+	if (isEmpty(getEVal("prntNewsId"))==false) paramXls["prntNewsId"] = getEVal("prntNewsId");
+	if (isEmpty(getEVal("grpNewsId"))==false) paramXls["grpNewsId"] = getEVal("grpNewsId");
+	if (isEmpty(getEVal("newsFrYmd"))==false) paramXls["newsFrYmd"] = getEVal("newsFrYmd");
+	if (isEmpty(getEVal("newsToYmd"))==false) paramXls["newsToYmd"] = getEVal("newsToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) paramXls["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) paramXls["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"NEWS"
+		,"sheetName":"시트"
+		,"columnHeaders":["NEWS_ID","NEWS유형코드","제목","NEWS내용","NEWS조회수","상위NEWS_ID","그룹NEWS_ID","NEWS시작일","NEWS종료일","파일참조ID","팝업여부","사용여부"]
+		,"columnNames":["newsId","newsTypCd","newsTitle","newsCont","newsViews","prntNewsId","grpNewsId","newsFrYmd","newsToYmd","fileRefId","popupYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["newsId"] = arr[0].trim();
+	}
+	NewsPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvNewsSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvNewsSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsNews.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">NEWS_ID</th>
+							<th scope="col">NEWS유형코드</th>
+							<th scope="col">제목</th>
+							<th scope="col">NEWS내용</th>
+							<th scope="col">NEWS조회수</th>
+							<th scope="col">상위NEWS_ID</th>
+							<th scope="col">그룹NEWS_ID</th>
+							<th scope="col">NEWS시작일</th>
+							<th scope="col">NEWS종료일</th>
+							<th scope="col">파일참조ID</th>
+							<th scope="col">팝업여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{newsId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{newsId}}</td>
+						<td>{{newsTypCd}}</td>
+						<td>{{newsTitle}}</td>
+						<td>{{newsCont}}</td>
+						<td>{{newsViews}}</td>
+						<td>{{prntNewsId}}</td>
+						<td>{{grpNewsId}}</td>
+						<td>{{newsFrYmd}}</td>
+						<td>{{newsToYmd}}</td>
+						<td>{{fileRefId}}</td>
+						<td>{{popupYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvNewsPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/news/newsPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

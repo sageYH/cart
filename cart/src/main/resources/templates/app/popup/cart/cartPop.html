@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cartId"] = '[[${transData.cartId}]]';
+	if (isEmpty(map["cartId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cartId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/cart/getCart.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cartId","","자료(장바구니ID)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["prodId","","자료(상품ID)를 확인하세요."]
+		["prodQty","","자료(상품수량)를 확인하세요."]
+		["prodAmt","","자료(상품금액)를 확인하세요."]
+		["optTotAmt","","자료(옵션총금액)를 확인하세요."]
+		["cartDtm","","자료(장바구니일시)를 확인하세요."]
+		["prodPathCd","","자료(상품경로코드[PD08])를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/cart/updateCart.do";
+	if (mode=="NEW"){
+		url = "/app/cart/insertCart.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCartPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCartPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCartPop" name="formCartPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">장바구니ID</th>
+						<td><input type="text" name="cartId" id="cartId" style="width:70%" readonly >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" >
+						</td>
+					<th scope="row">상품수량</th>
+					<td><input type="text" name="prodQty" id="prodQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품금액</th>
+						<td><input type="text" name="prodAmt" id="prodAmt" style="width:70%" >
+						</td>
+					<th scope="row">옵션총금액</th>
+					<td><input type="text" name="optTotAmt" id="optTotAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">장바구니일시</th>
+						<td><input type="text" name="cartDtm" id="cartDtm" style="width:70%" >
+						</td>
+					<th scope="row">상품경로코드[PD08]</th>
+					<td><input type="text" name="prodPathCd" id="prodPathCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

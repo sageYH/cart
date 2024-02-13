@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsMbrPymtMeth = new pageCls("dvMbrPymtMethPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("cardNo"))==false) params["cardNo"] = getEVal("cardNo");
+	if (isEmpty(getEVal("cwPymtAgcyCompCd"))==false) params["cwPymtAgcyCompCd"] = getEVal("cwPymtAgcyCompCd");
+	if (isEmpty(getEVal("billKey"))==false) params["billKey"] = getEVal("billKey");
+	if (isEmpty(getEVal("mnPymtCardYn"))==false) params["mnPymtCardYn"] = getEVal("mnPymtCardYn");
+	if (isEmpty(getEVal("bin"))==false) params["bin"] = getEVal("bin");
+	if (isEmpty(getEVal("cardRegDtm"))==false) params["cardRegDtm"] = getEVal("cardRegDtm");
+	if (isEmpty(getEVal("cardValdYm"))==false) params["cardValdYm"] = getEVal("cardValdYm");
+	if (isEmpty(getEVal("issueCompKindCd"))==false) params["issueCompKindCd"] = getEVal("issueCompKindCd");
+	if (isEmpty(getEVal("cardBrandCd"))==false) params["cardBrandCd"] = getEVal("cardBrandCd");
+	if (isEmpty(getEVal("cardTypCd"))==false) params["cardTypCd"] = getEVal("cardTypCd");
+	if (isEmpty(getEVal("cardStopDtm"))==false) params["cardStopDtm"] = getEVal("cardStopDtm");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsMbrPymtMeth.getPageInfo(params);
+
+	var url = "/app/mbrPymtMeth/getMbrPymtMethPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["mbrId","cardNo","cwPymtAgcyCompCd","billKey","mnPymtCardYn","bin","cardRegDtm","cardValdYm","issueCompKindCd","cardBrandCd","cardTypCd","cardStopDtm","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,13);
+	pageClsMbrPymtMeth.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsMbrPymtMethDown(){
+	var url = "/app/mbrPymtMeth/getMbrPymtMethExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("cardNo"))==false) paramXls["cardNo"] = getEVal("cardNo");
+	if (isEmpty(getEVal("cwPymtAgcyCompCd"))==false) paramXls["cwPymtAgcyCompCd"] = getEVal("cwPymtAgcyCompCd");
+	if (isEmpty(getEVal("billKey"))==false) paramXls["billKey"] = getEVal("billKey");
+	if (isEmpty(getEVal("mnPymtCardYn"))==false) paramXls["mnPymtCardYn"] = getEVal("mnPymtCardYn");
+	if (isEmpty(getEVal("bin"))==false) paramXls["bin"] = getEVal("bin");
+	if (isEmpty(getEVal("cardRegDtm"))==false) paramXls["cardRegDtm"] = getEVal("cardRegDtm");
+	if (isEmpty(getEVal("cardValdYm"))==false) paramXls["cardValdYm"] = getEVal("cardValdYm");
+	if (isEmpty(getEVal("issueCompKindCd"))==false) paramXls["issueCompKindCd"] = getEVal("issueCompKindCd");
+	if (isEmpty(getEVal("cardBrandCd"))==false) paramXls["cardBrandCd"] = getEVal("cardBrandCd");
+	if (isEmpty(getEVal("cardTypCd"))==false) paramXls["cardTypCd"] = getEVal("cardTypCd");
+	if (isEmpty(getEVal("cardStopDtm"))==false) paramXls["cardStopDtm"] = getEVal("cardStopDtm");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"멤버결제수단"
+		,"sheetName":"시트"
+		,"columnHeaders":["멤버ID","카드번호","결제대행사코드","정산키","주결제카드여부","카드식별번호","카드등록일시","카드유효년월","발급사종류코드","카드브랜드코드","카드유형코드","카드중지일시","사용여부"]
+		,"columnNames":["mbrId","cardNo","cwPymtAgcyCompCd","billKey","mnPymtCardYn","bin","cardRegDtm","cardValdYm","issueCompKindCd","cardBrandCd","cardTypCd","cardStopDtm","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["mbrId"] = arr[0].trim();
+		params["cardNo"] = arr[1].trim();
+	}
+	MbrPymtMethPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvMbrPymtMethSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvMbrPymtMethSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsMbrPymtMeth.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">멤버ID</th>
+							<th scope="col">카드번호</th>
+							<th scope="col">결제대행사코드</th>
+							<th scope="col">정산키</th>
+							<th scope="col">주결제카드여부</th>
+							<th scope="col">카드식별번호</th>
+							<th scope="col">카드등록일시</th>
+							<th scope="col">카드유효년월</th>
+							<th scope="col">발급사종류코드</th>
+							<th scope="col">카드브랜드코드</th>
+							<th scope="col">카드유형코드</th>
+							<th scope="col">카드중지일시</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{mbrId}},{{cardNo}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{mbrId}}</td>
+						<td>{{cardNo}}</td>
+						<td>{{cwPymtAgcyCompCd}}</td>
+						<td>{{billKey}}</td>
+						<td>{{mnPymtCardYn}}</td>
+						<td>{{bin}}</td>
+						<td>{{cardRegDtm}}</td>
+						<td>{{cardValdYm}}</td>
+						<td>{{issueCompKindCd}}</td>
+						<td>{{cardBrandCd}}</td>
+						<td>{{cardTypCd}}</td>
+						<td>{{cardStopDtm}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvMbrPymtMethPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/mbrPymtMeth/mbrPymtMethPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

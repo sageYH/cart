@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCountryInfo = new pageCls("dvCountryInfoPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cntryCd"))==false) params["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("cntryAbbrCd"))==false) params["cntryAbbrCd"] = getEVal("cntryAbbrCd");
+	if (isEmpty(getEVal("cntryNumCd"))==false) params["cntryNumCd"] = getEVal("cntryNumCd");
+	if (isEmpty(getEVal("cntryNm"))==false) params["cntryNm"] = getEVal("cntryNm");
+	if (isEmpty(getEVal("cntryAbbrNm"))==false) params["cntryAbbrNm"] = getEVal("cntryAbbrNm");
+	if (isEmpty(getEVal("cntryNmLng"))==false) params["cntryNmLng"] = getEVal("cntryNmLng");
+	if (isEmpty(getEVal("cntryAbbrNmLng"))==false) params["cntryAbbrNmLng"] = getEVal("cntryAbbrNmLng");
+	if (isEmpty(getEVal("stdTime"))==false) params["stdTime"] = getEVal("stdTime");
+	//page set
+	params = pageClsCountryInfo.getPageInfo(params);
+
+	var url = "/app/countryInfo/getCountryInfoPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,8);
+	pageClsCountryInfo.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCountryInfoDown(){
+	var url = "/app/countryInfo/getCountryInfoExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cntryCd"))==false) paramXls["cntryCd"] = getEVal("cntryCd");
+	if (isEmpty(getEVal("cntryAbbrCd"))==false) paramXls["cntryAbbrCd"] = getEVal("cntryAbbrCd");
+	if (isEmpty(getEVal("cntryNumCd"))==false) paramXls["cntryNumCd"] = getEVal("cntryNumCd");
+	if (isEmpty(getEVal("cntryNm"))==false) paramXls["cntryNm"] = getEVal("cntryNm");
+	if (isEmpty(getEVal("cntryAbbrNm"))==false) paramXls["cntryAbbrNm"] = getEVal("cntryAbbrNm");
+	if (isEmpty(getEVal("cntryNmLng"))==false) paramXls["cntryNmLng"] = getEVal("cntryNmLng");
+	if (isEmpty(getEVal("cntryAbbrNmLng"))==false) paramXls["cntryAbbrNmLng"] = getEVal("cntryAbbrNmLng");
+	if (isEmpty(getEVal("stdTime"))==false) paramXls["stdTime"] = getEVal("stdTime");
+
+	var params = {"xlsName":"국가정보"
+		,"sheetName":"시트"
+		,"columnHeaders":["국가코드","국가약어코드","국가숫자코드","국가명","국가약어명","국가명_언어","국가약어_언어","표준시"]
+		,"columnNames":["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cntryCd"] = arr[0].trim();
+	}
+	CountryInfoPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCountryInfoSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCountryInfoSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCountryInfo.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">국가코드</th>
+							<th scope="col">국가약어코드</th>
+							<th scope="col">국가숫자코드</th>
+							<th scope="col">국가명</th>
+							<th scope="col">국가약어명</th>
+							<th scope="col">국가명_언어</th>
+							<th scope="col">국가약어_언어</th>
+							<th scope="col">표준시</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cntryCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cntryCd}}</td>
+						<td>{{cntryAbbrCd}}</td>
+						<td>{{cntryNumCd}}</td>
+						<td>{{cntryNm}}</td>
+						<td>{{cntryAbbrNm}}</td>
+						<td>{{cntryNmLng}}</td>
+						<td>{{cntryAbbrNmLng}}</td>
+						<td>{{stdTime}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCountryInfoPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/countryInfo/countryInfoPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

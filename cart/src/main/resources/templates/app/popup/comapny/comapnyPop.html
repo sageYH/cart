@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["compId"] = '[[${transData.compId}]]';
+	if (isEmpty(map["compId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("compId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/comapny/getComapny.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["compId","","자료(업체ID)를 확인하세요."]
+		["compNm","","자료(업체명)를 확인하세요."]
+		["cntryCd","","자료(국가코드)를 확인하세요."]
+		["cpDivCd","","자료(업체구분코드)를 확인하세요."]
+		["bizRegNo","","자료(사업자등록번호)를 확인하세요."]
+		["repNm","","자료(대표자명)를 확인하세요."]
+		["bizTyp","","자료(업태)를 확인하세요."]
+		["bizItem","","자료(종목)를 확인하세요."]
+		["zipCd","","자료(우편번호)를 확인하세요."]
+		["addr","","자료(주소)를 확인하세요."]
+		["dtlAddr","","자료(상세주소2)를 확인하세요."]
+		["dtlAddr2","","자료()를 확인하세요."]
+		["picNm","","자료(담당자명)를 확인하세요."]
+		["picPhoneNo","","자료(담당자폰번호)를 확인하세요."]
+		["hqYn","","자료(본사여부)를 확인하세요."]
+		["storeYn","","자료(입점사여부)를 확인하세요."]
+		["afCpYn","","자료(제휴사여부)를 확인하세요."]
+		["frchseYn","","자료(가맹점여부)를 확인하세요."]
+		["custCpYn","","자료(고객사여부)를 확인하세요."]
+		["orgYn","","자료(기관여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/comapny/updateComapny.do";
+	if (mode=="NEW"){
+		url = "/app/comapny/insertComapny.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formComapnyPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvComapnyPop" class="modal shot-pop" title="업체정보 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formComapnyPop" name="formComapnyPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">업체ID</th>
+						<td><input type="text" name="compId" id="compId" style="width:70%" readonly >
+						</td>
+					<th scope="row">업체명</th>
+					<td><input type="text" name="compNm" id="compNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">국가코드</th>
+						<td><input type="text" name="cntryCd" id="cntryCd" style="width:70%" >
+						</td>
+					<th scope="row">업체구분코드</th>
+					<td><input type="text" name="cpDivCd" id="cpDivCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사업자등록번호</th>
+						<td><input type="text" name="bizRegNo" id="bizRegNo" style="width:70%" >
+						</td>
+					<th scope="row">대표자명</th>
+					<td><input type="text" name="repNm" id="repNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">업태</th>
+						<td><input type="text" name="bizTyp" id="bizTyp" style="width:70%" >
+						</td>
+					<th scope="row">종목</th>
+					<td><input type="text" name="bizItem" id="bizItem" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">우편번호</th>
+						<td><input type="text" name="zipCd" id="zipCd" style="width:70%" >
+						</td>
+					<th scope="row">주소</th>
+					<td><input type="text" name="addr" id="addr" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상세주소2</th>
+						<td><input type="text" name="dtlAddr" id="dtlAddr" style="width:70%" >
+						</td>
+					<th scope="row"></th>
+					<td><input type="text" name="dtlAddr2" id="dtlAddr2" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">담당자명</th>
+						<td><input type="text" name="picNm" id="picNm" style="width:70%" >
+						</td>
+					<th scope="row">담당자폰번호</th>
+					<td><input type="text" name="picPhoneNo" id="picPhoneNo" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">본사여부</th>
+						<td><input type="text" name="hqYn" id="hqYn" style="width:70%" >
+						</td>
+					<th scope="row">입점사여부</th>
+					<td><input type="text" name="storeYn" id="storeYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">제휴사여부</th>
+						<td><input type="text" name="afCpYn" id="afCpYn" style="width:70%" >
+						</td>
+					<th scope="row">가맹점여부</th>
+					<td><input type="text" name="frchseYn" id="frchseYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">고객사여부</th>
+						<td><input type="text" name="custCpYn" id="custCpYn" style="width:70%" >
+						</td>
+					<th scope="row">기관여부</th>
+					<td><input type="text" name="orgYn" id="orgYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

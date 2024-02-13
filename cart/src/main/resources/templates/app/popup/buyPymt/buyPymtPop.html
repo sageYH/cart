@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["pgBuyId"] = '[[${transData.pgBuyId}]]';
+	if (isEmpty(map["pgBuyId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("pgBuyId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/buyPymt/getBuyPymt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["pgBuyId","","자료(PG구매ID)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["ordCnclId","","자료(주문취소ID)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["cardNo","","자료(카드번호)를 확인하세요."]
+		["pymtDivCd","","자료(결제구분코드)를 확인하세요."]
+		["pymtProgCd","","자료(결제진행코드)를 확인하세요."]
+		["pymtAgcyCompCd","","자료(결제대행사코드)를 확인하세요."]
+		["cardCompCd","","자료(카드사코드)를 확인하세요."]
+		["cardInstalPeriod","","자료(카드할부기간)를 확인하세요."]
+		["cardPymtAmt","","자료(카드결제금액)를 확인하세요."]
+		["billKey","","자료(정산키)를 확인하세요."]
+		["apvlNo","","자료(승인번호)를 확인하세요."]
+		["txnId","","자료(거래ID)를 확인하세요."]
+		["storeId","","자료(상점ID)를 확인하세요."]
+		["storeKey","","자료(상점Key)를 확인하세요."]
+		["prodNm","","자료(상품명)를 확인하세요."]
+		["consrNm","","자료(구매자명)를 확인하세요."]
+		["consrEmail","","자료(구매자이메일)를 확인하세요."]
+		["splyPrice","","자료(공급가액금액)를 확인하세요."]
+		["vat","","자료(부가가치세)를 확인하세요."]
+		["taxExptAmt","","자료(면세금액)를 확인하세요."]
+		["intFreeYn","","자료(무이자여부)를 확인하세요."]
+		["instalMos","","자료(할부개월수)를 확인하세요."]
+		["mallIp","","자료(몰IP)를 확인하세요."]
+		["cardCompNm","","자료(카드사명)를 확인하세요."]
+		["rstlCd","","자료(결과코드)를 확인하세요."]
+		["rstlCont","","자료(결과내용)를 확인하세요."]
+		["apvlDtm","","자료(승인일시)를 확인하세요."]
+		["apvlCd","","자료(승인코드)를 확인하세요."]
+		["apvlYn","","자료(승인여부)를 확인하세요."]
+		["errCd","","자료(오류코드)를 확인하세요."]
+		["errCont","","자료(오류내용)를 확인하세요."]
+		["pymtCancYn","","자료(결제취소여부)를 확인하세요."]
+		["pymtCancAmt","","자료(결제취소금액)를 확인하세요."]
+		["pymtCancRsnCd","","자료(결제취소사유코드)를 확인하세요."]
+		["pymtCancRsn","","자료(결제취소사유)를 확인하세요."]
+		["txnCancPwd","","자료(거래취소비밀번호)를 확인하세요."]
+		["cancId","","자료(취소ID)를 확인하세요."]
+		["cancIp","","자료(취소IP)를 확인하세요."]
+		["prtlCancYn","","자료(부분취소여부)를 확인하세요."]
+		["cancRstlCd","","자료(취소결과코드)를 확인하세요."]
+		["cancRstlCont","","자료(취소결과내용)를 확인하세요."]
+		["cancDtm","","자료(취소일시)를 확인하세요."]
+		["cancHms","","자료(취소시분초)를 확인하세요."]
+		["cancNo","","자료(취소번호)를 확인하세요."]
+		["cancDtlErrCd","","자료(취소상세오류코드)를 확인하세요."]
+		["cancDtlErrCont","","자료(취소상세오류내용)를 확인하세요."]
+		["billYmd","","자료(정산년월일)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/buyPymt/updateBuyPymt.do";
+	if (mode=="NEW"){
+		url = "/app/buyPymt/insertBuyPymt.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formBuyPymtPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvBuyPymtPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formBuyPymtPop" name="formBuyPymtPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">PG구매ID</th>
+						<td><input type="text" name="pgBuyId" id="pgBuyId" style="width:70%" readonly >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문취소ID</th>
+						<td><input type="text" name="ordCnclId" id="ordCnclId" style="width:70%" >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드번호</th>
+						<td><input type="text" name="cardNo" id="cardNo" style="width:70%" >
+						</td>
+					<th scope="row">결제구분코드</th>
+					<td><input type="text" name="pymtDivCd" id="pymtDivCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결제진행코드</th>
+						<td><input type="text" name="pymtProgCd" id="pymtProgCd" style="width:70%" >
+						</td>
+					<th scope="row">결제대행사코드</th>
+					<td><input type="text" name="pymtAgcyCompCd" id="pymtAgcyCompCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드사코드</th>
+						<td><input type="text" name="cardCompCd" id="cardCompCd" style="width:70%" >
+						</td>
+					<th scope="row">카드할부기간</th>
+					<td><input type="text" name="cardInstalPeriod" id="cardInstalPeriod" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드결제금액</th>
+						<td><input type="text" name="cardPymtAmt" id="cardPymtAmt" style="width:70%" >
+						</td>
+					<th scope="row">정산키</th>
+					<td><input type="text" name="billKey" id="billKey" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">승인번호</th>
+						<td><input type="text" name="apvlNo" id="apvlNo" style="width:70%" >
+						</td>
+					<th scope="row">거래ID</th>
+					<td><input type="text" name="txnId" id="txnId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상점ID</th>
+						<td><input type="text" name="storeId" id="storeId" style="width:70%" >
+						</td>
+					<th scope="row">상점Key</th>
+					<td><input type="text" name="storeKey" id="storeKey" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품명</th>
+						<td><input type="text" name="prodNm" id="prodNm" style="width:70%" >
+						</td>
+					<th scope="row">구매자명</th>
+					<td><input type="text" name="consrNm" id="consrNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">구매자이메일</th>
+						<td><input type="text" name="consrEmail" id="consrEmail" style="width:70%" >
+						</td>
+					<th scope="row">공급가액금액</th>
+					<td><input type="text" name="splyPrice" id="splyPrice" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">부가가치세</th>
+						<td><input type="text" name="vat" id="vat" style="width:70%" >
+						</td>
+					<th scope="row">면세금액</th>
+					<td><input type="text" name="taxExptAmt" id="taxExptAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">무이자여부</th>
+						<td><input type="text" name="intFreeYn" id="intFreeYn" style="width:70%" >
+						</td>
+					<th scope="row">할부개월수</th>
+					<td><input type="text" name="instalMos" id="instalMos" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">몰IP</th>
+						<td><input type="text" name="mallIp" id="mallIp" style="width:70%" >
+						</td>
+					<th scope="row">카드사명</th>
+					<td><input type="text" name="cardCompNm" id="cardCompNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결과코드</th>
+						<td><input type="text" name="rstlCd" id="rstlCd" style="width:70%" >
+						</td>
+					<th scope="row">결과내용</th>
+					<td><input type="text" name="rstlCont" id="rstlCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">승인일시</th>
+						<td><input type="text" name="apvlDtm" id="apvlDtm" style="width:70%" >
+						</td>
+					<th scope="row">승인코드</th>
+					<td><input type="text" name="apvlCd" id="apvlCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">승인여부</th>
+						<td><input type="text" name="apvlYn" id="apvlYn" style="width:70%" >
+						</td>
+					<th scope="row">오류코드</th>
+					<td><input type="text" name="errCd" id="errCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">오류내용</th>
+						<td><input type="text" name="errCont" id="errCont" style="width:70%" >
+						</td>
+					<th scope="row">결제취소여부</th>
+					<td><input type="text" name="pymtCancYn" id="pymtCancYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결제취소금액</th>
+						<td><input type="text" name="pymtCancAmt" id="pymtCancAmt" style="width:70%" >
+						</td>
+					<th scope="row">결제취소사유코드</th>
+					<td><input type="text" name="pymtCancRsnCd" id="pymtCancRsnCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">결제취소사유</th>
+						<td><input type="text" name="pymtCancRsn" id="pymtCancRsn" style="width:70%" >
+						</td>
+					<th scope="row">거래취소비밀번호</th>
+					<td><input type="text" name="txnCancPwd" id="txnCancPwd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">취소ID</th>
+						<td><input type="text" name="cancId" id="cancId" style="width:70%" >
+						</td>
+					<th scope="row">취소IP</th>
+					<td><input type="text" name="cancIp" id="cancIp" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">부분취소여부</th>
+						<td><input type="text" name="prtlCancYn" id="prtlCancYn" style="width:70%" >
+						</td>
+					<th scope="row">취소결과코드</th>
+					<td><input type="text" name="cancRstlCd" id="cancRstlCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">취소결과내용</th>
+						<td><input type="text" name="cancRstlCont" id="cancRstlCont" style="width:70%" >
+						</td>
+					<th scope="row">취소일시</th>
+					<td><input type="text" name="cancDtm" id="cancDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">취소시분초</th>
+						<td><input type="text" name="cancHms" id="cancHms" style="width:70%" >
+						</td>
+					<th scope="row">취소번호</th>
+					<td><input type="text" name="cancNo" id="cancNo" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">취소상세오류코드</th>
+						<td><input type="text" name="cancDtlErrCd" id="cancDtlErrCd" style="width:70%" >
+						</td>
+					<th scope="row">취소상세오류내용</th>
+					<td><input type="text" name="cancDtlErrCont" id="cancDtlErrCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">정산년월일</th>
+						<td><input type="text" name="billYmd" id="billYmd" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

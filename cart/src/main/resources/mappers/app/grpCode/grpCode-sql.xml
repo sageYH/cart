@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="grpCodeMapper">
+	<sql id="where-grpCode">
+		WHERE 1=1
+			<if test="grpCd != null and grpCd != '' ">
+			AND GC.GRP_CD = #{grpCd}
+			</if>
+			<if test="grpNm != null and grpNm != '' ">
+			AND GC.GRP_NM = #{grpNm}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND GC.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getGrpCodeListCount" parameterType="GrpCodeExDto" resultType="Integer">
+	/* grpCodeMapper.getGrpCodeListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_GRP_CODE GC
+		<include refid="where-grpCode" />
+	</select>
+
+	<select id="getGrpCodeList" parameterType="GrpCodeExDto" resultType="GrpCodeExDto">
+	/* grpCodeMapper.getGrpCodeList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			GC.GRP_CD
+			,GC.GRP_NM
+			,GC.USE_YN
+			,GC.REG_USER_ID
+			,REG_DTM
+			,GC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_GRP_CODE GC
+		<include refid="where-grpCode" />
+		ORDER BY
+			GC.GRP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getGrpCode" parameterType="GrpCodeExDto" resultType="GrpCodeExDto">
+	/* grpCodeMapper.getGrpCode */
+		SELECT
+			GC.GRP_CD
+			,GC.GRP_NM
+			,GC.USE_YN
+			,GC.REG_USER_ID
+			,REG_DTM
+			,GC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_GRP_CODE GC
+		WHERE
+			GC.GRP_CD = #{grpCd}
+	</select>
+
+	<insert id="insertGrpCode" parameterType="GrpCodeExDto">
+	/* grpCodeMapper.insertGrpCode */
+		INSERT INTO CW_GRP_CODE (
+			GRP_CD
+			,GRP_NM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{grpCd}
+			,#{grpNm}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateGrpCode" parameterType="GrpCodeExDto">
+	/* grpCodeMapper.updateGrpCode */
+		UPDATE CW_GRP_CODE
+		<set>
+		<if test="grpNm != null">
+		GRP_NM = #{grpNm},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			GRP_CD = #{grpCd}
+	</update>
+
+	<delete id="deleteGrpCode" parameterType="GrpCodeExDto">
+	/* grpCodeMapper.deleteGrpCode */
+	DELETE FROM CW_GRP_CODE
+	WHERE
+		GRP_CD = #{grpCd}
+	</delete>
+</mapper>

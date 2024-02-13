@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrLvlBaseLangMapper">
+	<sql id="where-mbrLvlBaseLang">
+		WHERE 1=1
+			<if test="mbrLvlCd != null and mbrLvlCd != '' ">
+			AND MLBL.MBR_LVL_CD = #{mbrLvlCd}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND MLBL.LANG_CD = #{langCd}
+			</if>
+			<if test="signupCondDets != null and signupCondDets != '' ">
+			AND MLBL.SIGNUP_COND_DETS = #{signupCondDets}
+			</if>
+			<if test="benfCont != null and benfCont != '' ">
+			AND MLBL.BENF_CONT = #{benfCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND MLBL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMbrLvlBaseLangListCount" parameterType="MbrLvlBaseLangExDto" resultType="Integer">
+	/* mbrLvlBaseLangMapper.getMbrLvlBaseLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_LVL_BASE_LANG MLBL
+		<include refid="where-mbrLvlBaseLang" />
+	</select>
+
+	<select id="getMbrLvlBaseLangList" parameterType="MbrLvlBaseLangExDto" resultType="MbrLvlBaseLangExDto">
+	/* mbrLvlBaseLangMapper.getMbrLvlBaseLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MLBL.MBR_LVL_CD
+			,MLBL.LANG_CD
+			,MLBL.SIGNUP_COND_DETS
+			,MLBL.BENF_CONT
+			,MLBL.USE_YN
+			,MLBL.REG_USER_ID
+			,REG_DTM
+			,MLBL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL_BASE_LANG MLBL
+		<include refid="where-mbrLvlBaseLang" />
+		ORDER BY
+			MLBL.MBR_LVL_CD
+			,MLBL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrLvlBaseLang" parameterType="MbrLvlBaseLangExDto" resultType="MbrLvlBaseLangExDto">
+	/* mbrLvlBaseLangMapper.getMbrLvlBaseLang */
+		SELECT
+			MLBL.MBR_LVL_CD
+			,MLBL.LANG_CD
+			,MLBL.SIGNUP_COND_DETS
+			,MLBL.BENF_CONT
+			,MLBL.USE_YN
+			,MLBL.REG_USER_ID
+			,REG_DTM
+			,MLBL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL_BASE_LANG MLBL
+		WHERE
+			MLBL.MBR_LVL_CD = #{mbrLvlCd}
+			AND MLBL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertMbrLvlBaseLang" parameterType="MbrLvlBaseLangExDto">
+	/* mbrLvlBaseLangMapper.insertMbrLvlBaseLang */
+		INSERT INTO CW_MBR_LVL_BASE_LANG (
+			MBR_LVL_CD
+			,LANG_CD
+			,SIGNUP_COND_DETS
+			,BENF_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrLvlCd}
+			,#{langCd}
+			,#{signupCondDets}
+			,#{benfCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrLvlBaseLang" parameterType="MbrLvlBaseLangExDto">
+	/* mbrLvlBaseLangMapper.updateMbrLvlBaseLang */
+		UPDATE CW_MBR_LVL_BASE_LANG
+		<set>
+		<if test="signupCondDets != null">
+		SIGNUP_COND_DETS = #{signupCondDets},
+		</if>
+		<if test="benfCont != null">
+		BENF_CONT = #{benfCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_LVL_CD = #{mbrLvlCd}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteMbrLvlBaseLang" parameterType="MbrLvlBaseLangExDto">
+	/* mbrLvlBaseLangMapper.deleteMbrLvlBaseLang */
+	DELETE FROM CW_MBR_LVL_BASE_LANG
+	WHERE
+		MBR_LVL_CD = #{mbrLvlCd}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

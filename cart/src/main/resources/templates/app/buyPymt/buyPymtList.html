@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsBuyPymt = new pageCls("dvBuyPymtPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("pgBuyId"))==false) params["pgBuyId"] = getEVal("pgBuyId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("ordCnclId"))==false) params["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("cardNo"))==false) params["cardNo"] = getEVal("cardNo");
+	if (isEmpty(getEVal("pymtDivCd"))==false) params["pymtDivCd"] = getEVal("pymtDivCd");
+	if (isEmpty(getEVal("pymtProgCd"))==false) params["pymtProgCd"] = getEVal("pymtProgCd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) params["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) params["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardInstalPeriod"))==false) params["cardInstalPeriod"] = getEVal("cardInstalPeriod");
+	if (isEmpty(getEVal("cardPymtAmt"))==false) params["cardPymtAmt"] = getEVal("cardPymtAmt");
+	if (isEmpty(getEVal("billKey"))==false) params["billKey"] = getEVal("billKey");
+	if (isEmpty(getEVal("apvlNo"))==false) params["apvlNo"] = getEVal("apvlNo");
+	if (isEmpty(getEVal("txnId"))==false) params["txnId"] = getEVal("txnId");
+	if (isEmpty(getEVal("storeId"))==false) params["storeId"] = getEVal("storeId");
+	if (isEmpty(getEVal("storeKey"))==false) params["storeKey"] = getEVal("storeKey");
+	if (isEmpty(getEVal("prodNm"))==false) params["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("consrNm"))==false) params["consrNm"] = getEVal("consrNm");
+	if (isEmpty(getEVal("consrEmail"))==false) params["consrEmail"] = getEVal("consrEmail");
+	if (isEmpty(getEVal("splyPrice"))==false) params["splyPrice"] = getEVal("splyPrice");
+	if (isEmpty(getEVal("vat"))==false) params["vat"] = getEVal("vat");
+	if (isEmpty(getEVal("taxExptAmt"))==false) params["taxExptAmt"] = getEVal("taxExptAmt");
+	if (isEmpty(getEVal("intFreeYn"))==false) params["intFreeYn"] = getEVal("intFreeYn");
+	if (isEmpty(getEVal("instalMos"))==false) params["instalMos"] = getEVal("instalMos");
+	if (isEmpty(getEVal("mallIp"))==false) params["mallIp"] = getEVal("mallIp");
+	if (isEmpty(getEVal("cardCompNm"))==false) params["cardCompNm"] = getEVal("cardCompNm");
+	if (isEmpty(getEVal("rstlCd"))==false) params["rstlCd"] = getEVal("rstlCd");
+	if (isEmpty(getEVal("rstlCont"))==false) params["rstlCont"] = getEVal("rstlCont");
+	if (isEmpty(getEVal("apvlDtm"))==false) params["apvlDtm"] = getEVal("apvlDtm");
+	if (isEmpty(getEVal("apvlCd"))==false) params["apvlCd"] = getEVal("apvlCd");
+	if (isEmpty(getEVal("apvlYn"))==false) params["apvlYn"] = getEVal("apvlYn");
+	if (isEmpty(getEVal("errCd"))==false) params["errCd"] = getEVal("errCd");
+	if (isEmpty(getEVal("errCont"))==false) params["errCont"] = getEVal("errCont");
+	if (isEmpty(getEVal("pymtCancYn"))==false) params["pymtCancYn"] = getEVal("pymtCancYn");
+	if (isEmpty(getEVal("pymtCancAmt"))==false) params["pymtCancAmt"] = getEVal("pymtCancAmt");
+	if (isEmpty(getEVal("pymtCancRsnCd"))==false) params["pymtCancRsnCd"] = getEVal("pymtCancRsnCd");
+	if (isEmpty(getEVal("pymtCancRsn"))==false) params["pymtCancRsn"] = getEVal("pymtCancRsn");
+	if (isEmpty(getEVal("txnCancPwd"))==false) params["txnCancPwd"] = getEVal("txnCancPwd");
+	if (isEmpty(getEVal("cancId"))==false) params["cancId"] = getEVal("cancId");
+	if (isEmpty(getEVal("cancIp"))==false) params["cancIp"] = getEVal("cancIp");
+	if (isEmpty(getEVal("prtlCancYn"))==false) params["prtlCancYn"] = getEVal("prtlCancYn");
+	if (isEmpty(getEVal("cancRstlCd"))==false) params["cancRstlCd"] = getEVal("cancRstlCd");
+	if (isEmpty(getEVal("cancRstlCont"))==false) params["cancRstlCont"] = getEVal("cancRstlCont");
+	if (isEmpty(getEVal("cancDtm"))==false) params["cancDtm"] = getEVal("cancDtm");
+	if (isEmpty(getEVal("cancHms"))==false) params["cancHms"] = getEVal("cancHms");
+	if (isEmpty(getEVal("cancNo"))==false) params["cancNo"] = getEVal("cancNo");
+	if (isEmpty(getEVal("cancDtlErrCd"))==false) params["cancDtlErrCd"] = getEVal("cancDtlErrCd");
+	if (isEmpty(getEVal("cancDtlErrCont"))==false) params["cancDtlErrCont"] = getEVal("cancDtlErrCont");
+	if (isEmpty(getEVal("billYmd"))==false) params["billYmd"] = getEVal("billYmd");
+	//page set
+	params = pageClsBuyPymt.getPageInfo(params);
+
+	var url = "/app/buyPymt/getBuyPymtPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["pgBuyId","ordId","ordCnclId","mbrId","cardNo","pymtDivCd","pymtProgCd","pymtAgcyCompCd","cardCompCd","cardInstalPeriod","cardPymtAmt","billKey","apvlNo","txnId","storeId","storeKey","prodNm","consrNm","consrEmail","splyPrice","vat","taxExptAmt","intFreeYn","instalMos","mallIp","cardCompNm","rstlCd","rstlCont","apvlDtm","apvlCd","apvlYn","errCd","errCont","pymtCancYn","pymtCancAmt","pymtCancRsnCd","pymtCancRsn","txnCancPwd","cancId","cancIp","prtlCancYn","cancRstlCd","cancRstlCont","cancDtm","cancHms","cancNo","cancDtlErrCd","cancDtlErrCont","billYmd"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,49);
+	pageClsBuyPymt.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsBuyPymtDown(){
+	var url = "/app/buyPymt/getBuyPymtExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("pgBuyId"))==false) paramXls["pgBuyId"] = getEVal("pgBuyId");
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("ordCnclId"))==false) paramXls["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("cardNo"))==false) paramXls["cardNo"] = getEVal("cardNo");
+	if (isEmpty(getEVal("pymtDivCd"))==false) paramXls["pymtDivCd"] = getEVal("pymtDivCd");
+	if (isEmpty(getEVal("pymtProgCd"))==false) paramXls["pymtProgCd"] = getEVal("pymtProgCd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) paramXls["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) paramXls["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardInstalPeriod"))==false) paramXls["cardInstalPeriod"] = getEVal("cardInstalPeriod");
+	if (isEmpty(getEVal("cardPymtAmt"))==false) paramXls["cardPymtAmt"] = getEVal("cardPymtAmt");
+	if (isEmpty(getEVal("billKey"))==false) paramXls["billKey"] = getEVal("billKey");
+	if (isEmpty(getEVal("apvlNo"))==false) paramXls["apvlNo"] = getEVal("apvlNo");
+	if (isEmpty(getEVal("txnId"))==false) paramXls["txnId"] = getEVal("txnId");
+	if (isEmpty(getEVal("storeId"))==false) paramXls["storeId"] = getEVal("storeId");
+	if (isEmpty(getEVal("storeKey"))==false) paramXls["storeKey"] = getEVal("storeKey");
+	if (isEmpty(getEVal("prodNm"))==false) paramXls["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("consrNm"))==false) paramXls["consrNm"] = getEVal("consrNm");
+	if (isEmpty(getEVal("consrEmail"))==false) paramXls["consrEmail"] = getEVal("consrEmail");
+	if (isEmpty(getEVal("splyPrice"))==false) paramXls["splyPrice"] = getEVal("splyPrice");
+	if (isEmpty(getEVal("vat"))==false) paramXls["vat"] = getEVal("vat");
+	if (isEmpty(getEVal("taxExptAmt"))==false) paramXls["taxExptAmt"] = getEVal("taxExptAmt");
+	if (isEmpty(getEVal("intFreeYn"))==false) paramXls["intFreeYn"] = getEVal("intFreeYn");
+	if (isEmpty(getEVal("instalMos"))==false) paramXls["instalMos"] = getEVal("instalMos");
+	if (isEmpty(getEVal("mallIp"))==false) paramXls["mallIp"] = getEVal("mallIp");
+	if (isEmpty(getEVal("cardCompNm"))==false) paramXls["cardCompNm"] = getEVal("cardCompNm");
+	if (isEmpty(getEVal("rstlCd"))==false) paramXls["rstlCd"] = getEVal("rstlCd");
+	if (isEmpty(getEVal("rstlCont"))==false) paramXls["rstlCont"] = getEVal("rstlCont");
+	if (isEmpty(getEVal("apvlDtm"))==false) paramXls["apvlDtm"] = getEVal("apvlDtm");
+	if (isEmpty(getEVal("apvlCd"))==false) paramXls["apvlCd"] = getEVal("apvlCd");
+	if (isEmpty(getEVal("apvlYn"))==false) paramXls["apvlYn"] = getEVal("apvlYn");
+	if (isEmpty(getEVal("errCd"))==false) paramXls["errCd"] = getEVal("errCd");
+	if (isEmpty(getEVal("errCont"))==false) paramXls["errCont"] = getEVal("errCont");
+	if (isEmpty(getEVal("pymtCancYn"))==false) paramXls["pymtCancYn"] = getEVal("pymtCancYn");
+	if (isEmpty(getEVal("pymtCancAmt"))==false) paramXls["pymtCancAmt"] = getEVal("pymtCancAmt");
+	if (isEmpty(getEVal("pymtCancRsnCd"))==false) paramXls["pymtCancRsnCd"] = getEVal("pymtCancRsnCd");
+	if (isEmpty(getEVal("pymtCancRsn"))==false) paramXls["pymtCancRsn"] = getEVal("pymtCancRsn");
+	if (isEmpty(getEVal("txnCancPwd"))==false) paramXls["txnCancPwd"] = getEVal("txnCancPwd");
+	if (isEmpty(getEVal("cancId"))==false) paramXls["cancId"] = getEVal("cancId");
+	if (isEmpty(getEVal("cancIp"))==false) paramXls["cancIp"] = getEVal("cancIp");
+	if (isEmpty(getEVal("prtlCancYn"))==false) paramXls["prtlCancYn"] = getEVal("prtlCancYn");
+	if (isEmpty(getEVal("cancRstlCd"))==false) paramXls["cancRstlCd"] = getEVal("cancRstlCd");
+	if (isEmpty(getEVal("cancRstlCont"))==false) paramXls["cancRstlCont"] = getEVal("cancRstlCont");
+	if (isEmpty(getEVal("cancDtm"))==false) paramXls["cancDtm"] = getEVal("cancDtm");
+	if (isEmpty(getEVal("cancHms"))==false) paramXls["cancHms"] = getEVal("cancHms");
+	if (isEmpty(getEVal("cancNo"))==false) paramXls["cancNo"] = getEVal("cancNo");
+	if (isEmpty(getEVal("cancDtlErrCd"))==false) paramXls["cancDtlErrCd"] = getEVal("cancDtlErrCd");
+	if (isEmpty(getEVal("cancDtlErrCont"))==false) paramXls["cancDtlErrCont"] = getEVal("cancDtlErrCont");
+	if (isEmpty(getEVal("billYmd"))==false) paramXls["billYmd"] = getEVal("billYmd");
+
+	var params = {"xlsName":"구매결제"
+		,"sheetName":"시트"
+		,"columnHeaders":["PG구매ID","주문ID","주문취소ID","멤버ID","카드번호","결제구분코드","결제진행코드","결제대행사코드","카드사코드","카드할부기간","카드결제금액","정산키","승인번호","거래ID","상점ID","상점Key","상품명","구매자명","구매자이메일","공급가액금액","부가가치세","면세금액","무이자여부","할부개월수","몰IP","카드사명","결과코드","결과내용","승인일시","승인코드","승인여부","오류코드","오류내용","결제취소여부","결제취소금액","결제취소사유코드","결제취소사유","거래취소비밀번호","취소ID","취소IP","부분취소여부","취소결과코드","취소결과내용","취소일시","취소시분초","취소번호","취소상세오류코드","취소상세오류내용","정산년월일"]
+		,"columnNames":["pgBuyId","ordId","ordCnclId","mbrId","cardNo","pymtDivCd","pymtProgCd","pymtAgcyCompCd","cardCompCd","cardInstalPeriod","cardPymtAmt","billKey","apvlNo","txnId","storeId","storeKey","prodNm","consrNm","consrEmail","splyPrice","vat","taxExptAmt","intFreeYn","instalMos","mallIp","cardCompNm","rstlCd","rstlCont","apvlDtm","apvlCd","apvlYn","errCd","errCont","pymtCancYn","pymtCancAmt","pymtCancRsnCd","pymtCancRsn","txnCancPwd","cancId","cancIp","prtlCancYn","cancRstlCd","cancRstlCont","cancDtm","cancHms","cancNo","cancDtlErrCd","cancDtlErrCont","billYmd"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["pgBuyId"] = arr[0].trim();
+	}
+	BuyPymtPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvBuyPymtSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvBuyPymtSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsBuyPymt.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">PG구매ID</th>
+							<th scope="col">주문ID</th>
+							<th scope="col">주문취소ID</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">카드번호</th>
+							<th scope="col">결제구분코드</th>
+							<th scope="col">결제진행코드</th>
+							<th scope="col">결제대행사코드</th>
+							<th scope="col">카드사코드</th>
+							<th scope="col">카드할부기간</th>
+							<th scope="col">카드결제금액</th>
+							<th scope="col">정산키</th>
+							<th scope="col">승인번호</th>
+							<th scope="col">거래ID</th>
+							<th scope="col">상점ID</th>
+							<th scope="col">상점Key</th>
+							<th scope="col">상품명</th>
+							<th scope="col">구매자명</th>
+							<th scope="col">구매자이메일</th>
+							<th scope="col">공급가액금액</th>
+							<th scope="col">부가가치세</th>
+							<th scope="col">면세금액</th>
+							<th scope="col">무이자여부</th>
+							<th scope="col">할부개월수</th>
+							<th scope="col">몰IP</th>
+							<th scope="col">카드사명</th>
+							<th scope="col">결과코드</th>
+							<th scope="col">결과내용</th>
+							<th scope="col">승인일시</th>
+							<th scope="col">승인코드</th>
+							<th scope="col">승인여부</th>
+							<th scope="col">오류코드</th>
+							<th scope="col">오류내용</th>
+							<th scope="col">결제취소여부</th>
+							<th scope="col">결제취소금액</th>
+							<th scope="col">결제취소사유코드</th>
+							<th scope="col">결제취소사유</th>
+							<th scope="col">거래취소비밀번호</th>
+							<th scope="col">취소ID</th>
+							<th scope="col">취소IP</th>
+							<th scope="col">부분취소여부</th>
+							<th scope="col">취소결과코드</th>
+							<th scope="col">취소결과내용</th>
+							<th scope="col">취소일시</th>
+							<th scope="col">취소시분초</th>
+							<th scope="col">취소번호</th>
+							<th scope="col">취소상세오류코드</th>
+							<th scope="col">취소상세오류내용</th>
+							<th scope="col">정산년월일</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{pgBuyId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{pgBuyId}}</td>
+						<td>{{ordId}}</td>
+						<td>{{ordCnclId}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{cardNo}}</td>
+						<td>{{pymtDivCd}}</td>
+						<td>{{pymtProgCd}}</td>
+						<td>{{pymtAgcyCompCd}}</td>
+						<td>{{cardCompCd}}</td>
+						<td>{{cardInstalPeriod}}</td>
+						<td>{{cardPymtAmt}}</td>
+						<td>{{billKey}}</td>
+						<td>{{apvlNo}}</td>
+						<td>{{txnId}}</td>
+						<td>{{storeId}}</td>
+						<td>{{storeKey}}</td>
+						<td>{{prodNm}}</td>
+						<td>{{consrNm}}</td>
+						<td>{{consrEmail}}</td>
+						<td>{{splyPrice}}</td>
+						<td>{{vat}}</td>
+						<td>{{taxExptAmt}}</td>
+						<td>{{intFreeYn}}</td>
+						<td>{{instalMos}}</td>
+						<td>{{mallIp}}</td>
+						<td>{{cardCompNm}}</td>
+						<td>{{rstlCd}}</td>
+						<td>{{rstlCont}}</td>
+						<td>{{apvlDtm}}</td>
+						<td>{{apvlCd}}</td>
+						<td>{{apvlYn}}</td>
+						<td>{{errCd}}</td>
+						<td>{{errCont}}</td>
+						<td>{{pymtCancYn}}</td>
+						<td>{{pymtCancAmt}}</td>
+						<td>{{pymtCancRsnCd}}</td>
+						<td>{{pymtCancRsn}}</td>
+						<td>{{txnCancPwd}}</td>
+						<td>{{cancId}}</td>
+						<td>{{cancIp}}</td>
+						<td>{{prtlCancYn}}</td>
+						<td>{{cancRstlCd}}</td>
+						<td>{{cancRstlCont}}</td>
+						<td>{{cancDtm}}</td>
+						<td>{{cancHms}}</td>
+						<td>{{cancNo}}</td>
+						<td>{{cancDtlErrCd}}</td>
+						<td>{{cancDtlErrCont}}</td>
+						<td>{{billYmd}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvBuyPymtPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/buyPymt/buyPymtPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

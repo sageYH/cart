@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderExchDelivMapper">
+	<sql id="where-orderExchDeliv">
+		WHERE 1=1
+			<if test="ordExchDelivId != null and ordExchDelivId != '' ">
+			AND OED.ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OED.ORD_ID = #{ordId}
+			</if>
+			<if test="collDelivCompId != null and collDelivCompId != '' ">
+			AND OED.COLL_DELIV_COMP_ID = #{collDelivCompId}
+			</if>
+			<if test="collDelivFee != null and collDelivFee != '' ">
+			AND OED.COLL_DELIV_FEE = #{collDelivFee}
+			</if>
+			<if test="collPymtCompId != null and collPymtCompId != '' ">
+			AND OED.COLL_PYMT_COMP_ID = #{collPymtCompId}
+			</if>
+			<if test="collDelivYn != null and collDelivYn != '' ">
+			AND OED.COLL_DELIV_YN = #{collDelivYn}
+			</if>
+			<if test="collDelivExpectedYmd != null and collDelivExpectedYmd != '' ">
+			AND OED.COLL_DELIV_EXPECTED_YMD = #{collDelivExpectedYmd}
+			</if>
+			<if test="collDelivYmd != null and collDelivYmd != '' ">
+			AND OED.COLL_DELIV_YMD = #{collDelivYmd}
+			</if>
+			<if test="exchDelivCompId != null and exchDelivCompId != '' ">
+			AND OED.EXCH_DELIV_COMP_ID = #{exchDelivCompId}
+			</if>
+			<if test="exchDelivFee != null and exchDelivFee != '' ">
+			AND OED.EXCH_DELIV_FEE = #{exchDelivFee}
+			</if>
+			<if test="exchPymtCompId != null and exchPymtCompId != '' ">
+			AND OED.EXCH_PYMT_COMP_ID = #{exchPymtCompId}
+			</if>
+			<if test="exchDelivYn != null and exchDelivYn != '' ">
+			AND OED.EXCH_DELIV_YN = #{exchDelivYn}
+			</if>
+			<if test="exchDelivExpectedYmd != null and exchDelivExpectedYmd != '' ">
+			AND OED.EXCH_DELIV_EXPECTED_YMD = #{exchDelivExpectedYmd}
+			</if>
+			<if test="exchDelivYmd != null and exchDelivYmd != '' ">
+			AND OED.EXCH_DELIV_YMD = #{exchDelivYmd}
+			</if>
+	</sql>
+
+	<select id="getOrderExchDelivListCount" parameterType="OrderExchDelivExDto" resultType="Integer">
+	/* orderExchDelivMapper.getOrderExchDelivListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_EXCH_DELIV OED
+		<include refid="where-orderExchDeliv" />
+	</select>
+
+	<select id="getOrderExchDelivList" parameterType="OrderExchDelivExDto" resultType="OrderExchDelivExDto">
+	/* orderExchDelivMapper.getOrderExchDelivList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OED.ORD_EXCH_DELIV_ID
+			,OED.ORD_ID
+			,OED.COLL_DELIV_COMP_ID
+			,OED.COLL_DELIV_FEE
+			,OED.COLL_PYMT_COMP_ID
+			,OED.COLL_DELIV_YN
+			,OED.COLL_DELIV_EXPECTED_YMD
+			,OED.COLL_DELIV_YMD
+			,OED.EXCH_DELIV_COMP_ID
+			,OED.EXCH_DELIV_FEE
+			,OED.EXCH_PYMT_COMP_ID
+			,OED.EXCH_DELIV_YN
+			,OED.EXCH_DELIV_EXPECTED_YMD
+			,OED.EXCH_DELIV_YMD
+			,OED.REG_USER_ID
+			,REG_DTM
+			,OED.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH_DELIV OED
+		<include refid="where-orderExchDeliv" />
+		ORDER BY
+			OED.ORD_EXCH_DELIV_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderExchDeliv" parameterType="OrderExchDelivExDto" resultType="OrderExchDelivExDto">
+	/* orderExchDelivMapper.getOrderExchDeliv */
+		SELECT
+			OED.ORD_EXCH_DELIV_ID
+			,OED.ORD_ID
+			,OED.COLL_DELIV_COMP_ID
+			,OED.COLL_DELIV_FEE
+			,OED.COLL_PYMT_COMP_ID
+			,OED.COLL_DELIV_YN
+			,OED.COLL_DELIV_EXPECTED_YMD
+			,OED.COLL_DELIV_YMD
+			,OED.EXCH_DELIV_COMP_ID
+			,OED.EXCH_DELIV_FEE
+			,OED.EXCH_PYMT_COMP_ID
+			,OED.EXCH_DELIV_YN
+			,OED.EXCH_DELIV_EXPECTED_YMD
+			,OED.EXCH_DELIV_YMD
+			,OED.REG_USER_ID
+			,REG_DTM
+			,OED.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH_DELIV OED
+		WHERE
+			OED.ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+	</select>
+
+	<insert id="insertOrderExchDeliv" parameterType="OrderExchDelivExDto">
+	/* orderExchDelivMapper.insertOrderExchDeliv */
+		INSERT INTO CW_ORDER_EXCH_DELIV (
+			ORD_EXCH_DELIV_ID
+			,ORD_ID
+			,COLL_DELIV_COMP_ID
+			,COLL_DELIV_FEE
+			,COLL_PYMT_COMP_ID
+			,COLL_DELIV_YN
+			,COLL_DELIV_EXPECTED_YMD
+			,COLL_DELIV_YMD
+			,EXCH_DELIV_COMP_ID
+			,EXCH_DELIV_FEE
+			,EXCH_PYMT_COMP_ID
+			,EXCH_DELIV_YN
+			,EXCH_DELIV_EXPECTED_YMD
+			,EXCH_DELIV_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordExchDelivId}
+			,#{ordId}
+			,#{collDelivCompId}
+			,#{collDelivFee}
+			,#{collPymtCompId}
+			,#{collDelivYn}
+			,#{collDelivExpectedYmd}
+			,#{collDelivYmd}
+			,#{exchDelivCompId}
+			,#{exchDelivFee}
+			,#{exchPymtCompId}
+			,#{exchDelivYn}
+			,#{exchDelivExpectedYmd}
+			,#{exchDelivYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderExchDeliv" parameterType="OrderExchDelivExDto">
+	/* orderExchDelivMapper.updateOrderExchDeliv */
+		UPDATE CW_ORDER_EXCH_DELIV
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="collDelivCompId != null">
+		COLL_DELIV_COMP_ID = #{collDelivCompId},
+		</if>
+		<if test="collDelivFee != null">
+		COLL_DELIV_FEE = #{collDelivFee},
+		</if>
+		<if test="collPymtCompId != null">
+		COLL_PYMT_COMP_ID = #{collPymtCompId},
+		</if>
+		<if test="collDelivYn != null">
+		COLL_DELIV_YN = #{collDelivYn},
+		</if>
+		<if test="collDelivExpectedYmd != null">
+		COLL_DELIV_EXPECTED_YMD = #{collDelivExpectedYmd},
+		</if>
+		<if test="collDelivYmd != null">
+		COLL_DELIV_YMD = #{collDelivYmd},
+		</if>
+		<if test="exchDelivCompId != null">
+		EXCH_DELIV_COMP_ID = #{exchDelivCompId},
+		</if>
+		<if test="exchDelivFee != null">
+		EXCH_DELIV_FEE = #{exchDelivFee},
+		</if>
+		<if test="exchPymtCompId != null">
+		EXCH_PYMT_COMP_ID = #{exchPymtCompId},
+		</if>
+		<if test="exchDelivYn != null">
+		EXCH_DELIV_YN = #{exchDelivYn},
+		</if>
+		<if test="exchDelivExpectedYmd != null">
+		EXCH_DELIV_EXPECTED_YMD = #{exchDelivExpectedYmd},
+		</if>
+		<if test="exchDelivYmd != null">
+		EXCH_DELIV_YMD = #{exchDelivYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+	</update>
+
+	<delete id="deleteOrderExchDeliv" parameterType="OrderExchDelivExDto">
+	/* orderExchDelivMapper.deleteOrderExchDeliv */
+	DELETE FROM CW_ORDER_EXCH_DELIV
+	WHERE
+		ORD_EXCH_DELIV_ID = #{ordExchDelivId}
+	</delete>
+</mapper>

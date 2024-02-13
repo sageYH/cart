@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordExchId"] = '[[${transData.ordExchId}]]';
+	if (isEmpty(map["ordExchId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ordExchId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderExch/getOrderExch.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ordExchId","","자료(주문배송ID)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["exchReqDtm","","자료(교환요청일시)를 확인하세요."]
+		["exchCollDtm","","자료(교환수거일시)를 확인하세요."]
+		["exchCpltDtm","","자료(교환완료일시)를 확인하세요."]
+		["collDelivFee","","자료(수거배송비)를 확인하세요."]
+		["exchDelivFee","","자료(교환배송비)를 확인하세요."]
+		["delivFeeTgtCd","","자료(배송비대상코드[OD05])를 확인하세요."]
+		["pymtCompId","","자료(지급사ID)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/orderExch/updateOrderExch.do";
+	if (mode=="NEW"){
+		url = "/app/orderExch/insertOrderExch.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formOrderExchPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvOrderExchPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formOrderExchPop" name="formOrderExchPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문배송ID</th>
+						<td><input type="text" name="ordExchId" id="ordExchId" style="width:70%" readonly >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환요청일시</th>
+						<td><input type="text" name="exchReqDtm" id="exchReqDtm" style="width:70%" >
+						</td>
+					<th scope="row">교환수거일시</th>
+					<td><input type="text" name="exchCollDtm" id="exchCollDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환완료일시</th>
+						<td><input type="text" name="exchCpltDtm" id="exchCpltDtm" style="width:70%" >
+						</td>
+					<th scope="row">수거배송비</th>
+					<td><input type="text" name="collDelivFee" id="collDelivFee" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">교환배송비</th>
+						<td><input type="text" name="exchDelivFee" id="exchDelivFee" style="width:70%" >
+						</td>
+					<th scope="row">배송비대상코드[OD05]</th>
+					<td><input type="text" name="delivFeeTgtCd" id="delivFeeTgtCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">지급사ID</th>
+						<td><input type="text" name="pymtCompId" id="pymtCompId" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

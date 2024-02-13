@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="menuLangMapper">
+	<sql id="where-menuLang">
+		WHERE 1=1
+			<if test="menuId != null and menuId != '' ">
+			AND ML.MENU_ID = #{menuId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND ML.LANG_CD = #{langCd}
+			</if>
+			<if test="menuNm != null and menuNm != '' ">
+			AND ML.MENU_NM = #{menuNm}
+			</if>
+			<if test="menuDesc != null and menuDesc != '' ">
+			AND ML.MENU_DESC = #{menuDesc}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND ML.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMenuLangListCount" parameterType="MenuLangExDto" resultType="Integer">
+	/* menuLangMapper.getMenuLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MENU_LANG ML
+		<include refid="where-menuLang" />
+	</select>
+
+	<select id="getMenuLangList" parameterType="MenuLangExDto" resultType="MenuLangExDto">
+	/* menuLangMapper.getMenuLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ML.MENU_ID
+			,ML.LANG_CD
+			,ML.MENU_NM
+			,ML.MENU_DESC
+			,ML.USE_YN
+			,ML.REG_USER_ID
+			,REG_DTM
+			,ML.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU_LANG ML
+		<include refid="where-menuLang" />
+		ORDER BY
+			ML.MENU_ID
+			,ML.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMenuLang" parameterType="MenuLangExDto" resultType="MenuLangExDto">
+	/* menuLangMapper.getMenuLang */
+		SELECT
+			ML.MENU_ID
+			,ML.LANG_CD
+			,ML.MENU_NM
+			,ML.MENU_DESC
+			,ML.USE_YN
+			,ML.REG_USER_ID
+			,REG_DTM
+			,ML.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MENU_LANG ML
+		WHERE
+			ML.MENU_ID = #{menuId}
+			AND ML.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertMenuLang" parameterType="MenuLangExDto">
+	/* menuLangMapper.insertMenuLang */
+		INSERT INTO CW_MENU_LANG (
+			MENU_ID
+			,LANG_CD
+			,MENU_NM
+			,MENU_DESC
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{menuId}
+			,#{langCd}
+			,#{menuNm}
+			,#{menuDesc}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMenuLang" parameterType="MenuLangExDto">
+	/* menuLangMapper.updateMenuLang */
+		UPDATE CW_MENU_LANG
+		<set>
+		<if test="menuNm != null">
+		MENU_NM = #{menuNm},
+		</if>
+		<if test="menuDesc != null">
+		MENU_DESC = #{menuDesc},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MENU_ID = #{menuId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteMenuLang" parameterType="MenuLangExDto">
+	/* menuLangMapper.deleteMenuLang */
+	DELETE FROM CW_MENU_LANG
+	WHERE
+		MENU_ID = #{menuId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

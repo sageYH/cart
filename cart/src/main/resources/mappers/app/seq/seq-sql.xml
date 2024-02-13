@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="seqMapper">
+	<sql id="where-seq">
+		WHERE 1=1
+			<if test="tableName != null and tableName != '' ">
+			AND S.TABLE_NAME = #{tableName}
+			</if>
+			<if test="nextId != null and nextId != '' ">
+			AND S.NEXT_ID = #{nextId}
+			</if>
+	</sql>
+
+	<select id="getSeqListCount" parameterType="SeqExDto" resultType="Integer">
+	/* seqMapper.getSeqListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_SEQ S
+		<include refid="where-seq" />
+	</select>
+
+	<select id="getSeqList" parameterType="SeqExDto" resultType="SeqExDto">
+	/* seqMapper.getSeqList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			S.TABLE_NAME
+			,S.NEXT_ID
+		FROM CW_SEQ S
+		<include refid="where-seq" />
+		ORDER BY
+			S.TABLE_NAME
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getSeq" parameterType="SeqExDto" resultType="SeqExDto">
+	/* seqMapper.getSeq */
+		SELECT
+			S.TABLE_NAME
+			,S.NEXT_ID
+		FROM CW_SEQ S
+		WHERE
+			S.TABLE_NAME = #{tableName}
+	</select>
+
+	<insert id="insertSeq" parameterType="SeqExDto">
+	/* seqMapper.insertSeq */
+		INSERT INTO CW_SEQ (
+			TABLE_NAME
+			,NEXT_ID
+		) VALUES (
+			#{tableName}
+			,#{nextId}
+		)
+	</insert>
+
+	<update id="updateSeq" parameterType="SeqExDto">
+	/* seqMapper.updateSeq */
+		UPDATE CW_SEQ
+		<set>
+		<if test="nextId != null">
+		NEXT_ID = #{nextId},
+		</if>
+		</set>
+		WHERE
+			TABLE_NAME = #{tableName}
+	</update>
+
+	<delete id="deleteSeq" parameterType="SeqExDto">
+	/* seqMapper.deleteSeq */
+	DELETE FROM CW_SEQ
+	WHERE
+		TABLE_NAME = #{tableName}
+	</delete>
+</mapper>

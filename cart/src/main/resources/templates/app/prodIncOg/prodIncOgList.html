@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsProdIncOg = new pageCls("dvProdIncOgPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodIncOgDtm"))==false) params["prodIncOgDtm"] = getEVal("prodIncOgDtm");
+	if (isEmpty(getEVal("incOgDivCd"))==false) params["incOgDivCd"] = getEVal("incOgDivCd");
+	if (isEmpty(getEVal("prodIncQty"))==false) params["prodIncQty"] = getEVal("prodIncQty");
+	if (isEmpty(getEVal("prodOgQty"))==false) params["prodOgQty"] = getEVal("prodOgQty");
+	//page set
+	params = pageClsProdIncOg.getPageInfo(params);
+
+	var url = "/app/prodIncOg/getProdIncOgPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["prodId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,5);
+	pageClsProdIncOg.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsProdIncOgDown(){
+	var url = "/app/prodIncOg/getProdIncOgExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodIncOgDtm"))==false) paramXls["prodIncOgDtm"] = getEVal("prodIncOgDtm");
+	if (isEmpty(getEVal("incOgDivCd"))==false) paramXls["incOgDivCd"] = getEVal("incOgDivCd");
+	if (isEmpty(getEVal("prodIncQty"))==false) paramXls["prodIncQty"] = getEVal("prodIncQty");
+	if (isEmpty(getEVal("prodOgQty"))==false) paramXls["prodOgQty"] = getEVal("prodOgQty");
+
+	var params = {"xlsName":"상품입출고"
+		,"sheetName":"시트"
+		,"columnHeaders":["상품ID","상품입출고일시","입출고구분코드[PD05]","상품입고량","상품출고량"]
+		,"columnNames":["prodId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["prodId"] = arr[0].trim();
+		params["prodIncOgDtm"] = arr[1].trim();
+	}
+	ProdIncOgPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvProdIncOgSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvProdIncOgSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsProdIncOg.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">상품ID</th>
+							<th scope="col">상품입출고일시</th>
+							<th scope="col">입출고구분코드[PD05]</th>
+							<th scope="col">상품입고량</th>
+							<th scope="col">상품출고량</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{prodId}},{{prodIncOgDtm}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{prodId}}</td>
+						<td>{{prodIncOgDtm}}</td>
+						<td>{{incOgDivCd}}</td>
+						<td>{{prodIncQty}}</td>
+						<td>{{prodOgQty}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvProdIncOgPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/prodIncOg/prodIncOgPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="couponInfoLangMapper">
+	<sql id="where-couponInfoLang">
+		WHERE 1=1
+			<if test="cpnId != null and cpnId != '' ">
+			AND CIL.CPN_ID = #{cpnId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND CIL.LANG_CD = #{langCd}
+			</if>
+			<if test="cpnNm != null and cpnNm != '' ">
+			AND CIL.CPN_NM = #{cpnNm}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CIL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCouponInfoLangListCount" parameterType="CouponInfoLangExDto" resultType="Integer">
+	/* couponInfoLangMapper.getCouponInfoLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUPON_INFO_LANG CIL
+		<include refid="where-couponInfoLang" />
+	</select>
+
+	<select id="getCouponInfoLangList" parameterType="CouponInfoLangExDto" resultType="CouponInfoLangExDto">
+	/* couponInfoLangMapper.getCouponInfoLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CIL.CPN_ID
+			,CIL.LANG_CD
+			,CIL.CPN_NM
+			,CIL.USE_YN
+			,CIL.REG_USER_ID
+			,REG_DTM
+			,CIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_INFO_LANG CIL
+		<include refid="where-couponInfoLang" />
+		ORDER BY
+			CIL.CPN_ID
+			,CIL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCouponInfoLang" parameterType="CouponInfoLangExDto" resultType="CouponInfoLangExDto">
+	/* couponInfoLangMapper.getCouponInfoLang */
+		SELECT
+			CIL.CPN_ID
+			,CIL.LANG_CD
+			,CIL.CPN_NM
+			,CIL.USE_YN
+			,CIL.REG_USER_ID
+			,REG_DTM
+			,CIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_INFO_LANG CIL
+		WHERE
+			CIL.CPN_ID = #{cpnId}
+			AND CIL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertCouponInfoLang" parameterType="CouponInfoLangExDto">
+	/* couponInfoLangMapper.insertCouponInfoLang */
+		INSERT INTO CW_COUPON_INFO_LANG (
+			CPN_ID
+			,LANG_CD
+			,CPN_NM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cpnId}
+			,#{langCd}
+			,#{cpnNm}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCouponInfoLang" parameterType="CouponInfoLangExDto">
+	/* couponInfoLangMapper.updateCouponInfoLang */
+		UPDATE CW_COUPON_INFO_LANG
+		<set>
+		<if test="cpnNm != null">
+		CPN_NM = #{cpnNm},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CPN_ID = #{cpnId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteCouponInfoLang" parameterType="CouponInfoLangExDto">
+	/* couponInfoLangMapper.deleteCouponInfoLang */
+	DELETE FROM CW_COUPON_INFO_LANG
+	WHERE
+		CPN_ID = #{cpnId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

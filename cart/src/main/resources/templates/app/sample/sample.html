@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+function test1(){
+	var url = "/app/code/getCodePageList.do";
+	var fData = new FormData();
+	fData.set("cdId","C001");
+	
+	getUrlData(url,fData).then((result=>{
+		console.log("data..11........."+result);
+		console.log("data..........."+JSON.stringify(result.payloads));
+	}));
+}
+
+function test2(){
+	var url = "/app/common/file/fileUpload.do";
+	//fileOrgNm,filePath
+	var params = {"filePath":"/test/","fileOrgNm":"테스트2.txt"};
+	var f1 = getEleByObj("file1");
+	var fData = new FormData();
+	fData.set("params",JSON.stringify(params));
+	fData.set("file1",f1.files[0]);
+	getUrlData(url,fData).then((result=>{
+		console.log("data..33........."+result);
+		console.log("data..33........."+JSON.stringify(result));
+		
+		if (isEmpty(result.resultCd)==false){
+			if (result.resultCd == "Y"){
+				alert("success.");
+			}
+			else{
+				alert(result.resultMsg);
+			}
+		}
+	}));
+}
+
+function test2_1(){
+	var f1 = document.getElementById("file1");
+	processFile(f1.files[0], fnCallbackFEnd);
+}
+function fnCallbackFEnd(obj){
+	//image view
+//	document.getElementById("imgTest").src = obj;
+
+	var url = "/app/common/file/fileUploadSrc.do";
+	//fileOrgNm,filePath
+	var params = {"filePath":"/test/","fileOrgNm":"테스트2.jpg","file":obj};
+	ajaxPost(url,JSON.stringify(params),(data)=>{
+		if (data == undefined || data == null){
+			alert("not found data.");
+			return;
+		}
+		console.log("data...11......."+JSON.stringify(data));
+	});
+}
+// file reader
+function readFileAsync(file,fn) {
+	var pObj = new Promise((resolve, reject) => {
+		let reader = new FileReader();
+		reader.onload = () => {
+			resolve(reader.result);
+		};
+		reader.onerror = () => {new Error("File read error.");};
+		reader.readAsDataURL(file);
+		return pObj;
+	});
+	
+	pObj.then(function(val){
+		fn(val);
+	}).catch(function(){
+		fn(null);
+	});
+
+	return pObj;
+}
+
+async function processFile(file,fn) {
+	try {
+		await readFileAsync(file,fn);
+	} catch (err) {
+		fn(null);
+	}
+}
+
+function fnPreviewImg(binary){
+	document.getElementById("imgTest").src = binary;
+	var reader = new FileReader();
+	reader.readAsDataURL(binary);
+//	reader.readAsBinaryString(binary);
+	reader.onload = function (e) {
+		var image=new Image();
+		image.src=e.target.result;
+		image.onload = function () {
+			try{
+				document.getElementById("imgTest").src = image.src;
+			}catch(e){}
+		};
+	}
+}
+
+// file reader end.
+
+function test3(){
+	var url = "/app/common/file/fileDown.do";
+	var params = {"fileId":"4657ad38-63cc-4b81-bf6c-04e778bbf64e","filePath":"/test/","fileOrgNm":"테스트2.txt"};
+	var fData = new FormData();
+	fData.set("params",JSON.stringify(params));
+	getDownFile(url,fData);
+}
+
+function test7(){
+	var formData = new FormData;
+	var arr = ['this', 'is', 'an', 'array'];
+
+	for (var i = 0; i < arr.length; i++) {
+	  formData.append('arr[]', arr[i]);
+	}
+
+	console.log(...formData);
+console.log("11...." + formData.get('arr[]'));
+	let queryString = new URLSearchParams(formData).toString();
+console.log("s............"+decodeURIComponent(queryString));
+}
+
+function testExcelUpload(){
+	var url = "/app/common/excelUpload.do";
+	var params = {"columnNames" : ["a","b","c"]};
+
+	var f1 = getEleByObj("file2");
+	var fData = new FormData();
+	fData.set("params",JSON.stringify(params));
+	fData.set("file1",f1.files[0]);
+	getUrlData(url,fData).then((result=>{
+		console.log("data..exup........."+result);
+		console.log("data..exup........."+JSON.stringify(result));
+		
+		if (isEmpty(result.resultCd)==false){
+			if (result.resultCd == "Y"){
+				alert("success.");
+			}
+			else{
+				alert(result.resultMsg);
+			}
+		}
+	}));
+}
+
+function testExcelDown(){
+	//xlsName,sheetName,columnHeaders(list),columnNames(list), list(List<map>):data
+	var url = "/app/common/excelDownload.do";
+	var params = {"xlsName":"엑셀파일1"
+		,"sheetName":"시트1"
+		,"columnHeaders":["제목1","제목2","제목3"]
+		,"columnNames" : ["a","b","c"]
+		,"list":[
+			{"a":"1","b":"2","c":"3"}
+			,{"a":"4","b":"5","c":"6"}
+			,{"a":"7","b":"8","c":"9"}
+		]
+	};
+	console.log("data........."+JSON.stringify(params));
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function testQueryToExcelDown(){
+	//xlsName,sheetName,columnHeaders(list),columnNames(list), list(List<map>):data
+	var url = "/app/sample/getCodeExcelDown.do";
+	var params = {"xlsName":"엑셀파일2"
+		,"sheetName":"시트2"
+		,"columnHeaders":["코드","그룹코드","코드명","등록일자"]
+		,"columnNames" : ["cdId","grpId","cdNm","regDt"]
+		,"condition": {"cdId":"C001"}
+	};
+	console.log("data........."+JSON.stringify(params));
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function test8(){
+	layerPopWindow("dvMove");
+}
+//call
+function test9(){
+	var url = "/app/sample/popup/samplePopup.do";
+	var params = {"cdId":"C001","cdNm":"test"};
+	var map = {"transData":JSON.stringify(params),"callbackFunc":"callbackTest9"};
+	popOpenWindow("testPopId",url,map);
+}
+function callbackTest9(data){
+	console.log(JSON.stringify(data));
+}
+//call end.
+
+function test10(){
+	var url = "/app/api/inf_sample_getCodePageList.do";
+	var fData = new FormData();
+//	fData.set("cdId","C001");
+	
+	getUrlData(url,fData).then((result=>{
+		console.log("data..11........."+result);
+		console.log("data..........."+JSON.stringify(result));
+	}));
+}
+function test11(){
+	var url = "/app/api/inf_file_fileUpload.do";
+	//fileOrgNm,filePath
+	var params = {"filePath":"/test/","fileOrgNm":"테스트2.txt"};
+	var f1 = getEleByObj("file1");
+	var fData = new FormData();
+	fData.set("params",JSON.stringify(params));
+	fData.set("file1",f1.files[0]);
+	getUrlData(url,fData).then((result=>{
+		console.log("data..33........."+result);
+		console.log("data..33........."+JSON.stringify(result));
+		
+		if (isEmpty(result.resultCd)==false){
+			if (result.resultCd == "Y"){
+				alert("success.");
+			}
+			else{
+				alert(result.resultMsg);
+			}
+		}
+	}));
+}
+
+function test12(){
+	var url = "/app/api/inf_file_fileDownload.do";
+	var params = {"fileId":"e0429347-6a1a-474e-8278-8e0f7c2cebe5","filePath":"/test/","fileOrgNm":"테스트3.jpg"};
+//	var params = {"fileId":"410aa4e5-9ed7-4129-857b-697f8a1d6075","filePath":"/test/","fileOrgNm":"테스트3.pdf"};
+	var fData = new FormData();
+	fData.set("params",JSON.stringify(params));
+	getDownFile(url,fData);
+}
+
+//jquery test
+function ajaxPost(url, strParams, func) {
+	$.ajax({
+		async : false,
+		url : url,
+		data : strParams,
+        type : 'POST',
+        dataType : 'json',
+        contentType: 'application/json',
+        success: function(result){
+        	func(result);
+        },
+        error:function(){
+        	func(null);
+       	}
+    });
+}
+//var dBox = null;
+function test13(){
+	var url = "/app/sample/getDeptList.do";
+	var params = JSON.stringify({"test":"test data.","deptCd":"1"});
+	ajaxPost(url,params,(data)=>{
+		var map={
+			"idDv":"dvModule",	//module
+			"idDvWork":"dvWorkBox",	//work
+			"idInp":"srcBox",	//search input
+			"idKey":"srcDeptCd",	//dept code
+			"idUl":"ulBox"	//list ul
+		};
+		if (data == undefined || data == null || (data instanceof Array) == false){
+			alert("not found data.");
+			return;
+		}
+		new setAutoBox(map,data);
+	});
+}
+class setAutoBox{
+	//map => idDv:work box, idInp:operate, idKey:deptCd, idUl:list box
+	constructor(map,data){
+		this._idDv = map["idDv"];
+		this._idDvWork = map["idDvWork"];
+		this._idInp = map["idInp"];
+		this._idKey = map["idKey"];
+		this._idUl = map["idUl"];
+		var vDList = new Array();
+		//check chiedlen
+		var cnt = data.length;
+		for(var i=0;i<cnt;i++){
+			vDList.push(data[i]["PATH"].replace(/,/gi,''));
+		}
+		for(var i=0;i<cnt;i++){
+			var path = vDList[i];
+			var iCnt = 0;
+			for(var k=0;k<cnt;k++){
+				if (vDList[k].indexOf(path)>-1) iCnt++;
+				if (iCnt > 1) break;
+			}
+			if (iCnt > 1){
+				data[i]["TAIL_YN"] = "N";
+			}
+			else{
+				data[i]["TAIL_YN"] = "Y";
+			}
+		}
+		this._data = data;
+
+		$("#"+this._idDv)[0].autobox = this;
+
+		$("#"+this._idDv).on('mouseleave',function(){
+			$("#"+map["idDvWork"]).css("display","none");
+		});
+		$("#"+this._idInp).on('focus click',function(){
+			$("#"+map["idDv"])[0].autobox.searchData();
+		});
+		$("#"+this._idInp).on('keyup',function(e){
+			$("#"+map["idDv"])[0].autobox.searchData();
+		});
+	}
+	
+	searchData(){
+		//deptCd, deptNm, upDeptCd, depth, path, pathNm
+		$("#"+this._idUl).html("");
+		$("#"+this._idKey).val("");
+		
+		var srch1 = $("#"+this._idInp).val();
+		var cnt = this._data.length;
+		var vArr = new Array();
+		var vFn = this._idDv + ".autobox.setDataToBox";
+		for(var i=0;i<cnt;i++){
+			var row = this._data[i];
+			if (row["DEPT_NM"].indexOf(srch1) < 0) continue;
+			var depth = parseInt(row["DEPTH"]);
+			var vPad = "";
+			var vValue = row["DEPT_NM"];
+			if (depth > 1){	//add space : css padding
+				vPad = " padding-left:"+((depth - 1)*10)+"px;";
+				vValue = "-" + vValue;
+			}
+			vArr.push("<li style='cursor:default;"+vPad+"'");
+			vArr.push(" onmouseover='this.style.backgroundColor=\"#00e\";'");
+			vArr.push(" onmouseout='this.style.backgroundColor=\"transparent\";'");
+			if (srch1 != null && srch1 == ""){
+				vArr.push(" onclick='"+vFn+"(\""+row["DEPT_CD"]+"\",\""+row["DEPT_NM"]+"\");'");
+				vArr.push(">"+vValue+"</li>");
+				continue;
+			}
+			vArr.push(" onclick='"+vFn+"(\""+row["DEPT_CD"]+"\",\""+row["DEPT_NM"]+"\");'");
+			vArr.push(">"+vValue+"</li>");
+		}
+		$("#"+this._idUl).html(vArr.join(""));
+		$("#"+this._idDvWork).css("display","inline-block");
+	}
+	setDataToBox(v1,v2){
+		//deptCd,deptNm
+		$("#"+this._idKey).val(v1);
+		$("#"+this._idInp).val(v2);
+		$("#"+this._idDvWork).css("display","none");
+	}
+};
+
+function fnTestGoCode(){
+	window.location.href = "/app/code/codeList.do";
+}
+</script>
+<body>
+		<div> <button style="font-size:36pt;" onclick="fnTestGoCode();"> go Code </button> </div>
+	<h2>Data Test</h2>
+	<input type="button" value="Data test" onclick="test1();">
+	<br />
+	<button onclick="test3();">file download</button>
+	<br />
+	<div>Image<br>
+	<img id="imgTest" style="width:300px;height:150px;object-fit:cover;" />
+	</div>
+	<input type="file" id="file1" name="file1" style="display:none;">
+	<button onclick="getEleByObj('file1').click();">get file</button> <==== file insert
+	<br />
+	<button onclick="test2();">file upload</button> ===> input file set...
+	<br />
+	<button onclick="test2_1();">file upload src</button> ===> input file set...
+	<br /><br />
+	<button onclick="test7();">formData array.....</button>
+	<br /><br />
+	<input type="file" id="file2" name="file2" style="display:none;">
+	<button onclick="getEleByObj('file2').click();">get excel file</button>
+	<button onclick="testExcelUpload();">testExcelUpload.....</button>
+	<br /><br />
+	<button onclick="testExcelDown();">testExcelDown.....</button>
+	<br /><br />
+	<button onclick="testQueryToExcelDown();">testQueryToExcelDown.....</button>
+	<br /><br />
+	<button onclick="test8();">inner popup move.....</button>
+	<br /><br />
+	<button onclick="test9();">popup test.....</button>
+	<br /><br />
+	<button onclick="test10();">rest api test.....</button>
+	<br /><br />
+	<button onclick="test11();">rest api file upload.....</button> ===> input file set...
+	<br /><br />
+	<button onclick="test12();">rest api file download.....</button>
+	<br /><br />
+	<button onclick="test13();">ajax map / autocomplete .....</button><br />
+	<div id="dvModule" style="display:inline-block;background-color:#e00;">
+		<input type="hidden" id="srcDeptCd" name="srcDeptCd" />
+		<input type="text" id="srcBox" name="srcBox" style="width:200px" />
+		<div style="position:relative;">
+		<div id="dvWorkBox" style="position:absolute;display:none;width:200px;height:150px;z-index:100;overflow-y:auto;background-color:#0e0">
+			<ul id="ulBox">
+			</ul>
+		</div>
+		</div>
+	</div>
+	
+	<div>
+		<div th:each="code : ${codeList}"> id : [[${code.cdId}]] / name : [[${code.cdNm}]] </div>
+	</div>
+	
+	<div id="dvMove" title="test....타이틀1"
+	 style="display:none;width:400px;height:400px;border:1px black solid;">
+	resize test...
+	</div>
+</body>
+</html>

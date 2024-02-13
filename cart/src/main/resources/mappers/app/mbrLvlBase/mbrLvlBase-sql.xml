@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrLvlBaseMapper">
+	<sql id="where-mbrLvlBase">
+		WHERE 1=1
+			<if test="mbrLvlCd != null and mbrLvlCd != '' ">
+			AND MLB.MBR_LVL_CD = #{mbrLvlCd}
+			</if>
+			<if test="signupCondDets != null and signupCondDets != '' ">
+			AND MLB.SIGNUP_COND_DETS = #{signupCondDets}
+			</if>
+			<if test="benfCont != null and benfCont != '' ">
+			AND MLB.BENF_CONT = #{benfCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND MLB.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMbrLvlBaseListCount" parameterType="MbrLvlBaseExDto" resultType="Integer">
+	/* mbrLvlBaseMapper.getMbrLvlBaseListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_LVL_BASE MLB
+		<include refid="where-mbrLvlBase" />
+	</select>
+
+	<select id="getMbrLvlBaseList" parameterType="MbrLvlBaseExDto" resultType="MbrLvlBaseExDto">
+	/* mbrLvlBaseMapper.getMbrLvlBaseList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MLB.MBR_LVL_CD
+			,MLB.SIGNUP_COND_DETS
+			,MLB.BENF_CONT
+			,MLB.USE_YN
+			,MLB.REG_USER_ID
+			,REG_DTM
+			,MLB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL_BASE MLB
+		<include refid="where-mbrLvlBase" />
+		ORDER BY
+			MLB.MBR_LVL_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrLvlBase" parameterType="MbrLvlBaseExDto" resultType="MbrLvlBaseExDto">
+	/* mbrLvlBaseMapper.getMbrLvlBase */
+		SELECT
+			MLB.MBR_LVL_CD
+			,MLB.SIGNUP_COND_DETS
+			,MLB.BENF_CONT
+			,MLB.USE_YN
+			,MLB.REG_USER_ID
+			,REG_DTM
+			,MLB.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL_BASE MLB
+		WHERE
+			MLB.MBR_LVL_CD = #{mbrLvlCd}
+	</select>
+
+	<insert id="insertMbrLvlBase" parameterType="MbrLvlBaseExDto">
+	/* mbrLvlBaseMapper.insertMbrLvlBase */
+		INSERT INTO CW_MBR_LVL_BASE (
+			MBR_LVL_CD
+			,SIGNUP_COND_DETS
+			,BENF_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrLvlCd}
+			,#{signupCondDets}
+			,#{benfCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrLvlBase" parameterType="MbrLvlBaseExDto">
+	/* mbrLvlBaseMapper.updateMbrLvlBase */
+		UPDATE CW_MBR_LVL_BASE
+		<set>
+		<if test="signupCondDets != null">
+		SIGNUP_COND_DETS = #{signupCondDets},
+		</if>
+		<if test="benfCont != null">
+		BENF_CONT = #{benfCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_LVL_CD = #{mbrLvlCd}
+	</update>
+
+	<delete id="deleteMbrLvlBase" parameterType="MbrLvlBaseExDto">
+	/* mbrLvlBaseMapper.deleteMbrLvlBase */
+	DELETE FROM CW_MBR_LVL_BASE
+	WHERE
+		MBR_LVL_CD = #{mbrLvlCd}
+	</delete>
+</mapper>

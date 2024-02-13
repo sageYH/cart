@@ -1,0 +1,80 @@
+@import url("notosanskr.css");
+
+html, body, div, ul, ol, dl, li, dt, dd, p, h1, h2, h3, h4, h5, h6, table, th, td, caption, address, article, aside,
+canvas, details, figure, figcaption, footer, header, menu, nav, section,
+button, select, textarea, input, fieldset, legend, a, span, strong, em, address, dfn, small, i, b {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  color: inherit;
+  font-style: normal;
+  font-weight: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  word-break: inherit;
+  word-wrap: inherit;
+/*   box-sizing: inherit; */
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  -o-box-sizing: inherit; 
+}
+
+:before, :after {
+  box-sizing: inherit;
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  -o-box-sizing: inherit; 
+}
+
+article, aside, canvas, details, figure, figcaption, footer, header, menu, nav, section {display: block; }
+
+html {font-size: 14px;}
+body { font-family: 'Noto Sans KR', sans-serif; font-weight: 400; font-size: 1rem; background-color: #f2f2f2;}
+
+table { width: 100%; border-spacing: 0;border-collapse: collapse; }
+caption { display: block; position: absolute; left: -9999px; }
+fieldset, iframe {width: 100%; }
+
+button {overflow: hidden;background-color: transparent;cursor: pointer;font-size: 1rem;border-radius: 4px; font-weight: 400;}
+img {vertical-align: middle; }
+img, a, frame, iframe, fieldset { border: 0; }
+a {text-decoration: none; }
+a:hover {color: #e8252d;}
+textarea {resize: none; border-radius: 6px;}
+input, select {border-radius: 6px;}
+
+input, textarea {font-size: 1rem;border: 1px solid #bbb; padding: 5px;box-sizing: border-box;}
+input:read-only, textarea:read-only {border:1px solid #eee !important; background-color:#eee !important;}
+input[readonly='readonly'], textarea[readonly='readonly'] {border:1px solid #eee !important; background-color:#eee !important;}
+input::placeholder, textarea::placeholder {color: #a1c4cb;}
+input:-ms-input-placeholder {
+	color: #a1c4cb;
+}
+input:focus, textarea:focus {border: 1px solid #e8252d; outline: 1px solid #e8252d;}
+
+input[type=checkbox]:focus,
+input[type=radio]:focus {border: none; outline:auto;}
+
+input[type=checkbox],
+input[type=radio]{margin: 0;}
+
+select {font-size: 1rem;border: 1px solid #bbb; padding: 4px;min-width: 80px;box-sizing: border-box;}
+
+/*-------------------- header -------------------------*/
+header {
+  min-width: 1200px;
+  height: 50px;
+  background-color: #011126;
+  position:relative;
+  top: 0;
+}
+
+/*-------------------- footer -------------------------*/
+footer {width: 100%;padding: 0 0 2rem;margin-top: 3rem;}
+
+table tr.tblCurrent th, table tr.tblCurrent td {background:#ebebeb; cursor:pointer; border-bottom:1px solid #fc0;}
+.table-scroll thead, .table-scroll tfoot{position:sticky;}
+.table-scroll thead{inset-block-start:0;}
+.table-scroll tfoot{inset-block-end:0;}

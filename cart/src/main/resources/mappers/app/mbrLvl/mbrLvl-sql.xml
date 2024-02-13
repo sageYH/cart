@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrLvlMapper">
+	<sql id="where-mbrLvl">
+		WHERE 1=1
+			<if test="applYmd != null and applYmd != '' ">
+			AND ML.APPL_YMD = #{applYmd}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND ML.MBR_ID = #{mbrId}
+			</if>
+			<if test="mbrLvlCd != null and mbrLvlCd != '' ">
+			AND ML.MBR_LVL_CD = #{mbrLvlCd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND ML.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMbrLvlListCount" parameterType="MbrLvlExDto" resultType="Integer">
+	/* mbrLvlMapper.getMbrLvlListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_LVL ML
+		<include refid="where-mbrLvl" />
+	</select>
+
+	<select id="getMbrLvlList" parameterType="MbrLvlExDto" resultType="MbrLvlExDto">
+	/* mbrLvlMapper.getMbrLvlList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ML.APPL_YMD
+			,ML.MBR_ID
+			,ML.MBR_LVL_CD
+			,ML.USE_YN
+			,ML.REG_USER_ID
+			,REG_DTM
+			,ML.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL ML
+		<include refid="where-mbrLvl" />
+		ORDER BY
+			ML.APPL_YMD
+			,ML.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrLvl" parameterType="MbrLvlExDto" resultType="MbrLvlExDto">
+	/* mbrLvlMapper.getMbrLvl */
+		SELECT
+			ML.APPL_YMD
+			,ML.MBR_ID
+			,ML.MBR_LVL_CD
+			,ML.USE_YN
+			,ML.REG_USER_ID
+			,REG_DTM
+			,ML.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_LVL ML
+		WHERE
+			ML.APPL_YMD = #{applYmd}
+			AND ML.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertMbrLvl" parameterType="MbrLvlExDto">
+	/* mbrLvlMapper.insertMbrLvl */
+		INSERT INTO CW_MBR_LVL (
+			APPL_YMD
+			,MBR_ID
+			,MBR_LVL_CD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{applYmd}
+			,#{mbrId}
+			,#{mbrLvlCd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrLvl" parameterType="MbrLvlExDto">
+	/* mbrLvlMapper.updateMbrLvl */
+		UPDATE CW_MBR_LVL
+		<set>
+		<if test="mbrLvlCd != null">
+		MBR_LVL_CD = #{mbrLvlCd},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			APPL_YMD = #{applYmd}
+			AND MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteMbrLvl" parameterType="MbrLvlExDto">
+	/* mbrLvlMapper.deleteMbrLvl */
+	DELETE FROM CW_MBR_LVL
+	WHERE
+		APPL_YMD = #{applYmd}
+		AND MBR_ID = #{mbrId}
+	</delete>
+</mapper>

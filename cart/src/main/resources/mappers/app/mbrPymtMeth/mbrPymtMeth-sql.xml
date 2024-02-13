@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrPymtMethMapper">
+	<sql id="where-mbrPymtMeth">
+		WHERE 1=1
+			<if test="mbrId != null and mbrId != '' ">
+			AND MPM.MBR_ID = #{mbrId}
+			</if>
+			<if test="cardNo != null and cardNo != '' ">
+			AND MPM.CARD_NO = #{cardNo}
+			</if>
+			<if test="cwPymtAgcyCompCd != null and cwPymtAgcyCompCd != '' ">
+			AND MPM.CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd}
+			</if>
+			<if test="billKey != null and billKey != '' ">
+			AND MPM.BILL_KEY = #{billKey}
+			</if>
+			<if test="mnPymtCardYn != null and mnPymtCardYn != '' ">
+			AND MPM.MN_PYMT_CARD_YN = #{mnPymtCardYn}
+			</if>
+			<if test="bin != null and bin != '' ">
+			AND MPM.BIN = #{bin}
+			</if>
+			<if test="cardRegDtm != null and cardRegDtm != '' ">
+			AND MPM.CARD_REG_DTM = STR_TO_DATE(#{cardRegDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="cardValdYm != null and cardValdYm != '' ">
+			AND MPM.CARD_VALD_YM = #{cardValdYm}
+			</if>
+			<if test="issueCompKindCd != null and issueCompKindCd != '' ">
+			AND MPM.ISSUE_COMP_KIND_CD = #{issueCompKindCd}
+			</if>
+			<if test="cardBrandCd != null and cardBrandCd != '' ">
+			AND MPM.CARD_BRAND_CD = #{cardBrandCd}
+			</if>
+			<if test="cardTypCd != null and cardTypCd != '' ">
+			AND MPM.CARD_TYP_CD = #{cardTypCd}
+			</if>
+			<if test="cardStopDtm != null and cardStopDtm != '' ">
+			AND MPM.CARD_STOP_DTM = STR_TO_DATE(#{cardStopDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND MPM.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getMbrPymtMethListCount" parameterType="MbrPymtMethExDto" resultType="Integer">
+	/* mbrPymtMethMapper.getMbrPymtMethListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_PYMT_METH MPM
+		<include refid="where-mbrPymtMeth" />
+	</select>
+
+	<select id="getMbrPymtMethList" parameterType="MbrPymtMethExDto" resultType="MbrPymtMethExDto">
+	/* mbrPymtMethMapper.getMbrPymtMethList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MPM.MBR_ID
+			,MPM.CARD_NO
+			,MPM.CW_PYMT_AGCY_COMP_CD
+			,MPM.BILL_KEY
+			,MPM.MN_PYMT_CARD_YN
+			,MPM.BIN
+			,CARD_REG_DTM
+			,MPM.CARD_VALD_YM
+			,MPM.ISSUE_COMP_KIND_CD
+			,MPM.CARD_BRAND_CD
+			,MPM.CARD_TYP_CD
+			,CARD_STOP_DTM
+			,MPM.USE_YN
+			,MPM.REG_USER_ID
+			,REG_DTM
+			,MPM.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_PYMT_METH MPM
+		<include refid="where-mbrPymtMeth" />
+		ORDER BY
+			MPM.MBR_ID
+			,MPM.CARD_NO
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrPymtMeth" parameterType="MbrPymtMethExDto" resultType="MbrPymtMethExDto">
+	/* mbrPymtMethMapper.getMbrPymtMeth */
+		SELECT
+			MPM.MBR_ID
+			,MPM.CARD_NO
+			,MPM.CW_PYMT_AGCY_COMP_CD
+			,MPM.BILL_KEY
+			,MPM.MN_PYMT_CARD_YN
+			,MPM.BIN
+			,CARD_REG_DTM
+			,MPM.CARD_VALD_YM
+			,MPM.ISSUE_COMP_KIND_CD
+			,MPM.CARD_BRAND_CD
+			,MPM.CARD_TYP_CD
+			,CARD_STOP_DTM
+			,MPM.USE_YN
+			,MPM.REG_USER_ID
+			,REG_DTM
+			,MPM.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_PYMT_METH MPM
+		WHERE
+			MPM.MBR_ID = #{mbrId}
+			AND MPM.CARD_NO = #{cardNo}
+	</select>
+
+	<insert id="insertMbrPymtMeth" parameterType="MbrPymtMethExDto">
+	/* mbrPymtMethMapper.insertMbrPymtMeth */
+		INSERT INTO CW_MBR_PYMT_METH (
+			MBR_ID
+			,CARD_NO
+			,CW_PYMT_AGCY_COMP_CD
+			,BILL_KEY
+			,MN_PYMT_CARD_YN
+			,BIN
+			,CARD_REG_DTM
+			,CARD_VALD_YM
+			,ISSUE_COMP_KIND_CD
+			,CARD_BRAND_CD
+			,CARD_TYP_CD
+			,CARD_STOP_DTM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrId}
+			,#{cardNo}
+			,#{cwPymtAgcyCompCd}
+			,#{billKey}
+			,#{mnPymtCardYn}
+			,#{bin}
+			,STR_TO_DATE(#{cardRegDtm}, '%Y%m%d %h%i%s')
+			,#{cardValdYm}
+			,#{issueCompKindCd}
+			,#{cardBrandCd}
+			,#{cardTypCd}
+			,STR_TO_DATE(#{cardStopDtm}, '%Y%m%d %h%i%s')
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrPymtMeth" parameterType="MbrPymtMethExDto">
+	/* mbrPymtMethMapper.updateMbrPymtMeth */
+		UPDATE CW_MBR_PYMT_METH
+		<set>
+		<if test="cwPymtAgcyCompCd != null">
+		CW_PYMT_AGCY_COMP_CD = #{cwPymtAgcyCompCd},
+		</if>
+		<if test="billKey != null">
+		BILL_KEY = #{billKey},
+		</if>
+		<if test="mnPymtCardYn != null">
+		MN_PYMT_CARD_YN = #{mnPymtCardYn},
+		</if>
+		<if test="bin != null">
+		BIN = #{bin},
+		</if>
+		<if test="cardRegDtm != null">
+		CARD_REG_DTM = STR_TO_DATE(#{cardRegDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="cardValdYm != null">
+		CARD_VALD_YM = #{cardValdYm},
+		</if>
+		<if test="issueCompKindCd != null">
+		ISSUE_COMP_KIND_CD = #{issueCompKindCd},
+		</if>
+		<if test="cardBrandCd != null">
+		CARD_BRAND_CD = #{cardBrandCd},
+		</if>
+		<if test="cardTypCd != null">
+		CARD_TYP_CD = #{cardTypCd},
+		</if>
+		<if test="cardStopDtm != null">
+		CARD_STOP_DTM = STR_TO_DATE(#{cardStopDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_ID = #{mbrId}
+			AND CARD_NO = #{cardNo}
+	</update>
+
+	<delete id="deleteMbrPymtMeth" parameterType="MbrPymtMethExDto">
+	/* mbrPymtMethMapper.deleteMbrPymtMeth */
+	DELETE FROM CW_MBR_PYMT_METH
+	WHERE
+		MBR_ID = #{mbrId}
+		AND CARD_NO = #{cardNo}
+	</delete>
+</mapper>

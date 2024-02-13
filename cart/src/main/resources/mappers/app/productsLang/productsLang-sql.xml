@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="productsLangMapper">
+	<sql id="where-productsLang">
+		WHERE 1=1
+			<if test="prodId != null and prodId != '' ">
+			AND PL.PROD_ID = #{prodId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND PL.LANG_CD = #{langCd}
+			</if>
+			<if test="prodNm != null and prodNm != '' ">
+			AND PL.PROD_NM = #{prodNm}
+			</if>
+			<if test="prodSkin != null and prodSkin != '' ">
+			AND PL.PROD_SKIN = #{prodSkin}
+			</if>
+			<if test="prodMobiSkin != null and prodMobiSkin != '' ">
+			AND PL.PROD_MOBI_SKIN = #{prodMobiSkin}
+			</if>
+			<if test="prodMfr != null and prodMfr != '' ">
+			AND PL.PROD_MFR = #{prodMfr}
+			</if>
+			<if test="prodOrigin != null and prodOrigin != '' ">
+			AND PL.PROD_ORIGIN = #{prodOrigin}
+			</if>
+			<if test="prodBrand != null and prodBrand != '' ">
+			AND PL.PROD_BRAND = #{prodBrand}
+			</if>
+			<if test="prodModel != null and prodModel != '' ">
+			AND PL.PROD_MODEL = #{prodModel}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProductsLangListCount" parameterType="ProductsLangExDto" resultType="Integer">
+	/* productsLangMapper.getProductsLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PRODUCTS_LANG PL
+		<include refid="where-productsLang" />
+	</select>
+
+	<select id="getProductsLangList" parameterType="ProductsLangExDto" resultType="ProductsLangExDto">
+	/* productsLangMapper.getProductsLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PL.PROD_ID
+			,PL.LANG_CD
+			,PL.PROD_NM
+			,PL.PROD_SKIN
+			,PL.PROD_MOBI_SKIN
+			,PL.PROD_MFR
+			,PL.PROD_ORIGIN
+			,PL.PROD_BRAND
+			,PL.PROD_MODEL
+			,PL.USE_YN
+			,PL.REG_USER_ID
+			,REG_DTM
+			,PL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PRODUCTS_LANG PL
+		<include refid="where-productsLang" />
+		ORDER BY
+			PL.PROD_ID
+			,PL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProductsLang" parameterType="ProductsLangExDto" resultType="ProductsLangExDto">
+	/* productsLangMapper.getProductsLang */
+		SELECT
+			PL.PROD_ID
+			,PL.LANG_CD
+			,PL.PROD_NM
+			,PL.PROD_SKIN
+			,PL.PROD_MOBI_SKIN
+			,PL.PROD_MFR
+			,PL.PROD_ORIGIN
+			,PL.PROD_BRAND
+			,PL.PROD_MODEL
+			,PL.USE_YN
+			,PL.REG_USER_ID
+			,REG_DTM
+			,PL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PRODUCTS_LANG PL
+		WHERE
+			PL.PROD_ID = #{prodId}
+			AND PL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertProductsLang" parameterType="ProductsLangExDto">
+	/* productsLangMapper.insertProductsLang */
+		INSERT INTO CW_PRODUCTS_LANG (
+			PROD_ID
+			,LANG_CD
+			,PROD_NM
+			,PROD_SKIN
+			,PROD_MOBI_SKIN
+			,PROD_MFR
+			,PROD_ORIGIN
+			,PROD_BRAND
+			,PROD_MODEL
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodId}
+			,#{langCd}
+			,#{prodNm}
+			,#{prodSkin}
+			,#{prodMobiSkin}
+			,#{prodMfr}
+			,#{prodOrigin}
+			,#{prodBrand}
+			,#{prodModel}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProductsLang" parameterType="ProductsLangExDto">
+	/* productsLangMapper.updateProductsLang */
+		UPDATE CW_PRODUCTS_LANG
+		<set>
+		<if test="prodNm != null">
+		PROD_NM = #{prodNm},
+		</if>
+		<if test="prodSkin != null">
+		PROD_SKIN = #{prodSkin},
+		</if>
+		<if test="prodMobiSkin != null">
+		PROD_MOBI_SKIN = #{prodMobiSkin},
+		</if>
+		<if test="prodMfr != null">
+		PROD_MFR = #{prodMfr},
+		</if>
+		<if test="prodOrigin != null">
+		PROD_ORIGIN = #{prodOrigin},
+		</if>
+		<if test="prodBrand != null">
+		PROD_BRAND = #{prodBrand},
+		</if>
+		<if test="prodModel != null">
+		PROD_MODEL = #{prodModel},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_ID = #{prodId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteProductsLang" parameterType="ProductsLangExDto">
+	/* productsLangMapper.deleteProductsLang */
+	DELETE FROM CW_PRODUCTS_LANG
+	WHERE
+		PROD_ID = #{prodId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="couponPymtMapper">
+	<sql id="where-couponPymt">
+		WHERE 1=1
+			<if test="cpnPymtId != null and cpnPymtId != '' ">
+			AND CP.CPN_PYMT_ID = #{cpnPymtId}
+			</if>
+			<if test="cpnIssueId != null and cpnIssueId != '' ">
+			AND CP.CPN_ISSUE_ID = #{cpnIssueId}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND CP.CPN_ID = #{cpnId}
+			</if>
+			<if test="cpnAmt != null and cpnAmt != '' ">
+			AND CP.CPN_AMT = #{cpnAmt}
+			</if>
+			<if test="cpnCancAmt != null and cpnCancAmt != '' ">
+			AND CP.CPN_CANC_AMT = #{cpnCancAmt}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND CP.ORD_ID = #{ordId}
+			</if>
+			<if test="eventId != null and eventId != '' ">
+			AND CP.EVENT_ID = #{eventId}
+			</if>
+			<if test="afCpnId != null and afCpnId != '' ">
+			AND CP.AF_CPN_ID = #{afCpnId}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND CP.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CP.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCouponPymtListCount" parameterType="CouponPymtExDto" resultType="Integer">
+	/* couponPymtMapper.getCouponPymtListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUPON_PYMT CP
+		<include refid="where-couponPymt" />
+	</select>
+
+	<select id="getCouponPymtList" parameterType="CouponPymtExDto" resultType="CouponPymtExDto">
+	/* couponPymtMapper.getCouponPymtList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CP.CPN_PYMT_ID
+			,CP.CPN_ISSUE_ID
+			,CP.CPN_ID
+			,CP.CPN_AMT
+			,CP.CPN_CANC_AMT
+			,CP.ORD_ID
+			,CP.EVENT_ID
+			,CP.AF_CPN_ID
+			,CP.PYMT_COMP_ID
+			,CP.USE_YN
+			,CP.REG_USER_ID
+			,REG_DTM
+			,CP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_PYMT CP
+		<include refid="where-couponPymt" />
+		ORDER BY
+			CP.CPN_PYMT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCouponPymt" parameterType="CouponPymtExDto" resultType="CouponPymtExDto">
+	/* couponPymtMapper.getCouponPymt */
+		SELECT
+			CP.CPN_PYMT_ID
+			,CP.CPN_ISSUE_ID
+			,CP.CPN_ID
+			,CP.CPN_AMT
+			,CP.CPN_CANC_AMT
+			,CP.ORD_ID
+			,CP.EVENT_ID
+			,CP.AF_CPN_ID
+			,CP.PYMT_COMP_ID
+			,CP.USE_YN
+			,CP.REG_USER_ID
+			,REG_DTM
+			,CP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_PYMT CP
+		WHERE
+			CP.CPN_PYMT_ID = #{cpnPymtId}
+	</select>
+
+	<insert id="insertCouponPymt" parameterType="CouponPymtExDto">
+	/* couponPymtMapper.insertCouponPymt */
+		INSERT INTO CW_COUPON_PYMT (
+			CPN_PYMT_ID
+			,CPN_ISSUE_ID
+			,CPN_ID
+			,CPN_AMT
+			,CPN_CANC_AMT
+			,ORD_ID
+			,EVENT_ID
+			,AF_CPN_ID
+			,PYMT_COMP_ID
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cpnPymtId}
+			,#{cpnIssueId}
+			,#{cpnId}
+			,#{cpnAmt}
+			,#{cpnCancAmt}
+			,#{ordId}
+			,#{eventId}
+			,#{afCpnId}
+			,#{pymtCompId}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCouponPymt" parameterType="CouponPymtExDto">
+	/* couponPymtMapper.updateCouponPymt */
+		UPDATE CW_COUPON_PYMT
+		<set>
+		<if test="cpnIssueId != null">
+		CPN_ISSUE_ID = #{cpnIssueId},
+		</if>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="cpnAmt != null">
+		CPN_AMT = #{cpnAmt},
+		</if>
+		<if test="cpnCancAmt != null">
+		CPN_CANC_AMT = #{cpnCancAmt},
+		</if>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="eventId != null">
+		EVENT_ID = #{eventId},
+		</if>
+		<if test="afCpnId != null">
+		AF_CPN_ID = #{afCpnId},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CPN_PYMT_ID = #{cpnPymtId}
+	</update>
+
+	<delete id="deleteCouponPymt" parameterType="CouponPymtExDto">
+	/* couponPymtMapper.deleteCouponPymt */
+	DELETE FROM CW_COUPON_PYMT
+	WHERE
+		CPN_PYMT_ID = #{cpnPymtId}
+	</delete>
+</mapper>

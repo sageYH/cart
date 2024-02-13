@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commSendTgtMapper">
+	<sql id="where-commSendTgt">
+		WHERE 1=1
+			<if test="commSendId != null and commSendId != '' ">
+			AND CST.COMM_SEND_ID = #{commSendId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND CST.MBR_ID = #{mbrId}
+			</if>
+			<if test="sendCpltYn != null and sendCpltYn != '' ">
+			AND CST.SEND_CPLT_YN = #{sendCpltYn}
+			</if>
+	</sql>
+
+	<select id="getCommSendTgtListCount" parameterType="CommSendTgtExDto" resultType="Integer">
+	/* commSendTgtMapper.getCommSendTgtListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMM_SEND_TGT CST
+		<include refid="where-commSendTgt" />
+	</select>
+
+	<select id="getCommSendTgtList" parameterType="CommSendTgtExDto" resultType="CommSendTgtExDto">
+	/* commSendTgtMapper.getCommSendTgtList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CST.COMM_SEND_ID
+			,CST.MBR_ID
+			,CST.SEND_CPLT_YN
+			,CST.REG_USER_ID
+			,REG_DTM
+			,CST.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_SEND_TGT CST
+		<include refid="where-commSendTgt" />
+		ORDER BY
+			CST.COMM_SEND_ID
+			,CST.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCommSendTgt" parameterType="CommSendTgtExDto" resultType="CommSendTgtExDto">
+	/* commSendTgtMapper.getCommSendTgt */
+		SELECT
+			CST.COMM_SEND_ID
+			,CST.MBR_ID
+			,CST.SEND_CPLT_YN
+			,CST.REG_USER_ID
+			,REG_DTM
+			,CST.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_SEND_TGT CST
+		WHERE
+			CST.COMM_SEND_ID = #{commSendId}
+			AND CST.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertCommSendTgt" parameterType="CommSendTgtExDto">
+	/* commSendTgtMapper.insertCommSendTgt */
+		INSERT INTO CW_COMM_SEND_TGT (
+			COMM_SEND_ID
+			,MBR_ID
+			,SEND_CPLT_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{commSendId}
+			,#{mbrId}
+			,#{sendCpltYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCommSendTgt" parameterType="CommSendTgtExDto">
+	/* commSendTgtMapper.updateCommSendTgt */
+		UPDATE CW_COMM_SEND_TGT
+		<set>
+		<if test="sendCpltYn != null">
+		SEND_CPLT_YN = #{sendCpltYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMM_SEND_ID = #{commSendId}
+			AND MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteCommSendTgt" parameterType="CommSendTgtExDto">
+	/* commSendTgtMapper.deleteCommSendTgt */
+	DELETE FROM CW_COMM_SEND_TGT
+	WHERE
+		COMM_SEND_ID = #{commSendId}
+		AND MBR_ID = #{mbrId}
+	</delete>
+</mapper>

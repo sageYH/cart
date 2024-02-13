@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/cardBill/cardBillGrid.js"></script>
+<script>
+var gridCardBill = null;
+window.onload = function() {
+	gridCardBill = setGridCardBill("dvGridCardBillSearch");
+	gridCardBill.setBodyHeight(300);
+	fixedColGrid(gridCardBill);
+
+	gridCardBill.on("click",function(ev){
+		toggleGrid(gridCardBill,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCardBill.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCardBill)==false){
+			dblClickGridCardBill();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCardBill(){
+	getResultData();
+}
+
+//page
+var pageClsCardBill = new pageCls("dvCardBillPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCardBill);
+
+	var params = {};
+	if (isEmpty(getEVal("cardBillId"))==false) params["cardBillId"] = getEVal("cardBillId");
+	if (isEmpty(getEVal("cardBillYmd"))==false) params["cardBillYmd"] = getEVal("cardBillYmd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) params["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) params["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardQty"))==false) params["cardQty"] = getEVal("cardQty");
+	if (isEmpty(getEVal("cardAmt"))==false) params["cardAmt"] = getEVal("cardAmt");
+	if (isEmpty(getEVal("cardFeeAmt"))==false) params["cardFeeAmt"] = getEVal("cardFeeAmt");
+	if (isEmpty(getEVal("cardErrQty"))==false) params["cardErrQty"] = getEVal("cardErrQty");
+	if (isEmpty(getEVal("cardErrAmt"))==false) params["cardErrAmt"] = getEVal("cardErrAmt");
+	if (isEmpty(getEVal("billQty"))==false) params["billQty"] = getEVal("billQty");
+	if (isEmpty(getEVal("billAmt"))==false) params["billAmt"] = getEVal("billAmt");
+	if (isEmpty(getEVal("billCfmYn"))==false) params["billCfmYn"] = getEVal("billCfmYn");
+	if (isEmpty(getEVal("billCfmYmd"))==false) params["billCfmYmd"] = getEVal("billCfmYmd");
+	//page set
+	params = pageClsCardBill.getPageInfo(params);
+
+	var url = "/app/cardBill/getCardBillPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCardBill,result.payloads);
+		//set total
+		pageClsCardBill.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCardBill);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCardBillSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCardBillSearch" class="addr-list" ></div>
+					<div id="dvCardBillPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cartMapper">
+	<sql id="where-cart">
+		WHERE 1=1
+			<if test="cartId != null and cartId != '' ">
+			AND C.CART_ID = #{cartId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND C.MBR_ID = #{mbrId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND C.PROD_ID = #{prodId}
+			</if>
+			<if test="prodQty != null and prodQty != '' ">
+			AND C.PROD_QTY = #{prodQty}
+			</if>
+			<if test="prodAmt != null and prodAmt != '' ">
+			AND C.PROD_AMT = #{prodAmt}
+			</if>
+			<if test="optTotAmt != null and optTotAmt != '' ">
+			AND C.OPT_TOT_AMT = #{optTotAmt}
+			</if>
+			<if test="cartDtm != null and cartDtm != '' ">
+			AND C.CART_DTM = STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="prodPathCd != null and prodPathCd != '' ">
+			AND C.PROD_PATH_CD = #{prodPathCd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND C.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCartListCount" parameterType="CartExDto" resultType="Integer">
+	/* cartMapper.getCartListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CART C
+		<include refid="where-cart" />
+	</select>
+
+	<select id="getCartList" parameterType="CartExDto" resultType="CartExDto">
+	/* cartMapper.getCartList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			C.CART_ID
+			,C.MBR_ID
+			,C.PROD_ID
+			,C.PROD_QTY
+			,C.PROD_AMT
+			,C.OPT_TOT_AMT
+			,CART_DTM
+			,C.PROD_PATH_CD
+			,C.USE_YN
+			,C.REG_USER_ID
+			,REG_DTM
+			,C.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART C
+		<include refid="where-cart" />
+		ORDER BY
+			C.CART_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCart" parameterType="CartExDto" resultType="CartExDto">
+	/* cartMapper.getCart */
+		SELECT
+			C.CART_ID
+			,C.MBR_ID
+			,C.PROD_ID
+			,C.PROD_QTY
+			,C.PROD_AMT
+			,C.OPT_TOT_AMT
+			,CART_DTM
+			,C.PROD_PATH_CD
+			,C.USE_YN
+			,C.REG_USER_ID
+			,REG_DTM
+			,C.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART C
+		WHERE
+			C.CART_ID = #{cartId}
+	</select>
+
+	<insert id="insertCart" parameterType="CartExDto">
+	/* cartMapper.insertCart */
+		INSERT INTO CW_CART (
+			CART_ID
+			,MBR_ID
+			,PROD_ID
+			,PROD_QTY
+			,PROD_AMT
+			,OPT_TOT_AMT
+			,CART_DTM
+			,PROD_PATH_CD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cartId}
+			,#{mbrId}
+			,#{prodId}
+			,#{prodQty}
+			,#{prodAmt}
+			,#{optTotAmt}
+			,STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s')
+			,#{prodPathCd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCart" parameterType="CartExDto">
+	/* cartMapper.updateCart */
+		UPDATE CW_CART
+		<set>
+		<if test="mbrId != null">
+		MBR_ID = #{mbrId},
+		</if>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="prodQty != null">
+		PROD_QTY = #{prodQty},
+		</if>
+		<if test="prodAmt != null">
+		PROD_AMT = #{prodAmt},
+		</if>
+		<if test="optTotAmt != null">
+		OPT_TOT_AMT = #{optTotAmt},
+		</if>
+		<if test="cartDtm != null">
+		CART_DTM = STR_TO_DATE(#{cartDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="prodPathCd != null">
+		PROD_PATH_CD = #{prodPathCd},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CART_ID = #{cartId}
+	</update>
+
+	<delete id="deleteCart" parameterType="CartExDto">
+	/* cartMapper.deleteCart */
+	DELETE FROM CW_CART
+	WHERE
+		CART_ID = #{cartId}
+	</delete>
+</mapper>

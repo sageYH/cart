@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["optId"] = '[[${transData.optId}]]';
+	if (isEmpty(map["optId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/prodOpt/getProdOpt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvProdOptPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="optId" id="optId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">상품ID</th>
+							<td><span name="prodId" id="prodId"></span></td>
+							<th scope="row">옵션명</th>
+							<td><span name="optNm" id="optNm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션유형코드[PD03]</th>
+							<td><span name="optTypCd" id="optTypCd"></span></td>
+							<th scope="row">옵션내용</th>
+							<td><span name="optCont" id="optCont"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">모바일옵션내용</th>
+							<td><span name="mobiOptCont" id="mobiOptCont"></span></td>
+							<th scope="row">파일참조ID</th>
+							<td><span name="fileRefId" id="fileRefId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">모바일파일참조ID</th>
+							<td><span name="mobiFileRefId" id="mobiFileRefId"></span></td>
+							<th scope="row">옵션금액</th>
+							<td><span name="optAmt" id="optAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션재고수량</th>
+							<td><span name="optInvQty" id="optInvQty"></span></td>
+							<th scope="row">옵션사용수량</th>
+							<td><span name="optUseQty" id="optUseQty"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션입고수량</th>
+							<td><span name="optInQty" id="optInQty"></span></td>
+							<th scope="row">상위옵션ID</th>
+							<td><span name="prntOptId" id="prntOptId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">하위옵션ID</th>
+							<td><span name="chdOptId" id="chdOptId"></span></td>
+							<th scope="row">옵션레벨</th>
+							<td><span name="optLvl" id="optLvl"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">하위여부</th>
+							<td><span name="chdYn" id="chdYn"></span></td>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

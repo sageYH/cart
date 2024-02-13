@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ptnrCompId"] = '[[${transData.ptnrCompId}]]';
+    map["authnDivCd"] = '[[${transData.authnDivCd}]]';
+	if (isEmpty(map["ptnrCompId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ptnrCompId").setAttribute('readonly', true);
+		getEleByObj("authnDivCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/compAuthnKey/getCompAuthnKey.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ptnrCompId","","자료(파트너사ID)를 확인하세요."]
+		["authnDivCd","","자료(인증구분코드)를 확인하세요."]
+		["ownCompAuthnId","","자료(자사인증ID)를 확인하세요."]
+		["ownCompAuthnPwd","","자료(자사인증비밀번호)를 확인하세요."]
+		["ptnrCwCompAuthnKey","","자료(파트너사인증KEY)를 확인하세요."]
+		["authnIshDtm","","자료(인증발급일시)를 확인하세요."]
+		["authnUpdDtm","","자료(인증갱신일시)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/compAuthnKey/updateCompAuthnKey.do";
+	if (mode=="NEW"){
+		url = "/app/compAuthnKey/insertCompAuthnKey.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCompAuthnKeyPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCompAuthnKeyPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCompAuthnKeyPop" name="formCompAuthnKeyPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">파트너사ID</th>
+						<td><input type="text" name="ptnrCompId" id="ptnrCompId" style="width:70%" readonly >
+						</td>
+					<th scope="row">인증구분코드</th>
+					<td><input type="text" name="authnDivCd" id="authnDivCd" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">자사인증ID</th>
+						<td><input type="text" name="ownCompAuthnId" id="ownCompAuthnId" style="width:70%" >
+						</td>
+					<th scope="row">자사인증비밀번호</th>
+					<td><input type="text" name="ownCompAuthnPwd" id="ownCompAuthnPwd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">파트너사인증KEY</th>
+						<td><input type="text" name="ptnrCwCompAuthnKey" id="ptnrCwCompAuthnKey" style="width:70%" >
+						</td>
+					<th scope="row">인증발급일시</th>
+					<td><input type="text" name="authnIshDtm" id="authnIshDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">인증갱신일시</th>
+						<td><input type="text" name="authnUpdDtm" id="authnUpdDtm" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

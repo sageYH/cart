@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsOrderCancProd = new pageCls("dvOrderCancProdPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("ordCnclId"))==false) params["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodCnclQty"))==false) params["prodCnclQty"] = getEVal("prodCnclQty");
+	if (isEmpty(getEVal("prodCnclAmt"))==false) params["prodCnclAmt"] = getEVal("prodCnclAmt");
+	if (isEmpty(getEVal("optCnclAmt"))==false) params["optCnclAmt"] = getEVal("optCnclAmt");
+	//page set
+	params = pageClsOrderCancProd.getPageInfo(params);
+
+	var url = "/app/orderCancProd/getOrderCancProdPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["ordCnclId","ordId","prodId","prodCnclQty","prodCnclAmt","optCnclAmt"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,6);
+	pageClsOrderCancProd.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsOrderCancProdDown(){
+	var url = "/app/orderCancProd/getOrderCancProdExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("ordCnclId"))==false) paramXls["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodCnclQty"))==false) paramXls["prodCnclQty"] = getEVal("prodCnclQty");
+	if (isEmpty(getEVal("prodCnclAmt"))==false) paramXls["prodCnclAmt"] = getEVal("prodCnclAmt");
+	if (isEmpty(getEVal("optCnclAmt"))==false) paramXls["optCnclAmt"] = getEVal("optCnclAmt");
+
+	var params = {"xlsName":"주문취소상품"
+		,"sheetName":"시트"
+		,"columnHeaders":["주문취소ID","주문ID","상품ID","상품취소수량","상품취소금액","옵션취소금액"]
+		,"columnNames":["ordCnclId","ordId","prodId","prodCnclQty","prodCnclAmt","optCnclAmt"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["ordCnclId"] = arr[0].trim();
+		params["ordId"] = arr[1].trim();
+		params["prodId"] = arr[2].trim();
+	}
+	OrderCancProdPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvOrderCancProdSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvOrderCancProdSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsOrderCancProd.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">주문취소ID</th>
+							<th scope="col">주문ID</th>
+							<th scope="col">상품ID</th>
+							<th scope="col">상품취소수량</th>
+							<th scope="col">상품취소금액</th>
+							<th scope="col">옵션취소금액</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{ordCnclId}},{{ordId}},{{prodId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{ordCnclId}}</td>
+						<td>{{ordId}}</td>
+						<td>{{prodId}}</td>
+						<td>{{prodCnclQty}}</td>
+						<td>{{prodCnclAmt}}</td>
+						<td>{{optCnclAmt}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvOrderCancProdPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/orderCancProd/orderCancProdPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

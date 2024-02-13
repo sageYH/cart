@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodExpId"] = '[[${transData.prodExpId}]]';
+	if (isEmpty(map["prodExpId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("prodExpId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/prodExposure/getProdExposure.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["prodExpId","","자료(상품노출ID)를 확인하세요."]
+		["menuId","","자료(메뉴ID)를 확인하세요."]
+		["prodId","","자료(상품ID)를 확인하세요."]
+		["locInfoCd","","자료(위치정보코드[PD07])를 확인하세요."]
+		["expFrYmd","","자료(노출시작일)를 확인하세요."]
+		["expToYmd","","자료(노출종료일)를 확인하세요."]
+		["adFee","","자료(광고료)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/prodExposure/updateProdExposure.do";
+	if (mode=="NEW"){
+		url = "/app/prodExposure/insertProdExposure.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formProdExposurePop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvProdExposurePop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formProdExposurePop" name="formProdExposurePop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">상품노출ID</th>
+						<td><input type="text" name="prodExpId" id="prodExpId" style="width:70%" readonly >
+						</td>
+					<th scope="row">메뉴ID</th>
+					<td><input type="text" name="menuId" id="menuId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" >
+						</td>
+					<th scope="row">위치정보코드[PD07]</th>
+					<td><input type="text" name="locInfoCd" id="locInfoCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">노출시작일</th>
+						<td><input type="text" name="expFrYmd" id="expFrYmd" style="width:70%" >
+						</td>
+					<th scope="row">노출종료일</th>
+					<td><input type="text" name="expToYmd" id="expToYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">광고료</th>
+						<td><input type="text" name="adFee" id="adFee" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

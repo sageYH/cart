@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCardBill = new pageCls("dvCardBillPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cardBillId"))==false) params["cardBillId"] = getEVal("cardBillId");
+	if (isEmpty(getEVal("cardBillYmd"))==false) params["cardBillYmd"] = getEVal("cardBillYmd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) params["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) params["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardQty"))==false) params["cardQty"] = getEVal("cardQty");
+	if (isEmpty(getEVal("cardAmt"))==false) params["cardAmt"] = getEVal("cardAmt");
+	if (isEmpty(getEVal("cardFeeAmt"))==false) params["cardFeeAmt"] = getEVal("cardFeeAmt");
+	if (isEmpty(getEVal("cardErrQty"))==false) params["cardErrQty"] = getEVal("cardErrQty");
+	if (isEmpty(getEVal("cardErrAmt"))==false) params["cardErrAmt"] = getEVal("cardErrAmt");
+	if (isEmpty(getEVal("billQty"))==false) params["billQty"] = getEVal("billQty");
+	if (isEmpty(getEVal("billAmt"))==false) params["billAmt"] = getEVal("billAmt");
+	if (isEmpty(getEVal("billCfmYn"))==false) params["billCfmYn"] = getEVal("billCfmYn");
+	if (isEmpty(getEVal("billCfmYmd"))==false) params["billCfmYmd"] = getEVal("billCfmYmd");
+	//page set
+	params = pageClsCardBill.getPageInfo(params);
+
+	var url = "/app/cardBill/getCardBillPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cardBillId","cardBillYmd","pymtAgcyCompCd","cardCompCd","cardQty","cardAmt","cardFeeAmt","cardErrQty","cardErrAmt","billQty","billAmt","billCfmYn","billCfmYmd"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,13);
+	pageClsCardBill.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCardBillDown(){
+	var url = "/app/cardBill/getCardBillExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cardBillId"))==false) paramXls["cardBillId"] = getEVal("cardBillId");
+	if (isEmpty(getEVal("cardBillYmd"))==false) paramXls["cardBillYmd"] = getEVal("cardBillYmd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) paramXls["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) paramXls["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardQty"))==false) paramXls["cardQty"] = getEVal("cardQty");
+	if (isEmpty(getEVal("cardAmt"))==false) paramXls["cardAmt"] = getEVal("cardAmt");
+	if (isEmpty(getEVal("cardFeeAmt"))==false) paramXls["cardFeeAmt"] = getEVal("cardFeeAmt");
+	if (isEmpty(getEVal("cardErrQty"))==false) paramXls["cardErrQty"] = getEVal("cardErrQty");
+	if (isEmpty(getEVal("cardErrAmt"))==false) paramXls["cardErrAmt"] = getEVal("cardErrAmt");
+	if (isEmpty(getEVal("billQty"))==false) paramXls["billQty"] = getEVal("billQty");
+	if (isEmpty(getEVal("billAmt"))==false) paramXls["billAmt"] = getEVal("billAmt");
+	if (isEmpty(getEVal("billCfmYn"))==false) paramXls["billCfmYn"] = getEVal("billCfmYn");
+	if (isEmpty(getEVal("billCfmYmd"))==false) paramXls["billCfmYmd"] = getEVal("billCfmYmd");
+
+	var params = {"xlsName":"카드사정산"
+		,"sheetName":"시트"
+		,"columnHeaders":["카드정산ID","카드정산년월일","결제대행사코드","카드사코드","카드건수","카드금액","카드수수료금액","카드오류건수","카드오류금액","정산건수","정산금액","정산확정여부","정산확정년월일"]
+		,"columnNames":["cardBillId","cardBillYmd","pymtAgcyCompCd","cardCompCd","cardQty","cardAmt","cardFeeAmt","cardErrQty","cardErrAmt","billQty","billAmt","billCfmYn","billCfmYmd"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cardBillId"] = arr[0].trim();
+	}
+	CardBillPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCardBillSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCardBillSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCardBill.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">카드정산ID</th>
+							<th scope="col">카드정산년월일</th>
+							<th scope="col">결제대행사코드</th>
+							<th scope="col">카드사코드</th>
+							<th scope="col">카드건수</th>
+							<th scope="col">카드금액</th>
+							<th scope="col">카드수수료금액</th>
+							<th scope="col">카드오류건수</th>
+							<th scope="col">카드오류금액</th>
+							<th scope="col">정산건수</th>
+							<th scope="col">정산금액</th>
+							<th scope="col">정산확정여부</th>
+							<th scope="col">정산확정년월일</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cardBillId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cardBillId}}</td>
+						<td>{{cardBillYmd}}</td>
+						<td>{{pymtAgcyCompCd}}</td>
+						<td>{{cardCompCd}}</td>
+						<td>{{cardQty}}</td>
+						<td>{{cardAmt}}</td>
+						<td>{{cardFeeAmt}}</td>
+						<td>{{cardErrQty}}</td>
+						<td>{{cardErrAmt}}</td>
+						<td>{{billQty}}</td>
+						<td>{{billAmt}}</td>
+						<td>{{billCfmYn}}</td>
+						<td>{{billCfmYmd}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCardBillPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/cardBill/cardBillPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

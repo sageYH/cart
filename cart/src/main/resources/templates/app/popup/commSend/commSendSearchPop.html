@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/commSend/commSendGrid.js"></script>
+<script>
+var gridCommSend = null;
+window.onload = function() {
+	gridCommSend = setGridCommSend("dvGridCommSendSearch");
+	gridCommSend.setBodyHeight(300);
+	fixedColGrid(gridCommSend);
+
+	gridCommSend.on("click",function(ev){
+		toggleGrid(gridCommSend,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCommSend.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCommSend)==false){
+			dblClickGridCommSend();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCommSend(){
+	getResultData();
+}
+
+//page
+var pageClsCommSend = new pageCls("dvCommSendPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCommSend);
+
+	var params = {};
+	if (isEmpty(getEVal("commSendId"))==false) params["commSendId"] = getEVal("commSendId");
+	if (isEmpty(getEVal("commId"))==false) params["commId"] = getEVal("commId");
+	if (isEmpty(getEVal("commExpectedYmd"))==false) params["commExpectedYmd"] = getEVal("commExpectedYmd");
+	if (isEmpty(getEVal("commCpltYn"))==false) params["commCpltYn"] = getEVal("commCpltYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsCommSend.getPageInfo(params);
+
+	var url = "/app/commSend/getCommSendPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCommSend,result.payloads);
+		//set total
+		pageClsCommSend.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCommSend);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCommSendSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCommSendSearch" class="addr-list" ></div>
+					<div id="dvCommSendPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderCnclDelivProdMapper">
+	<sql id="where-orderCnclDelivProd">
+		WHERE 1=1
+			<if test="ordCnclDelivId != null and ordCnclDelivId != '' ">
+			AND OCDP.ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OCDP.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND OCDP.PROD_ID = #{prodId}
+			</if>
+	</sql>
+
+	<select id="getOrderCnclDelivProdListCount" parameterType="OrderCnclDelivProdExDto" resultType="Integer">
+	/* orderCnclDelivProdMapper.getOrderCnclDelivProdListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_CNCL_DELIV_PROD OCDP
+		<include refid="where-orderCnclDelivProd" />
+	</select>
+
+	<select id="getOrderCnclDelivProdList" parameterType="OrderCnclDelivProdExDto" resultType="OrderCnclDelivProdExDto">
+	/* orderCnclDelivProdMapper.getOrderCnclDelivProdList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OCDP.ORD_CNCL_DELIV_ID
+			,OCDP.ORD_ID
+			,OCDP.PROD_ID
+			,OCDP.REG_USER_ID
+			,REG_DTM
+			,OCDP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CNCL_DELIV_PROD OCDP
+		<include refid="where-orderCnclDelivProd" />
+		ORDER BY
+			OCDP.ORD_CNCL_DELIV_ID
+			,OCDP.ORD_ID
+			,OCDP.PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderCnclDelivProd" parameterType="OrderCnclDelivProdExDto" resultType="OrderCnclDelivProdExDto">
+	/* orderCnclDelivProdMapper.getOrderCnclDelivProd */
+		SELECT
+			OCDP.ORD_CNCL_DELIV_ID
+			,OCDP.ORD_ID
+			,OCDP.PROD_ID
+			,OCDP.REG_USER_ID
+			,REG_DTM
+			,OCDP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CNCL_DELIV_PROD OCDP
+		WHERE
+			OCDP.ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+			AND OCDP.ORD_ID = #{ordId}
+			AND OCDP.PROD_ID = #{prodId}
+	</select>
+
+	<insert id="insertOrderCnclDelivProd" parameterType="OrderCnclDelivProdExDto">
+	/* orderCnclDelivProdMapper.insertOrderCnclDelivProd */
+		INSERT INTO CW_ORDER_CNCL_DELIV_PROD (
+			ORD_CNCL_DELIV_ID
+			,ORD_ID
+			,PROD_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordCnclDelivId}
+			,#{ordId}
+			,#{prodId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderCnclDelivProd" parameterType="OrderCnclDelivProdExDto">
+	/* orderCnclDelivProdMapper.updateOrderCnclDelivProd */
+		UPDATE CW_ORDER_CNCL_DELIV_PROD
+		<set>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+			AND ORD_ID = #{ordId}
+			AND PROD_ID = #{prodId}
+	</update>
+
+	<delete id="deleteOrderCnclDelivProd" parameterType="OrderCnclDelivProdExDto">
+	/* orderCnclDelivProdMapper.deleteOrderCnclDelivProd */
+	DELETE FROM CW_ORDER_CNCL_DELIV_PROD
+	WHERE
+		ORD_CNCL_DELIV_ID = #{ordCnclDelivId}
+		AND ORD_ID = #{ordId}
+		AND PROD_ID = #{prodId}
+	</delete>
+</mapper>

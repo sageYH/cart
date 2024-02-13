@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["commId"] = '[[${transData.commId}]]';
+	if (isEmpty(map["commId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("commId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/commInfo/getCommInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["commId","","자료(통신ID)를 확인하세요."]
+		["commPathCd","","자료(통신경로코드[CM01])를 확인하세요."]
+		["commDivCd","","자료(통신구분코드[CM02])를 확인하세요."]
+		["commCont","","자료(통신내용)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/commInfo/updateCommInfo.do";
+	if (mode=="NEW"){
+		url = "/app/commInfo/insertCommInfo.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCommInfoPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCommInfoPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCommInfoPop" name="formCommInfoPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">통신ID</th>
+						<td><input type="text" name="commId" id="commId" style="width:70%" readonly >
+						</td>
+					<th scope="row">통신경로코드[CM01]</th>
+					<td><input type="text" name="commPathCd" id="commPathCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">통신구분코드[CM02]</th>
+						<td><input type="text" name="commDivCd" id="commDivCd" style="width:70%" >
+						</td>
+					<th scope="row">통신내용</th>
+					<td><input type="text" name="commCont" id="commCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

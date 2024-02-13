@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/qna/qnaGrid.js"></script>
+<script>
+var gridQna = null;
+window.onload = function() {
+	gridQna = setGridQna("dvGridQnaSearch");
+	gridQna.setBodyHeight(300);
+	fixedColGrid(gridQna);
+
+	gridQna.on("click",function(ev){
+		toggleGrid(gridQna,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridQna.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridQna)==false){
+			dblClickGridQna();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridQna(){
+	getResultData();
+}
+
+//page
+var pageClsQna = new pageCls("dvQnaPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridQna);
+
+	var params = {};
+	if (isEmpty(getEVal("qnaId"))==false) params["qnaId"] = getEVal("qnaId");
+	if (isEmpty(getEVal("qnaTypCd"))==false) params["qnaTypCd"] = getEVal("qnaTypCd");
+	if (isEmpty(getEVal("qnaTitle"))==false) params["qnaTitle"] = getEVal("qnaTitle");
+	if (isEmpty(getEVal("qnaCont"))==false) params["qnaCont"] = getEVal("qnaCont");
+	if (isEmpty(getEVal("qnaViews"))==false) params["qnaViews"] = getEVal("qnaViews");
+	if (isEmpty(getEVal("prntQnaId"))==false) params["prntQnaId"] = getEVal("prntQnaId");
+	if (isEmpty(getEVal("grpQnaId"))==false) params["grpQnaId"] = getEVal("grpQnaId");
+	if (isEmpty(getEVal("qnaFrYmd"))==false) params["qnaFrYmd"] = getEVal("qnaFrYmd");
+	if (isEmpty(getEVal("qnaToYmd"))==false) params["qnaToYmd"] = getEVal("qnaToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsQna.getPageInfo(params);
+
+	var url = "/app/qna/getQnaPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridQna,result.payloads);
+		//set total
+		pageClsQna.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridQna);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvQnaSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridQnaSearch" class="addr-list" ></div>
+					<div id="dvQnaPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

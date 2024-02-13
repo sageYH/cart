@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["delivInfoId"] = '[[${transData.delivInfoId}]]';
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["delivInfoId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/delivInfo/getDelivInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvDelivInfoPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="delivInfoId" id="delivInfoId">
+				<input type="hidden" name="mbrId" id="mbrId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">배송지명</th>
+							<td><span name="delivAddrNm" id="delivAddrNm"></span></td>
+							<th scope="row">기본주소여부</th>
+							<td><span name="baseAddrYn" id="baseAddrYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">수령인명</th>
+							<td><span name="rcptNm" id="rcptNm"></span></td>
+							<th scope="row">수령인전화</th>
+							<td><span name="rcptTelNo" id="rcptTelNo"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">수령인폰번호</th>
+							<td><span name="rcptPhoneNo" id="rcptPhoneNo"></span></td>
+							<th scope="row">배송우편번호</th>
+							<td><span name="delivZipCd" id="delivZipCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">배송주소</th>
+							<td><span name="delivAddr" id="delivAddr"></span></td>
+							<th scope="row">배송상세주소</th>
+							<td><span name="delivDtlAddr" id="delivDtlAddr"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">배송상세주소2</th>
+							<td><span name="delivDtlAddr2" id="delivDtlAddr2"></span></td>
+							<th scope="row">배송참조내용</th>
+							<td><span name="delivRefCont" id="delivRefCont"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">정렬순서</th>
+							<td><span name="sortSeq" id="sortSeq"></span></td>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

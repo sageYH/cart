@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsDelivInfo = new pageCls("dvDelivInfoPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("delivInfoId"))==false) params["delivInfoId"] = getEVal("delivInfoId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("delivAddrNm"))==false) params["delivAddrNm"] = getEVal("delivAddrNm");
+	if (isEmpty(getEVal("baseAddrYn"))==false) params["baseAddrYn"] = getEVal("baseAddrYn");
+	if (isEmpty(getEVal("rcptNm"))==false) params["rcptNm"] = getEVal("rcptNm");
+	if (isEmpty(getEVal("rcptTelNo"))==false) params["rcptTelNo"] = getEVal("rcptTelNo");
+	if (isEmpty(getEVal("rcptPhoneNo"))==false) params["rcptPhoneNo"] = getEVal("rcptPhoneNo");
+	if (isEmpty(getEVal("delivZipCd"))==false) params["delivZipCd"] = getEVal("delivZipCd");
+	if (isEmpty(getEVal("delivAddr"))==false) params["delivAddr"] = getEVal("delivAddr");
+	if (isEmpty(getEVal("delivDtlAddr"))==false) params["delivDtlAddr"] = getEVal("delivDtlAddr");
+	if (isEmpty(getEVal("delivDtlAddr2"))==false) params["delivDtlAddr2"] = getEVal("delivDtlAddr2");
+	if (isEmpty(getEVal("delivRefCont"))==false) params["delivRefCont"] = getEVal("delivRefCont");
+	if (isEmpty(getEVal("sortSeq"))==false) params["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsDelivInfo.getPageInfo(params);
+
+	var url = "/app/delivInfo/getDelivInfoPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["delivInfoId","mbrId","delivAddrNm","baseAddrYn","rcptNm","rcptTelNo","rcptPhoneNo","delivZipCd","delivAddr","delivDtlAddr","delivDtlAddr2","delivRefCont","sortSeq","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,14);
+	pageClsDelivInfo.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsDelivInfoDown(){
+	var url = "/app/delivInfo/getDelivInfoExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("delivInfoId"))==false) paramXls["delivInfoId"] = getEVal("delivInfoId");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("delivAddrNm"))==false) paramXls["delivAddrNm"] = getEVal("delivAddrNm");
+	if (isEmpty(getEVal("baseAddrYn"))==false) paramXls["baseAddrYn"] = getEVal("baseAddrYn");
+	if (isEmpty(getEVal("rcptNm"))==false) paramXls["rcptNm"] = getEVal("rcptNm");
+	if (isEmpty(getEVal("rcptTelNo"))==false) paramXls["rcptTelNo"] = getEVal("rcptTelNo");
+	if (isEmpty(getEVal("rcptPhoneNo"))==false) paramXls["rcptPhoneNo"] = getEVal("rcptPhoneNo");
+	if (isEmpty(getEVal("delivZipCd"))==false) paramXls["delivZipCd"] = getEVal("delivZipCd");
+	if (isEmpty(getEVal("delivAddr"))==false) paramXls["delivAddr"] = getEVal("delivAddr");
+	if (isEmpty(getEVal("delivDtlAddr"))==false) paramXls["delivDtlAddr"] = getEVal("delivDtlAddr");
+	if (isEmpty(getEVal("delivDtlAddr2"))==false) paramXls["delivDtlAddr2"] = getEVal("delivDtlAddr2");
+	if (isEmpty(getEVal("delivRefCont"))==false) paramXls["delivRefCont"] = getEVal("delivRefCont");
+	if (isEmpty(getEVal("sortSeq"))==false) paramXls["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"배송정보"
+		,"sheetName":"시트"
+		,"columnHeaders":["배송정보ID","멤버ID","배송지명","기본주소여부","수령인명","수령인전화","수령인폰번호","배송우편번호","배송주소","배송상세주소","배송상세주소2","배송참조내용","정렬순서","사용여부"]
+		,"columnNames":["delivInfoId","mbrId","delivAddrNm","baseAddrYn","rcptNm","rcptTelNo","rcptPhoneNo","delivZipCd","delivAddr","delivDtlAddr","delivDtlAddr2","delivRefCont","sortSeq","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["delivInfoId"] = arr[0].trim();
+		params["mbrId"] = arr[1].trim();
+	}
+	DelivInfoPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvDelivInfoSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvDelivInfoSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsDelivInfo.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">배송정보ID</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">배송지명</th>
+							<th scope="col">기본주소여부</th>
+							<th scope="col">수령인명</th>
+							<th scope="col">수령인전화</th>
+							<th scope="col">수령인폰번호</th>
+							<th scope="col">배송우편번호</th>
+							<th scope="col">배송주소</th>
+							<th scope="col">배송상세주소</th>
+							<th scope="col">배송상세주소2</th>
+							<th scope="col">배송참조내용</th>
+							<th scope="col">정렬순서</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{delivInfoId}},{{mbrId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{delivInfoId}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{delivAddrNm}}</td>
+						<td>{{baseAddrYn}}</td>
+						<td>{{rcptNm}}</td>
+						<td>{{rcptTelNo}}</td>
+						<td>{{rcptPhoneNo}}</td>
+						<td>{{delivZipCd}}</td>
+						<td>{{delivAddr}}</td>
+						<td>{{delivDtlAddr}}</td>
+						<td>{{delivDtlAddr2}}</td>
+						<td>{{delivRefCont}}</td>
+						<td>{{sortSeq}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvDelivInfoPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/delivInfo/delivInfoPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

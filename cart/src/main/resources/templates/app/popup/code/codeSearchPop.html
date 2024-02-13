@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/code/codeGrid.js"></script>
+<script>
+var gridCode = null;
+window.onload = function() {
+	gridCode = setGridCode("dvGridCodeSearch");
+	gridCode.setBodyHeight(300);
+	fixedColGrid(gridCode);
+
+	gridCode.on("click",function(ev){
+		toggleGrid(gridCode,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCode.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCode)==false){
+			dblClickGridCode();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCode(){
+	getResultData();
+}
+
+//page
+var pageClsCode = new pageCls("dvCodePageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCode);
+
+	var params = {};
+	if (isEmpty(getEVal("cdId"))==false) params["cdId"] = getEVal("cdId");
+	if (isEmpty(getEVal("cdNm"))==false) params["cdNm"] = getEVal("cdNm");
+	//page set
+	params = pageClsCode.getPageInfo(params);
+
+	var url = "/app/code/getCodePageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCode,result.payloads);
+		//set total
+		pageClsCode.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCode);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCodeSearchPop" class="modal shot-pop" title="코드 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="업체명을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCodeSearch" class="addr-list" ></div>
+					<div id="dvCodePageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

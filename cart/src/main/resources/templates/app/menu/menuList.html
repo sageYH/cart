@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsMenu = new pageCls("dvMenuPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("menuId"))==false) params["menuId"] = getEVal("menuId");
+	if (isEmpty(getEVal("menuNm"))==false) params["menuNm"] = getEVal("menuNm");
+	if (isEmpty(getEVal("link"))==false) params["link"] = getEVal("link");
+	if (isEmpty(getEVal("menuDesc"))==false) params["menuDesc"] = getEVal("menuDesc");
+	if (isEmpty(getEVal("menuImg"))==false) params["menuImg"] = getEVal("menuImg");
+	if (isEmpty(getEVal("prntMenuId"))==false) params["prntMenuId"] = getEVal("prntMenuId");
+	if (isEmpty(getEVal("menuLvl"))==false) params["menuLvl"] = getEVal("menuLvl");
+	if (isEmpty(getEVal("sortSeq"))==false) params["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("displayYn"))==false) params["displayYn"] = getEVal("displayYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsMenu.getPageInfo(params);
+
+	var url = "/app/menu/getMenuPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["menuId","menuNm","link","menuDesc","menuImg","prntMenuId","menuLvl","sortSeq","displayYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,10);
+	pageClsMenu.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsMenuDown(){
+	var url = "/app/menu/getMenuExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("menuId"))==false) paramXls["menuId"] = getEVal("menuId");
+	if (isEmpty(getEVal("menuNm"))==false) paramXls["menuNm"] = getEVal("menuNm");
+	if (isEmpty(getEVal("link"))==false) paramXls["link"] = getEVal("link");
+	if (isEmpty(getEVal("menuDesc"))==false) paramXls["menuDesc"] = getEVal("menuDesc");
+	if (isEmpty(getEVal("menuImg"))==false) paramXls["menuImg"] = getEVal("menuImg");
+	if (isEmpty(getEVal("prntMenuId"))==false) paramXls["prntMenuId"] = getEVal("prntMenuId");
+	if (isEmpty(getEVal("menuLvl"))==false) paramXls["menuLvl"] = getEVal("menuLvl");
+	if (isEmpty(getEVal("sortSeq"))==false) paramXls["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("displayYn"))==false) paramXls["displayYn"] = getEVal("displayYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"메뉴"
+		,"sheetName":"시트"
+		,"columnHeaders":["메뉴코드","메뉴명","메뉴경로","메뉴설명","메뉴이미지","상위메뉴코드","메뉴레벨","정렬순서","표시여부","사용여부"]
+		,"columnNames":["menuId","menuNm","link","menuDesc","menuImg","prntMenuId","menuLvl","sortSeq","displayYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["menuId"] = arr[0].trim();
+	}
+	MenuPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvMenuSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvMenuSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsMenu.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">메뉴코드</th>
+							<th scope="col">메뉴명</th>
+							<th scope="col">메뉴경로</th>
+							<th scope="col">메뉴설명</th>
+							<th scope="col">메뉴이미지</th>
+							<th scope="col">상위메뉴코드</th>
+							<th scope="col">메뉴레벨</th>
+							<th scope="col">정렬순서</th>
+							<th scope="col">표시여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{menuId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{menuId}}</td>
+						<td>{{menuNm}}</td>
+						<td>{{link}}</td>
+						<td>{{menuDesc}}</td>
+						<td>{{menuImg}}</td>
+						<td>{{prntMenuId}}</td>
+						<td>{{menuLvl}}</td>
+						<td>{{sortSeq}}</td>
+						<td>{{displayYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvMenuPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/menu/menuPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

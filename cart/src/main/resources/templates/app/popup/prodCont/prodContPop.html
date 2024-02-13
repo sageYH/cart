@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodId"] = '[[${transData.prodId}]]';
+    map["prodContId"] = '[[${transData.prodContId}]]';
+	if (isEmpty(map["prodId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("prodId").setAttribute('readonly', true);
+		getEleByObj("prodContId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/prodCont/getProdCont.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["prodId","","자료(상품ID)를 확인하세요."]
+		["prodContId","","자료(상품내용ID)를 확인하세요."]
+		["prodContCd","","자료(상품내용코드[PD01])를 확인하세요."]
+		["sortSeq","","자료(정렬순서)를 확인하세요."]
+		["prodCont","","자료(상품내용)를 확인하세요."]
+		["mobiProdCont","","자료(모바일상품내용)를 확인하세요."]
+		["fileRefId","","자료(파일참조ID)를 확인하세요."]
+		["mobiFileRefId","","자료(모바일파일참조ID)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/prodCont/updateProdCont.do";
+	if (mode=="NEW"){
+		url = "/app/prodCont/insertProdCont.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formProdContPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvProdContPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formProdContPop" name="formProdContPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" readonly >
+						</td>
+					<th scope="row">상품내용ID</th>
+					<td><input type="text" name="prodContId" id="prodContId" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품내용코드[PD01]</th>
+						<td><input type="text" name="prodContCd" id="prodContCd" style="width:70%" >
+						</td>
+					<th scope="row">정렬순서</th>
+					<td><input type="text" name="sortSeq" id="sortSeq" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품내용</th>
+						<td><input type="text" name="prodCont" id="prodCont" style="width:70%" >
+						</td>
+					<th scope="row">모바일상품내용</th>
+					<td><input type="text" name="mobiProdCont" id="mobiProdCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">파일참조ID</th>
+						<td><input type="text" name="fileRefId" id="fileRefId" style="width:70%" >
+						</td>
+					<th scope="row">모바일파일참조ID</th>
+					<td><input type="text" name="mobiFileRefId" id="mobiFileRefId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

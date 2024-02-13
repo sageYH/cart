@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordExchDelivId"] = '[[${transData.ordExchDelivId}]]';
+    map["ordId"] = '[[${transData.ordId}]]';
+    map["prodId"] = '[[${transData.prodId}]]';
+	if (isEmpty(map["ordExchDelivId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ordExchDelivId").setAttribute('readonly', true);
+		getEleByObj("ordId").setAttribute('readonly', true);
+		getEleByObj("prodId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderExchDelivProd/getOrderExchDelivProd.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ordExchDelivId","","자료(주문교환배송ID)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["prodId","","자료(상품ID)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/orderExchDelivProd/updateOrderExchDelivProd.do";
+	if (mode=="NEW"){
+		url = "/app/orderExchDelivProd/insertOrderExchDelivProd.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formOrderExchDelivProdPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvOrderExchDelivProdPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formOrderExchDelivProdPop" name="formOrderExchDelivProdPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문교환배송ID</th>
+						<td><input type="text" name="ordExchDelivId" id="ordExchDelivId" style="width:70%" readonly >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" readonly >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

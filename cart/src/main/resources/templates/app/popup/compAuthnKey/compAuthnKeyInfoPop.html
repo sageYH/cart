@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ptnrCompId"] = '[[${transData.ptnrCompId}]]';
+    map["authnDivCd"] = '[[${transData.authnDivCd}]]';
+	if (isEmpty(map["ptnrCompId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/compAuthnKey/getCompAuthnKey.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCompAuthnKeyPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="ptnrCompId" id="ptnrCompId">
+				<input type="hidden" name="authnDivCd" id="authnDivCd">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">자사인증ID</th>
+							<td><span name="ownCompAuthnId" id="ownCompAuthnId"></span></td>
+							<th scope="row">자사인증비밀번호</th>
+							<td><span name="ownCompAuthnPwd" id="ownCompAuthnPwd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">파트너사인증KEY</th>
+							<td><span name="ptnrCwCompAuthnKey" id="ptnrCwCompAuthnKey"></span></td>
+							<th scope="row">인증발급일시</th>
+							<td><span name="authnIshDtm" id="authnIshDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">인증갱신일시</th>
+							<td><span name="authnUpdDtm" id="authnUpdDtm"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

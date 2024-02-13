@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="noticeLangMapper">
+	<sql id="where-noticeLang">
+		WHERE 1=1
+			<if test="noticeId != null and noticeId != '' ">
+			AND NL.NOTICE_ID = #{noticeId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND NL.LANG_CD = #{langCd}
+			</if>
+			<if test="noticeTitle != null and noticeTitle != '' ">
+			AND NL.NOTICE_TITLE = #{noticeTitle}
+			</if>
+			<if test="noticeCont != null and noticeCont != '' ">
+			AND NL.NOTICE_CONT = #{noticeCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND NL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getNoticeLangListCount" parameterType="NoticeLangExDto" resultType="Integer">
+	/* noticeLangMapper.getNoticeLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_NOTICE_LANG NL
+		<include refid="where-noticeLang" />
+	</select>
+
+	<select id="getNoticeLangList" parameterType="NoticeLangExDto" resultType="NoticeLangExDto">
+	/* noticeLangMapper.getNoticeLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			NL.NOTICE_ID
+			,NL.LANG_CD
+			,NL.NOTICE_TITLE
+			,NL.NOTICE_CONT
+			,NL.USE_YN
+			,NL.REG_USER_ID
+			,REG_DTM
+			,NL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NOTICE_LANG NL
+		<include refid="where-noticeLang" />
+		ORDER BY
+			NL.NOTICE_ID
+			,NL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getNoticeLang" parameterType="NoticeLangExDto" resultType="NoticeLangExDto">
+	/* noticeLangMapper.getNoticeLang */
+		SELECT
+			NL.NOTICE_ID
+			,NL.LANG_CD
+			,NL.NOTICE_TITLE
+			,NL.NOTICE_CONT
+			,NL.USE_YN
+			,NL.REG_USER_ID
+			,REG_DTM
+			,NL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NOTICE_LANG NL
+		WHERE
+			NL.NOTICE_ID = #{noticeId}
+			AND NL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertNoticeLang" parameterType="NoticeLangExDto">
+	/* noticeLangMapper.insertNoticeLang */
+		INSERT INTO CW_NOTICE_LANG (
+			NOTICE_ID
+			,LANG_CD
+			,NOTICE_TITLE
+			,NOTICE_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{noticeId}
+			,#{langCd}
+			,#{noticeTitle}
+			,#{noticeCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateNoticeLang" parameterType="NoticeLangExDto">
+	/* noticeLangMapper.updateNoticeLang */
+		UPDATE CW_NOTICE_LANG
+		<set>
+		<if test="noticeTitle != null">
+		NOTICE_TITLE = #{noticeTitle},
+		</if>
+		<if test="noticeCont != null">
+		NOTICE_CONT = #{noticeCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			NOTICE_ID = #{noticeId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteNoticeLang" parameterType="NoticeLangExDto">
+	/* noticeLangMapper.deleteNoticeLang */
+	DELETE FROM CW_NOTICE_LANG
+	WHERE
+		NOTICE_ID = #{noticeId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

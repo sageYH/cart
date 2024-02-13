@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="couponIssueMbrMapper">
+	<sql id="where-couponIssueMbr">
+		WHERE 1=1
+			<if test="cpnIssueId != null and cpnIssueId != '' ">
+			AND CIM.CPN_ISSUE_ID = #{cpnIssueId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND CIM.MBR_ID = #{mbrId}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND CIM.CPN_ID = #{cpnId}
+			</if>
+			<if test="cpnIssueDtm != null and cpnIssueDtm != '' ">
+			AND CIM.CPN_ISSUE_DTM = STR_TO_DATE(#{cpnIssueDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="cpnUseDtm != null and cpnUseDtm != '' ">
+			AND CIM.CPN_USE_DTM = STR_TO_DATE(#{cpnUseDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CIM.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCouponIssueMbrListCount" parameterType="CouponIssueMbrExDto" resultType="Integer">
+	/* couponIssueMbrMapper.getCouponIssueMbrListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUPON_ISSUE_MBR CIM
+		<include refid="where-couponIssueMbr" />
+	</select>
+
+	<select id="getCouponIssueMbrList" parameterType="CouponIssueMbrExDto" resultType="CouponIssueMbrExDto">
+	/* couponIssueMbrMapper.getCouponIssueMbrList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CIM.CPN_ISSUE_ID
+			,CIM.MBR_ID
+			,CIM.CPN_ID
+			,CPN_ISSUE_DTM
+			,CPN_USE_DTM
+			,CIM.USE_YN
+			,CIM.REG_USER_ID
+			,REG_DTM
+			,CIM.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_ISSUE_MBR CIM
+		<include refid="where-couponIssueMbr" />
+		ORDER BY
+			CIM.CPN_ISSUE_ID
+			,CIM.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCouponIssueMbr" parameterType="CouponIssueMbrExDto" resultType="CouponIssueMbrExDto">
+	/* couponIssueMbrMapper.getCouponIssueMbr */
+		SELECT
+			CIM.CPN_ISSUE_ID
+			,CIM.MBR_ID
+			,CIM.CPN_ID
+			,CPN_ISSUE_DTM
+			,CPN_USE_DTM
+			,CIM.USE_YN
+			,CIM.REG_USER_ID
+			,REG_DTM
+			,CIM.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUPON_ISSUE_MBR CIM
+		WHERE
+			CIM.CPN_ISSUE_ID = #{cpnIssueId}
+			AND CIM.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertCouponIssueMbr" parameterType="CouponIssueMbrExDto">
+	/* couponIssueMbrMapper.insertCouponIssueMbr */
+		INSERT INTO CW_COUPON_ISSUE_MBR (
+			CPN_ISSUE_ID
+			,MBR_ID
+			,CPN_ID
+			,CPN_ISSUE_DTM
+			,CPN_USE_DTM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cpnIssueId}
+			,#{mbrId}
+			,#{cpnId}
+			,STR_TO_DATE(#{cpnIssueDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{cpnUseDtm}, '%Y%m%d %h%i%s')
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCouponIssueMbr" parameterType="CouponIssueMbrExDto">
+	/* couponIssueMbrMapper.updateCouponIssueMbr */
+		UPDATE CW_COUPON_ISSUE_MBR
+		<set>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="cpnIssueDtm != null">
+		CPN_ISSUE_DTM = STR_TO_DATE(#{cpnIssueDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="cpnUseDtm != null">
+		CPN_USE_DTM = STR_TO_DATE(#{cpnUseDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CPN_ISSUE_ID = #{cpnIssueId}
+			AND MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteCouponIssueMbr" parameterType="CouponIssueMbrExDto">
+	/* couponIssueMbrMapper.deleteCouponIssueMbr */
+	DELETE FROM CW_COUPON_ISSUE_MBR
+	WHERE
+		CPN_ISSUE_ID = #{cpnIssueId}
+		AND MBR_ID = #{mbrId}
+	</delete>
+</mapper>

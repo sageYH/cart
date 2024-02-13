@@ -1,0 +1,216 @@
+<div id="divBoardPop" class="sub_wrap" style="display:none;width:92%" title="게시판 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>게시판 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="boardId_g1">게시ID</label>
+						<div class="wrap">
+							<input type="text" id="boardId_g1" name="boardId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="boardTypCd_g1">게시유형코드</label>
+						<div class="wrap">
+							<input type="text" id="boardTypCd_g1" name="boardTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="boardTitle_g1">게시제목</label>
+						<div class="wrap">
+							<input type="text" id="boardTitle_g1" name="boardTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="boardCont_g1">게시내용</label>
+						<div class="wrap">
+							<input type="text" id="boardCont_g1" name="boardCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="boardViews_g1">게시조회수</label>
+						<div class="wrap">
+							<input type="text" id="boardViews_g1" name="boardViews_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prntBoardId_g1">상위게시ID</label>
+						<div class="wrap">
+							<input type="text" id="prntBoardId_g1" name="prntBoardId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="grpBoardId_g1">그룹게시ID</label>
+						<div class="wrap">
+							<input type="text" id="grpBoardId_g1" name="grpBoardId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="boardFrYmd_g1">게시시작일</label>
+						<div class="wrap">
+							<input type="text" id="boardFrYmd_g1" name="boardFrYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="boardToYmd_g1">게시종료일</label>
+						<div class="wrap">
+							<input type="text" id="boardToYmd_g1" name="boardToYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="popupYn_g1">팝업여부</label>
+						<div class="wrap">
+							<input type="text" id="popupYn_g1" name="popupYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="BoardPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="BoardPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="BoardPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var BoardPop = new $W.load("divBoardPop");
+BoardPop.ready(function(){
+	//
+});
+
+BoardPop.fnOpen = function(mode, params, func) {
+	clearObjects("divBoardPop");
+	BoardPop.mode = mode;
+	if (!isEmpty(func)){
+		BoardPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divBoardPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["boardId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/board/getBoard.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("boardTypCd_g1").focus();
+	}else{
+		readOnlyFalse(["boardId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+BoardPop.fnSave = function(){
+
+	var valid = 0 || [
+		["boardId_g1","","자료(게시ID)를 확인하세요."]
+		,["boardTypCd_g1","","자료(게시유형코드)를 확인하세요."]
+		,["boardTitle_g1","","자료(게시제목)를 확인하세요."]
+		,["boardCont_g1","","자료(게시내용)를 확인하세요."]
+/* 		,["boardViews_g1","","자료(게시조회수)를 확인하세요."]
+		,["prntBoardId_g1","","자료(상위게시ID)를 확인하세요."]
+		,["grpBoardId_g1","","자료(그룹게시ID)를 확인하세요."]
+		,["boardFrYmd_g1","","자료(게시시작일)를 확인하세요."]
+		,["boardToYmd_g1","","자료(게시종료일)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["popupYn_g1","","자료(팝업여부)를 확인하세요."] */
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divBoardPop");
+	var url = "/app/board/updateBoard.do";
+	if (BoardPop.mode=="CREATE"){
+		url = "/app/board/insertBoard.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(BoardPop.func)){
+			BoardPop.func();
+			BoardPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+BoardPop.fnDelete = function(){
+	if (BoardPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/board/deleteBoard.do";
+	var params = {};
+	params["boardId"] = getElement("boardId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(BoardPop.func)){
+			BoardPop.func();
+			BoardPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+BoardPop.fnClose = function(){
+	layerToggle("divBoardPop",{"mode":0});
+};
+</script>

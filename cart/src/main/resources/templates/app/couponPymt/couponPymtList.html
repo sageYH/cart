@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCouponPymt = new pageCls("dvCouponPymtPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cpnPymtId"))==false) params["cpnPymtId"] = getEVal("cpnPymtId");
+	if (isEmpty(getEVal("cpnIssueId"))==false) params["cpnIssueId"] = getEVal("cpnIssueId");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnAmt"))==false) params["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("cpnCancAmt"))==false) params["cpnCancAmt"] = getEVal("cpnCancAmt");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("eventId"))==false) params["eventId"] = getEVal("eventId");
+	if (isEmpty(getEVal("afCpnId"))==false) params["afCpnId"] = getEVal("afCpnId");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsCouponPymt.getPageInfo(params);
+
+	var url = "/app/couponPymt/getCouponPymtPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cpnPymtId","cpnIssueId","cpnId","cpnAmt","cpnCancAmt","ordId","eventId","afCpnId","pymtCompId","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,10);
+	pageClsCouponPymt.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCouponPymtDown(){
+	var url = "/app/couponPymt/getCouponPymtExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cpnPymtId"))==false) paramXls["cpnPymtId"] = getEVal("cpnPymtId");
+	if (isEmpty(getEVal("cpnIssueId"))==false) paramXls["cpnIssueId"] = getEVal("cpnIssueId");
+	if (isEmpty(getEVal("cpnId"))==false) paramXls["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnAmt"))==false) paramXls["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("cpnCancAmt"))==false) paramXls["cpnCancAmt"] = getEVal("cpnCancAmt");
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("eventId"))==false) paramXls["eventId"] = getEVal("eventId");
+	if (isEmpty(getEVal("afCpnId"))==false) paramXls["afCpnId"] = getEVal("afCpnId");
+	if (isEmpty(getEVal("pymtCompId"))==false) paramXls["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"쿠폰지급"
+		,"sheetName":"시트"
+		,"columnHeaders":["쿠폰지급ID","쿠폰발급ID","쿠폰ID","쿠폰금액","쿠폰취소금액","주문ID","이벤트ID","제휴쿠폰ID","지급업체ID","사용여부"]
+		,"columnNames":["cpnPymtId","cpnIssueId","cpnId","cpnAmt","cpnCancAmt","ordId","eventId","afCpnId","pymtCompId","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cpnPymtId"] = arr[0].trim();
+	}
+	CouponPymtPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCouponPymtSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCouponPymtSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCouponPymt.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">쿠폰지급ID</th>
+							<th scope="col">쿠폰발급ID</th>
+							<th scope="col">쿠폰ID</th>
+							<th scope="col">쿠폰금액</th>
+							<th scope="col">쿠폰취소금액</th>
+							<th scope="col">주문ID</th>
+							<th scope="col">이벤트ID</th>
+							<th scope="col">제휴쿠폰ID</th>
+							<th scope="col">지급업체ID</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cpnPymtId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cpnPymtId}}</td>
+						<td>{{cpnIssueId}}</td>
+						<td>{{cpnId}}</td>
+						<td>{{cpnAmt}}</td>
+						<td>{{cpnCancAmt}}</td>
+						<td>{{ordId}}</td>
+						<td>{{eventId}}</td>
+						<td>{{afCpnId}}</td>
+						<td>{{pymtCompId}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCouponPymtPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/couponPymt/couponPymtPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

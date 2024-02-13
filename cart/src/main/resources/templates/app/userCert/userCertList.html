@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsUserCert = new pageCls("dvUserCertPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("userCertId"))==false) params["userCertId"] = getEVal("userCertId");
+	if (isEmpty(getEVal("userId"))==false) params["userId"] = getEVal("userId");
+	if (isEmpty(getEVal("certMethCd"))==false) params["certMethCd"] = getEVal("certMethCd");
+	if (isEmpty(getEVal("userCertKey"))==false) params["userCertKey"] = getEVal("userCertKey");
+	if (isEmpty(getEVal("certFrDtm"))==false) params["certFrDtm"] = getEVal("certFrDtm");
+	if (isEmpty(getEVal("certToDtm"))==false) params["certToDtm"] = getEVal("certToDtm");
+	if (isEmpty(getEVal("certSendDtm"))==false) params["certSendDtm"] = getEVal("certSendDtm");
+	if (isEmpty(getEVal("certCfmDtm"))==false) params["certCfmDtm"] = getEVal("certCfmDtm");
+	if (isEmpty(getEVal("certCfmYn"))==false) params["certCfmYn"] = getEVal("certCfmYn");
+	//page set
+	params = pageClsUserCert.getPageInfo(params);
+
+	var url = "/app/userCert/getUserCertPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["userCertId","userId","certMethCd","userCertKey","certFrDtm","certToDtm","certSendDtm","certCfmDtm","certCfmYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,9);
+	pageClsUserCert.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsUserCertDown(){
+	var url = "/app/userCert/getUserCertExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("userCertId"))==false) paramXls["userCertId"] = getEVal("userCertId");
+	if (isEmpty(getEVal("userId"))==false) paramXls["userId"] = getEVal("userId");
+	if (isEmpty(getEVal("certMethCd"))==false) paramXls["certMethCd"] = getEVal("certMethCd");
+	if (isEmpty(getEVal("userCertKey"))==false) paramXls["userCertKey"] = getEVal("userCertKey");
+	if (isEmpty(getEVal("certFrDtm"))==false) paramXls["certFrDtm"] = getEVal("certFrDtm");
+	if (isEmpty(getEVal("certToDtm"))==false) paramXls["certToDtm"] = getEVal("certToDtm");
+	if (isEmpty(getEVal("certSendDtm"))==false) paramXls["certSendDtm"] = getEVal("certSendDtm");
+	if (isEmpty(getEVal("certCfmDtm"))==false) paramXls["certCfmDtm"] = getEVal("certCfmDtm");
+	if (isEmpty(getEVal("certCfmYn"))==false) paramXls["certCfmYn"] = getEVal("certCfmYn");
+
+	var params = {"xlsName":"사용자인증"
+		,"sheetName":"시트"
+		,"columnHeaders":["사용자인증ID","사용자ID","인증수단코드[CM03]","사용자인증키","인증시작일시","인증종료일시","인증발송일시","인증확정일시","인증확정여부"]
+		,"columnNames":["userCertId","userId","certMethCd","userCertKey","certFrDtm","certToDtm","certSendDtm","certCfmDtm","certCfmYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["userCertId"] = arr[0].trim();
+	}
+	UserCertPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvUserCertSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvUserCertSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsUserCert.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">사용자인증ID</th>
+							<th scope="col">사용자ID</th>
+							<th scope="col">인증수단코드[CM03]</th>
+							<th scope="col">사용자인증키</th>
+							<th scope="col">인증시작일시</th>
+							<th scope="col">인증종료일시</th>
+							<th scope="col">인증발송일시</th>
+							<th scope="col">인증확정일시</th>
+							<th scope="col">인증확정여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{userCertId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{userCertId}}</td>
+						<td>{{userId}}</td>
+						<td>{{certMethCd}}</td>
+						<td>{{userCertKey}}</td>
+						<td>{{certFrDtm}}</td>
+						<td>{{certToDtm}}</td>
+						<td>{{certSendDtm}}</td>
+						<td>{{certCfmDtm}}</td>
+						<td>{{certCfmYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvUserCertPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/userCert/userCertPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

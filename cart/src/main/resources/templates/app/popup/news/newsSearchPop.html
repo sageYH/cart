@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/news/newsGrid.js"></script>
+<script>
+var gridNews = null;
+window.onload = function() {
+	gridNews = setGridNews("dvGridNewsSearch");
+	gridNews.setBodyHeight(300);
+	fixedColGrid(gridNews);
+
+	gridNews.on("click",function(ev){
+		toggleGrid(gridNews,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridNews.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridNews)==false){
+			dblClickGridNews();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridNews(){
+	getResultData();
+}
+
+//page
+var pageClsNews = new pageCls("dvNewsPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridNews);
+
+	var params = {};
+	if (isEmpty(getEVal("newsId"))==false) params["newsId"] = getEVal("newsId");
+	if (isEmpty(getEVal("newsTypCd"))==false) params["newsTypCd"] = getEVal("newsTypCd");
+	if (isEmpty(getEVal("newsTitle"))==false) params["newsTitle"] = getEVal("newsTitle");
+	if (isEmpty(getEVal("newsCont"))==false) params["newsCont"] = getEVal("newsCont");
+	if (isEmpty(getEVal("newsViews"))==false) params["newsViews"] = getEVal("newsViews");
+	if (isEmpty(getEVal("prntNewsId"))==false) params["prntNewsId"] = getEVal("prntNewsId");
+	if (isEmpty(getEVal("grpNewsId"))==false) params["grpNewsId"] = getEVal("grpNewsId");
+	if (isEmpty(getEVal("newsFrYmd"))==false) params["newsFrYmd"] = getEVal("newsFrYmd");
+	if (isEmpty(getEVal("newsToYmd"))==false) params["newsToYmd"] = getEVal("newsToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsNews.getPageInfo(params);
+
+	var url = "/app/news/getNewsPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridNews,result.payloads);
+		//set total
+		pageClsNews.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridNews);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvNewsSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridNewsSearch" class="addr-list" ></div>
+					<div id="dvNewsPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

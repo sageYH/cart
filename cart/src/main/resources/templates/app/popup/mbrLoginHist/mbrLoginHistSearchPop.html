@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/mbrLoginHist/mbrLoginHistGrid.js"></script>
+<script>
+var gridMbrLoginHist = null;
+window.onload = function() {
+	gridMbrLoginHist = setGridMbrLoginHist("dvGridMbrLoginHistSearch");
+	gridMbrLoginHist.setBodyHeight(300);
+	fixedColGrid(gridMbrLoginHist);
+
+	gridMbrLoginHist.on("click",function(ev){
+		toggleGrid(gridMbrLoginHist,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridMbrLoginHist.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridMbrLoginHist)==false){
+			dblClickGridMbrLoginHist();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridMbrLoginHist(){
+	getResultData();
+}
+
+//page
+var pageClsMbrLoginHist = new pageCls("dvMbrLoginHistPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridMbrLoginHist);
+
+	var params = {};
+	if (isEmpty(getEVal("mbrLoginSeqNo"))==false) params["mbrLoginSeqNo"] = getEVal("mbrLoginSeqNo");
+	if (isEmpty(getEVal("accYmd"))==false) params["accYmd"] = getEVal("accYmd");
+	if (isEmpty(getEVal("accHms"))==false) params["accHms"] = getEVal("accHms");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("accDevCd"))==false) params["accDevCd"] = getEVal("accDevCd");
+	if (isEmpty(getEVal("accChanCd"))==false) params["accChanCd"] = getEVal("accChanCd");
+	//page set
+	params = pageClsMbrLoginHist.getPageInfo(params);
+
+	var url = "/app/mbrLoginHist/getMbrLoginHistPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridMbrLoginHist,result.payloads);
+		//set total
+		pageClsMbrLoginHist.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridMbrLoginHist);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvMbrLoginHistSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridMbrLoginHistSearch" class="addr-list" ></div>
+					<div id="dvMbrLoginHistPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

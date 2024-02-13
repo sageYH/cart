@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodClassifMapper">
+	<sql id="where-prodClassif">
+		WHERE 1=1
+			<if test="prodClassifId != null and prodClassifId != '' ">
+			AND PC.PROD_CLASSIF_ID = #{prodClassifId}
+			</if>
+			<if test="prodClassifNm != null and prodClassifNm != '' ">
+			AND PC.PROD_CLASSIF_NM = #{prodClassifNm}
+			</if>
+			<if test="prntProdClassifId != null and prntProdClassifId != '' ">
+			AND PC.PRNT_PROD_CLASSIF_ID = #{prntProdClassifId}
+			</if>
+			<if test="prodLvl != null and prodLvl != '' ">
+			AND PC.PROD_LVL = #{prodLvl}
+			</if>
+			<if test="chdYn != null and chdYn != '' ">
+			AND PC.CHD_YN = #{chdYn}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND PC.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="mobiFileRefId != null and mobiFileRefId != '' ">
+			AND PC.MOBI_FILE_REF_ID = #{mobiFileRefId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PC.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdClassifListCount" parameterType="ProdClassifExDto" resultType="Integer">
+	/* prodClassifMapper.getProdClassifListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_CLASSIF PC
+		<include refid="where-prodClassif" />
+	</select>
+
+	<select id="getProdClassifList" parameterType="ProdClassifExDto" resultType="ProdClassifExDto">
+	/* prodClassifMapper.getProdClassifList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PC.PROD_CLASSIF_ID
+			,PC.PROD_CLASSIF_NM
+			,PC.PRNT_PROD_CLASSIF_ID
+			,PC.PROD_LVL
+			,PC.CHD_YN
+			,PC.FILE_REF_ID
+			,PC.MOBI_FILE_REF_ID
+			,PC.USE_YN
+			,PC.REG_USER_ID
+			,REG_DTM
+			,PC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CLASSIF PC
+		<include refid="where-prodClassif" />
+		ORDER BY
+			PC.PROD_CLASSIF_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdClassif" parameterType="ProdClassifExDto" resultType="ProdClassifExDto">
+	/* prodClassifMapper.getProdClassif */
+		SELECT
+			PC.PROD_CLASSIF_ID
+			,PC.PROD_CLASSIF_NM
+			,PC.PRNT_PROD_CLASSIF_ID
+			,PC.PROD_LVL
+			,PC.CHD_YN
+			,PC.FILE_REF_ID
+			,PC.MOBI_FILE_REF_ID
+			,PC.USE_YN
+			,PC.REG_USER_ID
+			,REG_DTM
+			,PC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CLASSIF PC
+		WHERE
+			PC.PROD_CLASSIF_ID = #{prodClassifId}
+	</select>
+
+	<insert id="insertProdClassif" parameterType="ProdClassifExDto">
+	/* prodClassifMapper.insertProdClassif */
+		INSERT INTO CW_PROD_CLASSIF (
+			PROD_CLASSIF_ID
+			,PROD_CLASSIF_NM
+			,PRNT_PROD_CLASSIF_ID
+			,PROD_LVL
+			,CHD_YN
+			,FILE_REF_ID
+			,MOBI_FILE_REF_ID
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodClassifId}
+			,#{prodClassifNm}
+			,#{prntProdClassifId}
+			,#{prodLvl}
+			,#{chdYn}
+			,#{fileRefId}
+			,#{mobiFileRefId}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdClassif" parameterType="ProdClassifExDto">
+	/* prodClassifMapper.updateProdClassif */
+		UPDATE CW_PROD_CLASSIF
+		<set>
+		<if test="prodClassifNm != null">
+		PROD_CLASSIF_NM = #{prodClassifNm},
+		</if>
+		<if test="prntProdClassifId != null">
+		PRNT_PROD_CLASSIF_ID = #{prntProdClassifId},
+		</if>
+		<if test="prodLvl != null">
+		PROD_LVL = #{prodLvl},
+		</if>
+		<if test="chdYn != null">
+		CHD_YN = #{chdYn},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="mobiFileRefId != null">
+		MOBI_FILE_REF_ID = #{mobiFileRefId},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_CLASSIF_ID = #{prodClassifId}
+	</update>
+
+	<delete id="deleteProdClassif" parameterType="ProdClassifExDto">
+	/* prodClassifMapper.deleteProdClassif */
+	DELETE FROM CW_PROD_CLASSIF
+	WHERE
+		PROD_CLASSIF_ID = #{prodClassifId}
+	</delete>
+</mapper>

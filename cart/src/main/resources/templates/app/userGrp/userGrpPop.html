@@ -1,0 +1,163 @@
+<div id="divUserGrpPop" class="sub_wrap" style="display:none;width:92%" title="사용자그룹 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>사용자그룹 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="userGrpCd_g1">사용자그룹코드</label>
+						<div class="wrap">
+							<input type="text" id="userGrpCd_g1" name="userGrpCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="userGrpNm_g1">사용자그룹명</label>
+						<div class="wrap">
+							<input type="text" id="userGrpNm_g1" name="userGrpNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="userGrpDesc_g1">비고</label>
+						<div class="wrap">
+							<input type="text" id="userGrpDesc_g1" name="userGrpDesc_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="userAuthDivCd_g1">사용자권한구분코드[B03]</label>
+						<div class="wrap">
+							<input type="text" id="userAuthDivCd_g1" name="userAuthDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="UserGrpPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="UserGrpPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="UserGrpPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var UserGrpPop = new $W.load("divUserGrpPop");
+UserGrpPop.ready(function(){
+	//
+});
+
+UserGrpPop.fnOpen = function(mode, params, func) {
+	clearObjects("divUserGrpPop");
+	UserGrpPop.mode = mode;
+	if (!isEmpty(func)){
+		UserGrpPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divUserGrpPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["userGrpCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/userGrp/getUserGrp.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("userGrpNm_g1").focus();
+	}else{
+		readOnlyFalse(["userGrpCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+UserGrpPop.fnSave = function(){
+
+	var valid = 0 || [
+		["userGrpCd_g1","","자료(사용자그룹코드)를 확인하세요."]
+		,["userGrpNm_g1","","자료(사용자그룹명)를 확인하세요."]
+		,["userGrpDesc_g1","","자료(비고)를 확인하세요."]
+		,["userAuthDivCd_g1","","자료(사용자권한구분코드[B03])를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divUserGrpPop");
+	var url = "/app/userGrp/updateUserGrp.do";
+	if (UserGrpPop.mode=="CREATE"){
+		url = "/app/userGrp/insertUserGrp.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(UserGrpPop.func)){
+			UserGrpPop.func();
+			UserGrpPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+UserGrpPop.fnDelete = function(){
+	if (UserGrpPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/userGrp/deleteUserGrp.do";
+	var params = {};
+	params["userGrpCd"] = getElement("userGrpCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(UserGrpPop.func)){
+			UserGrpPop.func();
+			UserGrpPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+UserGrpPop.fnClose = function(){
+	layerToggle("divUserGrpPop",{"mode":0});
+};
+</script>

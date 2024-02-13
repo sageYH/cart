@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: yng-react
+
+  profiles:
+    active: local
+
+  devtools:
+    livereload:
+      enabled: true

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cpnIssueId"] = '[[${transData.cpnIssueId}]]';
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["cpnIssueId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cpnIssueId").setAttribute('readonly', true);
+		getEleByObj("mbrId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/couponIssueMbr/getCouponIssueMbr.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cpnIssueId","","자료(쿠폰발급ID)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["cpnId","","자료(쿠폰ID)를 확인하세요."]
+		["cpnIssueDtm","","자료(쿠폰발급일시)를 확인하세요."]
+		["cpnUseDtm","","자료(쿠폰사용일시)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/couponIssueMbr/updateCouponIssueMbr.do";
+	if (mode=="NEW"){
+		url = "/app/couponIssueMbr/insertCouponIssueMbr.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCouponIssueMbrPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCouponIssueMbrPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCouponIssueMbrPop" name="formCouponIssueMbrPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">쿠폰발급ID</th>
+						<td><input type="text" name="cpnIssueId" id="cpnIssueId" style="width:70%" readonly >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰ID</th>
+						<td><input type="text" name="cpnId" id="cpnId" style="width:70%" >
+						</td>
+					<th scope="row">쿠폰발급일시</th>
+					<td><input type="text" name="cpnIssueDtm" id="cpnIssueDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰사용일시</th>
+						<td><input type="text" name="cpnUseDtm" id="cpnUseDtm" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

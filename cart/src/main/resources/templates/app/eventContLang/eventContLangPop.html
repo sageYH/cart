@@ -1,0 +1,170 @@
+<div id="divEventContLangPop" class="sub_wrap" style="display:none;width:92%" title="이벤트내용_언어 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>이벤트내용_언어 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="eventId_g1">이벤트ID</label>
+						<div class="wrap">
+							<input type="text" id="eventId_g1" name="eventId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="eventContId_g1">이벤트내용ID</label>
+						<div class="wrap">
+							<input type="text" id="eventContId_g1" name="eventContId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="langCd_g1">언어코드</label>
+						<div class="wrap">
+							<input type="text" id="langCd_g1" name="langCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="eventCont_g1">이벤트내용</label>
+						<div class="wrap">
+							<input type="text" id="eventCont_g1" name="eventCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="eventMobiCont_g1">이벤트모바일내용</label>
+						<div class="wrap">
+							<input type="text" id="eventMobiCont_g1" name="eventMobiCont_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="EventContLangPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="EventContLangPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="EventContLangPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var EventContLangPop = new $W.load("divEventContLangPop");
+EventContLangPop.ready(function(){
+	//
+});
+
+EventContLangPop.fnOpen = function(mode, params, func) {
+	clearObjects("divEventContLangPop");
+	EventContLangPop.mode = mode;
+	if (!isEmpty(func)){
+		EventContLangPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divEventContLangPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["eventId_g1","eventContId_g1","langCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/eventContLang/getEventContLang.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("eventCont_g1").focus();
+	}else{
+		readOnlyFalse(["eventId_g1","eventContId_g1","langCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+EventContLangPop.fnSave = function(){
+
+	var valid = 0 || [
+		["eventId_g1","","자료(이벤트ID)를 확인하세요."]
+		,["eventContId_g1","","자료(이벤트내용ID)를 확인하세요."]
+		,["langCd_g1","","자료(언어코드)를 확인하세요."]
+		,["eventCont_g1","","자료(이벤트내용)를 확인하세요."]
+		,["eventMobiCont_g1","","자료(이벤트모바일내용)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divEventContLangPop");
+	var url = "/app/eventContLang/updateEventContLang.do";
+	if (EventContLangPop.mode=="CREATE"){
+		url = "/app/eventContLang/insertEventContLang.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(EventContLangPop.func)){
+			EventContLangPop.func();
+			EventContLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+EventContLangPop.fnDelete = function(){
+	if (EventContLangPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/eventContLang/deleteEventContLang.do";
+	var params = {};
+	params["eventId"] = getElement("eventId_g1").value;
+	params["eventContId"] = getElement("eventContId_g1").value;
+	params["langCd"] = getElement("langCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(EventContLangPop.func)){
+			EventContLangPop.func();
+			EventContLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+EventContLangPop.fnClose = function(){
+	layerToggle("divEventContLangPop",{"mode":0});
+};
+</script>

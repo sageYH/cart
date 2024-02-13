@@ -1,0 +1,179 @@
+<div id="divPointInfoPop" class="sub_wrap" style="display:none;width:92%" title="포인트정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>포인트정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="pointId_g1">포인트ID</label>
+						<div class="wrap">
+							<input type="text" id="pointId_g1" name="pointId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pointKindCd_g1">포인트종류코드[PS01]</label>
+						<div class="wrap">
+							<input type="text" id="pointKindCd_g1" name="pointKindCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pointNm_g1">포인트명</label>
+						<div class="wrap">
+							<input type="text" id="pointNm_g1" name="pointNm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="alwaysYn_g1">상시여부</label>
+						<div class="wrap">
+							<input type="text" id="alwaysYn_g1" name="alwaysYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="firstComeYn_g1">선착순여부</label>
+						<div class="wrap">
+							<input type="text" id="firstComeYn_g1" name="firstComeYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="dupePymtYn_g1">중복지급여부</label>
+						<div class="wrap">
+							<input type="text" id="dupePymtYn_g1" name="dupePymtYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="PointInfoPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="PointInfoPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="PointInfoPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var PointInfoPop = new $W.load("divPointInfoPop");
+PointInfoPop.ready(function(){
+	//
+});
+
+PointInfoPop.fnOpen = function(mode, params, func) {
+	clearObjects("divPointInfoPop");
+	PointInfoPop.mode = mode;
+	if (!isEmpty(func)){
+		PointInfoPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divPointInfoPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["pointId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/pointInfo/getPointInfo.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("pointKindCd_g1").focus();
+	}else{
+		readOnlyFalse(["pointId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+PointInfoPop.fnSave = function(){
+
+	var valid = 0 || [
+		["pointId_g1","","자료(포인트ID)를 확인하세요."]
+		,["pointKindCd_g1","","자료(포인트종류코드[PS01])를 확인하세요."]
+		,["pointNm_g1","","자료(포인트명)를 확인하세요."]
+		,["alwaysYn_g1","","자료(상시여부)를 확인하세요."]
+		,["firstComeYn_g1","","자료(선착순여부)를 확인하세요."]
+		,["dupePymtYn_g1","","자료(중복지급여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divPointInfoPop");
+	var url = "/app/pointInfo/updatePointInfo.do";
+	if (PointInfoPop.mode=="CREATE"){
+		url = "/app/pointInfo/insertPointInfo.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PointInfoPop.func)){
+			PointInfoPop.func();
+			PointInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+PointInfoPop.fnDelete = function(){
+	if (PointInfoPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/pointInfo/deletePointInfo.do";
+	var params = {};
+	params["pointId"] = getElement("pointId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PointInfoPop.func)){
+			PointInfoPop.func();
+			PointInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+PointInfoPop.fnClose = function(){
+	layerToggle("divPointInfoPop",{"mode":0});
+};
+</script>

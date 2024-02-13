@@ -1,0 +1,273 @@
+<div id="divComapnyPop" class="sub_wrap" style="display:none;width:92%" title="업체정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>업체정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="compId_g1">업체ID</label>
+						<div class="wrap">
+							<input type="text" id="compId_g1" name="compId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="compNm_g1">업체명</label>
+						<div class="wrap">
+							<input type="text" id="compNm_g1" name="compNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cntryCd_g1">국가코드</label>
+						<div class="wrap">
+							<input type="text" id="cntryCd_g1" name="cntryCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cpDivCd_g1">업체구분코드</label>
+						<div class="wrap">
+							<input type="text" id="cpDivCd_g1" name="cpDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="bizRegNo_g1">사업자등록번호</label>
+						<div class="wrap">
+							<input type="text" id="bizRegNo_g1" name="bizRegNo_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="repNm_g1">대표자명</label>
+						<div class="wrap">
+							<input type="text" id="repNm_g1" name="repNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="bizTyp_g1">업태</label>
+						<div class="wrap">
+							<input type="text" id="bizTyp_g1" name="bizTyp_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="bizItem_g1">종목</label>
+						<div class="wrap">
+							<input type="text" id="bizItem_g1" name="bizItem_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="zipCd_g1">우편번호</label>
+						<div class="wrap">
+							<input type="text" id="zipCd_g1" name="zipCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="addr_g1">주소</label>
+						<div class="wrap">
+							<input type="text" id="addr_g1" name="addr_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="dtlAddr_g1">상세주소2</label>
+						<div class="wrap">
+							<input type="text" id="dtlAddr_g1" name="dtlAddr_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="dtlAddr2_g1"></label>
+						<div class="wrap">
+							<input type="text" id="dtlAddr2_g1" name="dtlAddr2_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="picNm_g1">담당자명</label>
+						<div class="wrap">
+							<input type="text" id="picNm_g1" name="picNm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="picPhoneNo_g1">담당자폰번호</label>
+						<div class="wrap">
+							<input type="text" id="picPhoneNo_g1" name="picPhoneNo_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="hqYn_g1">본사여부</label>
+						<div class="wrap">
+							<input type="text" id="hqYn_g1" name="hqYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="storeYn_g1">입점사여부</label>
+						<div class="wrap">
+							<input type="text" id="storeYn_g1" name="storeYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="afCpYn_g1">제휴사여부</label>
+						<div class="wrap">
+							<input type="text" id="afCpYn_g1" name="afCpYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="frchseYn_g1">가맹점여부</label>
+						<div class="wrap">
+							<input type="text" id="frchseYn_g1" name="frchseYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="custCpYn_g1">고객사여부</label>
+						<div class="wrap">
+							<input type="text" id="custCpYn_g1" name="custCpYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="orgYn_g1">기관여부</label>
+						<div class="wrap">
+							<input type="text" id="orgYn_g1" name="orgYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="ComapnyPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="ComapnyPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="ComapnyPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var ComapnyPop = new $W.load("divComapnyPop");
+ComapnyPop.ready(function(){
+	//
+});
+
+ComapnyPop.fnOpen = function(mode, params, func) {
+	clearObjects("divComapnyPop");
+	ComapnyPop.mode = mode;
+	if (!isEmpty(func)){
+		ComapnyPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divComapnyPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["compId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/comapny/getComapny.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("compNm_g1").focus();
+	}else{
+		readOnlyFalse(["compId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+ComapnyPop.fnSave = function(){
+
+	var valid = 0 || [
+		["compId_g1","","자료(업체ID)를 확인하세요."]
+		,["compNm_g1","","자료(업체명)를 확인하세요."]
+		,["cntryCd_g1","","자료(국가코드)를 확인하세요."]
+		,["cpDivCd_g1","","자료(업체구분코드)를 확인하세요."]
+		,["bizRegNo_g1","","자료(사업자등록번호)를 확인하세요."]
+		,["repNm_g1","","자료(대표자명)를 확인하세요."]
+		,["bizTyp_g1","","자료(업태)를 확인하세요."]
+		,["bizItem_g1","","자료(종목)를 확인하세요."]
+		,["zipCd_g1","","자료(우편번호)를 확인하세요."]
+		,["addr_g1","","자료(주소)를 확인하세요."]
+		,["dtlAddr_g1","","자료(상세주소2)를 확인하세요."]
+		,["dtlAddr2_g1","","자료()를 확인하세요."]
+		,["picNm_g1","","자료(담당자명)를 확인하세요."]
+		,["picPhoneNo_g1","","자료(담당자폰번호)를 확인하세요."]
+		,["hqYn_g1","","자료(본사여부)를 확인하세요."]
+		,["storeYn_g1","","자료(입점사여부)를 확인하세요."]
+		,["afCpYn_g1","","자료(제휴사여부)를 확인하세요."]
+		,["frchseYn_g1","","자료(가맹점여부)를 확인하세요."]
+		,["custCpYn_g1","","자료(고객사여부)를 확인하세요."]
+		,["orgYn_g1","","자료(기관여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divComapnyPop");
+	var url = "/app/comapny/updateComapny.do";
+	if (ComapnyPop.mode=="CREATE"){
+		url = "/app/comapny/insertComapny.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ComapnyPop.func)){
+			ComapnyPop.func();
+			ComapnyPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+ComapnyPop.fnDelete = function(){
+	if (ComapnyPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/comapny/deleteComapny.do";
+	var params = {};
+	params["compId"] = getElement("compId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ComapnyPop.func)){
+			ComapnyPop.func();
+			ComapnyPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+ComapnyPop.fnClose = function(){
+	layerToggle("divComapnyPop",{"mode":0});
+};
+</script>

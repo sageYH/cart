@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="fileMapper">
+	<sql id="where-file">
+		WHERE 1=1
+			<if test="fileId != null and fileId != '' ">
+			AND F.FILE_ID = #{fileId}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND F.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="fileNm != null and fileNm != '' ">
+			AND F.FILE_NM = #{fileNm}
+			</if>
+			<if test="fileSize != null and fileSize != '' ">
+			AND F.FILE_SIZE = #{fileSize}
+			</if>
+			<if test="filePath != null and filePath != '' ">
+			AND F.FILE_PATH = #{filePath}
+			</if>
+			<if test="fileSortSeq != null and fileSortSeq != '' ">
+			AND F.FILE_SORT_SEQ = #{fileSortSeq}
+			</if>
+	</sql>
+
+	<select id="getFileListCount" parameterType="FileExDto" resultType="Integer">
+	/* fileMapper.getFileListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_FILE F
+		<include refid="where-file" />
+	</select>
+
+	<select id="getFileList" parameterType="FileExDto" resultType="FileExDto">
+	/* fileMapper.getFileList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			F.FILE_ID
+			,F.FILE_REF_ID
+			,F.FILE_NM
+			,F.FILE_SIZE
+			,F.FILE_PATH
+			,F.FILE_SORT_SEQ
+			,F.REG_USER_ID
+			,REG_DTM
+			,F.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FILE F
+		<include refid="where-file" />
+		ORDER BY
+			F.FILE_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getFile" parameterType="FileExDto" resultType="FileExDto">
+	/* fileMapper.getFile */
+		SELECT
+			F.FILE_ID
+			,F.FILE_REF_ID
+			,F.FILE_NM
+			,F.FILE_SIZE
+			,F.FILE_PATH
+			,F.FILE_SORT_SEQ
+			,F.REG_USER_ID
+			,REG_DTM
+			,F.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FILE F
+		WHERE
+			F.FILE_ID = #{fileId}
+	</select>
+
+	<insert id="insertFile" parameterType="FileExDto">
+	/* fileMapper.insertFile */
+		INSERT INTO CW_FILE (
+			FILE_ID
+			,FILE_REF_ID
+			,FILE_NM
+			,FILE_SIZE
+			,FILE_PATH
+			,FILE_SORT_SEQ
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{fileId}
+			,#{fileRefId}
+			,#{fileNm}
+			,#{fileSize}
+			,#{filePath}
+			,#{fileSortSeq}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateFile" parameterType="FileExDto">
+	/* fileMapper.updateFile */
+		UPDATE CW_FILE
+		<set>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="fileNm != null">
+		FILE_NM = #{fileNm},
+		</if>
+		<if test="fileSize != null">
+		FILE_SIZE = #{fileSize},
+		</if>
+		<if test="filePath != null">
+		FILE_PATH = #{filePath},
+		</if>
+		<if test="fileSortSeq != null">
+		FILE_SORT_SEQ = #{fileSortSeq},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			FILE_ID = #{fileId}
+	</update>
+
+	<delete id="deleteFile" parameterType="FileExDto">
+	/* fileMapper.deleteFile */
+	DELETE FROM CW_FILE
+	WHERE
+		FILE_ID = #{fileId}
+	</delete>
+</mapper>

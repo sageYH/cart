@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrLvlCd"] = '[[${transData.mbrLvlCd}]]';
+    map["langCd"] = '[[${transData.langCd}]]';
+	if (isEmpty(map["mbrLvlCd"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("mbrLvlCd").setAttribute('readonly', true);
+		getEleByObj("langCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/mbrLvlBaseLang/getMbrLvlBaseLang.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["mbrLvlCd","","자료(멤버등급코드)를 확인하세요."]
+		["langCd","","자료(언어코드)를 확인하세요."]
+		["signupCondDets","","자료(가입조건내역)를 확인하세요."]
+		["benfCont","","자료(혜택내용)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/mbrLvlBaseLang/updateMbrLvlBaseLang.do";
+	if (mode=="NEW"){
+		url = "/app/mbrLvlBaseLang/insertMbrLvlBaseLang.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formMbrLvlBaseLangPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvMbrLvlBaseLangPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formMbrLvlBaseLangPop" name="formMbrLvlBaseLangPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">멤버등급코드</th>
+						<td><input type="text" name="mbrLvlCd" id="mbrLvlCd" style="width:70%" readonly >
+						</td>
+					<th scope="row">언어코드</th>
+					<td><input type="text" name="langCd" id="langCd" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">가입조건내역</th>
+						<td><input type="text" name="signupCondDets" id="signupCondDets" style="width:70%" >
+						</td>
+					<th scope="row">혜택내용</th>
+					<td><input type="text" name="benfCont" id="benfCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

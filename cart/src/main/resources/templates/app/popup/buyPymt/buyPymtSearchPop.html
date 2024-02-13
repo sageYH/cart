@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/buyPymt/buyPymtGrid.js"></script>
+<script>
+var gridBuyPymt = null;
+window.onload = function() {
+	gridBuyPymt = setGridBuyPymt("dvGridBuyPymtSearch");
+	gridBuyPymt.setBodyHeight(300);
+	fixedColGrid(gridBuyPymt);
+
+	gridBuyPymt.on("click",function(ev){
+		toggleGrid(gridBuyPymt,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridBuyPymt.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridBuyPymt)==false){
+			dblClickGridBuyPymt();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridBuyPymt(){
+	getResultData();
+}
+
+//page
+var pageClsBuyPymt = new pageCls("dvBuyPymtPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridBuyPymt);
+
+	var params = {};
+	if (isEmpty(getEVal("pgBuyId"))==false) params["pgBuyId"] = getEVal("pgBuyId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("ordCnclId"))==false) params["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("cardNo"))==false) params["cardNo"] = getEVal("cardNo");
+	if (isEmpty(getEVal("pymtDivCd"))==false) params["pymtDivCd"] = getEVal("pymtDivCd");
+	if (isEmpty(getEVal("pymtProgCd"))==false) params["pymtProgCd"] = getEVal("pymtProgCd");
+	if (isEmpty(getEVal("pymtAgcyCompCd"))==false) params["pymtAgcyCompCd"] = getEVal("pymtAgcyCompCd");
+	if (isEmpty(getEVal("cardCompCd"))==false) params["cardCompCd"] = getEVal("cardCompCd");
+	if (isEmpty(getEVal("cardInstalPeriod"))==false) params["cardInstalPeriod"] = getEVal("cardInstalPeriod");
+	if (isEmpty(getEVal("cardPymtAmt"))==false) params["cardPymtAmt"] = getEVal("cardPymtAmt");
+	if (isEmpty(getEVal("billKey"))==false) params["billKey"] = getEVal("billKey");
+	if (isEmpty(getEVal("apvlNo"))==false) params["apvlNo"] = getEVal("apvlNo");
+	if (isEmpty(getEVal("txnId"))==false) params["txnId"] = getEVal("txnId");
+	if (isEmpty(getEVal("storeId"))==false) params["storeId"] = getEVal("storeId");
+	if (isEmpty(getEVal("storeKey"))==false) params["storeKey"] = getEVal("storeKey");
+	if (isEmpty(getEVal("prodNm"))==false) params["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("consrNm"))==false) params["consrNm"] = getEVal("consrNm");
+	if (isEmpty(getEVal("consrEmail"))==false) params["consrEmail"] = getEVal("consrEmail");
+	if (isEmpty(getEVal("splyPrice"))==false) params["splyPrice"] = getEVal("splyPrice");
+	if (isEmpty(getEVal("vat"))==false) params["vat"] = getEVal("vat");
+	if (isEmpty(getEVal("taxExptAmt"))==false) params["taxExptAmt"] = getEVal("taxExptAmt");
+	if (isEmpty(getEVal("intFreeYn"))==false) params["intFreeYn"] = getEVal("intFreeYn");
+	if (isEmpty(getEVal("instalMos"))==false) params["instalMos"] = getEVal("instalMos");
+	if (isEmpty(getEVal("mallIp"))==false) params["mallIp"] = getEVal("mallIp");
+	if (isEmpty(getEVal("cardCompNm"))==false) params["cardCompNm"] = getEVal("cardCompNm");
+	if (isEmpty(getEVal("rstlCd"))==false) params["rstlCd"] = getEVal("rstlCd");
+	if (isEmpty(getEVal("rstlCont"))==false) params["rstlCont"] = getEVal("rstlCont");
+	if (isEmpty(getEVal("apvlDtm"))==false) params["apvlDtm"] = getEVal("apvlDtm");
+	if (isEmpty(getEVal("apvlCd"))==false) params["apvlCd"] = getEVal("apvlCd");
+	if (isEmpty(getEVal("apvlYn"))==false) params["apvlYn"] = getEVal("apvlYn");
+	if (isEmpty(getEVal("errCd"))==false) params["errCd"] = getEVal("errCd");
+	if (isEmpty(getEVal("errCont"))==false) params["errCont"] = getEVal("errCont");
+	if (isEmpty(getEVal("pymtCancYn"))==false) params["pymtCancYn"] = getEVal("pymtCancYn");
+	if (isEmpty(getEVal("pymtCancAmt"))==false) params["pymtCancAmt"] = getEVal("pymtCancAmt");
+	if (isEmpty(getEVal("pymtCancRsnCd"))==false) params["pymtCancRsnCd"] = getEVal("pymtCancRsnCd");
+	if (isEmpty(getEVal("pymtCancRsn"))==false) params["pymtCancRsn"] = getEVal("pymtCancRsn");
+	if (isEmpty(getEVal("txnCancPwd"))==false) params["txnCancPwd"] = getEVal("txnCancPwd");
+	if (isEmpty(getEVal("cancId"))==false) params["cancId"] = getEVal("cancId");
+	if (isEmpty(getEVal("cancIp"))==false) params["cancIp"] = getEVal("cancIp");
+	if (isEmpty(getEVal("prtlCancYn"))==false) params["prtlCancYn"] = getEVal("prtlCancYn");
+	if (isEmpty(getEVal("cancRstlCd"))==false) params["cancRstlCd"] = getEVal("cancRstlCd");
+	if (isEmpty(getEVal("cancRstlCont"))==false) params["cancRstlCont"] = getEVal("cancRstlCont");
+	if (isEmpty(getEVal("cancDtm"))==false) params["cancDtm"] = getEVal("cancDtm");
+	if (isEmpty(getEVal("cancHms"))==false) params["cancHms"] = getEVal("cancHms");
+	if (isEmpty(getEVal("cancNo"))==false) params["cancNo"] = getEVal("cancNo");
+	if (isEmpty(getEVal("cancDtlErrCd"))==false) params["cancDtlErrCd"] = getEVal("cancDtlErrCd");
+	if (isEmpty(getEVal("cancDtlErrCont"))==false) params["cancDtlErrCont"] = getEVal("cancDtlErrCont");
+	if (isEmpty(getEVal("billYmd"))==false) params["billYmd"] = getEVal("billYmd");
+	//page set
+	params = pageClsBuyPymt.getPageInfo(params);
+
+	var url = "/app/buyPymt/getBuyPymtPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridBuyPymt,result.payloads);
+		//set total
+		pageClsBuyPymt.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridBuyPymt);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvBuyPymtSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridBuyPymtSearch" class="addr-list" ></div>
+					<div id="dvBuyPymtPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cardBillId"] = '[[${transData.cardBillId}]]';
+	if (isEmpty(map["cardBillId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/cardBill/getCardBill.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCardBillPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="cardBillId" id="cardBillId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">카드정산년월일</th>
+							<td><span name="cardBillYmd" id="cardBillYmd"></span></td>
+							<th scope="row">결제대행사코드</th>
+							<td><span name="pymtAgcyCompCd" id="pymtAgcyCompCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">카드사코드</th>
+							<td><span name="cardCompCd" id="cardCompCd"></span></td>
+							<th scope="row">카드건수</th>
+							<td><span name="cardQty" id="cardQty"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">카드금액</th>
+							<td><span name="cardAmt" id="cardAmt"></span></td>
+							<th scope="row">카드수수료금액</th>
+							<td><span name="cardFeeAmt" id="cardFeeAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">카드오류건수</th>
+							<td><span name="cardErrQty" id="cardErrQty"></span></td>
+							<th scope="row">카드오류금액</th>
+							<td><span name="cardErrAmt" id="cardErrAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">정산건수</th>
+							<td><span name="billQty" id="billQty"></span></td>
+							<th scope="row">정산금액</th>
+							<td><span name="billAmt" id="billAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">정산확정여부</th>
+							<td><span name="billCfmYn" id="billCfmYn"></span></td>
+							<th scope="row">정산확정년월일</th>
+							<td><span name="billCfmYmd" id="billCfmYmd"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="compProdMapper">
+	<sql id="where-compProd">
+		WHERE 1=1
+			<if test="compProdId != null and compProdId != '' ">
+			AND CP.COMP_PROD_ID = #{compProdId}
+			</if>
+			<if test="compId != null and compId != '' ">
+			AND CP.COMP_ID = #{compId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND CP.PROD_ID = #{prodId}
+			</if>
+			<if test="prodTypCd != null and prodTypCd != '' ">
+			AND CP.PROD_TYP_CD = #{prodTypCd}
+			</if>
+			<if test="applFrYmd != null and applFrYmd != '' ">
+			AND CP.APPL_FR_YMD = #{applFrYmd}
+			</if>
+			<if test="applToYmd != null and applToYmd != '' ">
+			AND CP.APPL_TO_YMD = #{applToYmd}
+			</if>
+			<if test="adFee != null and adFee != '' ">
+			AND CP.AD_FEE = #{adFee}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CP.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCompProdListCount" parameterType="CompProdExDto" resultType="Integer">
+	/* compProdMapper.getCompProdListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMP_PROD CP
+		<include refid="where-compProd" />
+	</select>
+
+	<select id="getCompProdList" parameterType="CompProdExDto" resultType="CompProdExDto">
+	/* compProdMapper.getCompProdList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CP.COMP_PROD_ID
+			,CP.COMP_ID
+			,CP.PROD_ID
+			,CP.PROD_TYP_CD
+			,CP.APPL_FR_YMD
+			,CP.APPL_TO_YMD
+			,CP.AD_FEE
+			,CP.USE_YN
+			,CP.REG_USER_ID
+			,REG_DTM
+			,CP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_PROD CP
+		<include refid="where-compProd" />
+		ORDER BY
+			CP.COMP_PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCompProd" parameterType="CompProdExDto" resultType="CompProdExDto">
+	/* compProdMapper.getCompProd */
+		SELECT
+			CP.COMP_PROD_ID
+			,CP.COMP_ID
+			,CP.PROD_ID
+			,CP.PROD_TYP_CD
+			,CP.APPL_FR_YMD
+			,CP.APPL_TO_YMD
+			,CP.AD_FEE
+			,CP.USE_YN
+			,CP.REG_USER_ID
+			,REG_DTM
+			,CP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMP_PROD CP
+		WHERE
+			CP.COMP_PROD_ID = #{compProdId}
+	</select>
+
+	<insert id="insertCompProd" parameterType="CompProdExDto">
+	/* compProdMapper.insertCompProd */
+		INSERT INTO CW_COMP_PROD (
+			COMP_PROD_ID
+			,COMP_ID
+			,PROD_ID
+			,PROD_TYP_CD
+			,APPL_FR_YMD
+			,APPL_TO_YMD
+			,AD_FEE
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{compProdId}
+			,#{compId}
+			,#{prodId}
+			,#{prodTypCd}
+			,#{applFrYmd}
+			,#{applToYmd}
+			,#{adFee}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCompProd" parameterType="CompProdExDto">
+	/* compProdMapper.updateCompProd */
+		UPDATE CW_COMP_PROD
+		<set>
+		<if test="compId != null">
+		COMP_ID = #{compId},
+		</if>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="prodTypCd != null">
+		PROD_TYP_CD = #{prodTypCd},
+		</if>
+		<if test="applFrYmd != null">
+		APPL_FR_YMD = #{applFrYmd},
+		</if>
+		<if test="applToYmd != null">
+		APPL_TO_YMD = #{applToYmd},
+		</if>
+		<if test="adFee != null">
+		AD_FEE = #{adFee},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMP_PROD_ID = #{compProdId}
+	</update>
+
+	<delete id="deleteCompProd" parameterType="CompProdExDto">
+	/* compProdMapper.deleteCompProd */
+	DELETE FROM CW_COMP_PROD
+	WHERE
+		COMP_PROD_ID = #{compProdId}
+	</delete>
+</mapper>

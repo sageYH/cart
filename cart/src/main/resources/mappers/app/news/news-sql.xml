@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="newsMapper">
+	<sql id="where-news">
+		WHERE 1=1
+			<if test="newsId != null and newsId != '' ">
+			AND N.NEWS_ID = #{newsId}
+			</if>
+			<if test="newsTypCd != null and newsTypCd != '' ">
+			AND N.NEWS_TYP_CD = #{newsTypCd}
+			</if>
+			<if test="newsTitle != null and newsTitle != '' ">
+			AND N.NEWS_TITLE = #{newsTitle}
+			</if>
+			<if test="newsCont != null and newsCont != '' ">
+			AND N.NEWS_CONT = #{newsCont}
+			</if>
+			<if test="newsViews != null and newsViews != '' ">
+			AND N.NEWS_VIEWS = #{newsViews}
+			</if>
+			<if test="prntNewsId != null and prntNewsId != '' ">
+			AND N.PRNT_NEWS_ID = #{prntNewsId}
+			</if>
+			<if test="grpNewsId != null and grpNewsId != '' ">
+			AND N.GRP_NEWS_ID = #{grpNewsId}
+			</if>
+			<if test="newsFrYmd != null and newsFrYmd != '' ">
+			AND N.NEWS_FR_YMD = #{newsFrYmd}
+			</if>
+			<if test="newsToYmd != null and newsToYmd != '' ">
+			AND N.NEWS_TO_YMD = #{newsToYmd}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND N.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="popupYn != null and popupYn != '' ">
+			AND N.POPUP_YN = #{popupYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND N.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getNewsListCount" parameterType="NewsExDto" resultType="Integer">
+	/* newsMapper.getNewsListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_NEWS N
+		<include refid="where-news" />
+	</select>
+
+	<select id="getNewsList" parameterType="NewsExDto" resultType="NewsExDto">
+	/* newsMapper.getNewsList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			N.NEWS_ID
+			,N.NEWS_TYP_CD
+			,N.NEWS_TITLE
+			,N.NEWS_CONT
+			,N.NEWS_VIEWS
+			,N.PRNT_NEWS_ID
+			,N.GRP_NEWS_ID
+			,N.NEWS_FR_YMD
+			,N.NEWS_TO_YMD
+			,N.FILE_REF_ID
+			,N.POPUP_YN
+			,N.USE_YN
+			,N.REG_USER_ID
+			,REG_DTM
+			,N.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NEWS N
+		<include refid="where-news" />
+		ORDER BY
+			N.NEWS_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getNews" parameterType="NewsExDto" resultType="NewsExDto">
+	/* newsMapper.getNews */
+		SELECT
+			N.NEWS_ID
+			,N.NEWS_TYP_CD
+			,N.NEWS_TITLE
+			,N.NEWS_CONT
+			,N.NEWS_VIEWS
+			,N.PRNT_NEWS_ID
+			,N.GRP_NEWS_ID
+			,N.NEWS_FR_YMD
+			,N.NEWS_TO_YMD
+			,N.FILE_REF_ID
+			,N.POPUP_YN
+			,N.USE_YN
+			,N.REG_USER_ID
+			,REG_DTM
+			,N.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_NEWS N
+		WHERE
+			N.NEWS_ID = #{newsId}
+	</select>
+
+	<insert id="insertNews" parameterType="NewsExDto">
+	/* newsMapper.insertNews */
+		INSERT INTO CW_NEWS (
+			NEWS_ID
+			,NEWS_TYP_CD
+			,NEWS_TITLE
+			,NEWS_CONT
+			,NEWS_VIEWS
+			,PRNT_NEWS_ID
+			,GRP_NEWS_ID
+			,NEWS_FR_YMD
+			,NEWS_TO_YMD
+			,FILE_REF_ID
+			,POPUP_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{newsId}
+			,#{newsTypCd}
+			,#{newsTitle}
+			,#{newsCont}
+			,#{newsViews}
+			,#{prntNewsId}
+			,#{grpNewsId}
+			,#{newsFrYmd}
+			,#{newsToYmd}
+			,#{fileRefId}
+			,#{popupYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateNews" parameterType="NewsExDto">
+	/* newsMapper.updateNews */
+		UPDATE CW_NEWS
+		<set>
+		<if test="newsTypCd != null">
+		NEWS_TYP_CD = #{newsTypCd},
+		</if>
+		<if test="newsTitle != null">
+		NEWS_TITLE = #{newsTitle},
+		</if>
+		<if test="newsCont != null">
+		NEWS_CONT = #{newsCont},
+		</if>
+		<if test="newsViews != null">
+		NEWS_VIEWS = #{newsViews},
+		</if>
+		<if test="prntNewsId != null">
+		PRNT_NEWS_ID = #{prntNewsId},
+		</if>
+		<if test="grpNewsId != null">
+		GRP_NEWS_ID = #{grpNewsId},
+		</if>
+		<if test="newsFrYmd != null">
+		NEWS_FR_YMD = #{newsFrYmd},
+		</if>
+		<if test="newsToYmd != null">
+		NEWS_TO_YMD = #{newsToYmd},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="popupYn != null">
+		POPUP_YN = #{popupYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			NEWS_ID = #{newsId}
+	</update>
+
+	<delete id="deleteNews" parameterType="NewsExDto">
+	/* newsMapper.deleteNews */
+	DELETE FROM CW_NEWS
+	WHERE
+		NEWS_ID = #{newsId}
+	</delete>
+</mapper>

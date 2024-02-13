@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cpnId"] = '[[${transData.cpnId}]]';
+	if (isEmpty(map["cpnId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cpnId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/couponInfo/getCouponInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cpnId","","자료(포인트지급ID)를 확인하세요."]
+		["cpnKindCd","","자료(쿠폰종류코드[PS02])를 확인하세요."]
+		["cpnTypCd","","자료(쿠폰유형코드[PS03])를 확인하세요."]
+		["cpnNm","","자료(쿠폰명)를 확인하세요."]
+		["alwaysYn","","자료(상시여부)를 확인하세요."]
+		["firstComeYn","","자료(선착순여부)를 확인하세요."]
+		["dupePymtYn","","자료(중복지급여부)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/couponInfo/updateCouponInfo.do";
+	if (mode=="NEW"){
+		url = "/app/couponInfo/insertCouponInfo.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCouponInfoPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCouponInfoPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCouponInfoPop" name="formCouponInfoPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">포인트지급ID</th>
+						<td><input type="text" name="cpnId" id="cpnId" style="width:70%" readonly >
+						</td>
+					<th scope="row">쿠폰종류코드[PS02]</th>
+					<td><input type="text" name="cpnKindCd" id="cpnKindCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰유형코드[PS03]</th>
+						<td><input type="text" name="cpnTypCd" id="cpnTypCd" style="width:70%" >
+						</td>
+					<th scope="row">쿠폰명</th>
+					<td><input type="text" name="cpnNm" id="cpnNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상시여부</th>
+						<td><input type="text" name="alwaysYn" id="alwaysYn" style="width:70%" >
+						</td>
+					<th scope="row">선착순여부</th>
+					<td><input type="text" name="firstComeYn" id="firstComeYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">중복지급여부</th>
+						<td><input type="text" name="dupePymtYn" id="dupePymtYn" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodOptIncOgMapper">
+	<sql id="where-prodOptIncOg">
+		WHERE 1=1
+			<if test="optId != null and optId != '' ">
+			AND POIO.OPT_ID = #{optId}
+			</if>
+			<if test="optIncOgDtm != null and optIncOgDtm != '' ">
+			AND POIO.OPT_INC_OG_DTM = STR_TO_DATE(#{optIncOgDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="incOgDivCd != null and incOgDivCd != '' ">
+			AND POIO.INC_OG_DIV_CD = #{incOgDivCd}
+			</if>
+			<if test="optIncQty != null and optIncQty != '' ">
+			AND POIO.OPT_INC_QTY = #{optIncQty}
+			</if>
+			<if test="optOgQty != null and optOgQty != '' ">
+			AND POIO.OPT_OG_QTY = #{optOgQty}
+			</if>
+	</sql>
+
+	<select id="getProdOptIncOgListCount" parameterType="ProdOptIncOgExDto" resultType="Integer">
+	/* prodOptIncOgMapper.getProdOptIncOgListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_OPT_INC_OG POIO
+		<include refid="where-prodOptIncOg" />
+	</select>
+
+	<select id="getProdOptIncOgList" parameterType="ProdOptIncOgExDto" resultType="ProdOptIncOgExDto">
+	/* prodOptIncOgMapper.getProdOptIncOgList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			POIO.OPT_ID
+			,OPT_INC_OG_DTM
+			,POIO.INC_OG_DIV_CD
+			,POIO.OPT_INC_QTY
+			,POIO.OPT_OG_QTY
+			,POIO.REG_USER_ID
+			,REG_DTM
+			,POIO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT_INC_OG POIO
+		<include refid="where-prodOptIncOg" />
+		ORDER BY
+			POIO.OPT_ID
+			,POIO.OPT_INC_OG_DTM
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdOptIncOg" parameterType="ProdOptIncOgExDto" resultType="ProdOptIncOgExDto">
+	/* prodOptIncOgMapper.getProdOptIncOg */
+		SELECT
+			POIO.OPT_ID
+			,OPT_INC_OG_DTM
+			,POIO.INC_OG_DIV_CD
+			,POIO.OPT_INC_QTY
+			,POIO.OPT_OG_QTY
+			,POIO.REG_USER_ID
+			,REG_DTM
+			,POIO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT_INC_OG POIO
+		WHERE
+			POIO.OPT_ID = #{optId}
+			AND POIO.OPT_INC_OG_DTM = #{optIncOgDtm}
+	</select>
+
+	<insert id="insertProdOptIncOg" parameterType="ProdOptIncOgExDto">
+	/* prodOptIncOgMapper.insertProdOptIncOg */
+		INSERT INTO CW_PROD_OPT_INC_OG (
+			OPT_ID
+			,OPT_INC_OG_DTM
+			,INC_OG_DIV_CD
+			,OPT_INC_QTY
+			,OPT_OG_QTY
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{optId}
+			,STR_TO_DATE(#{optIncOgDtm}, '%Y%m%d %h%i%s')
+			,#{incOgDivCd}
+			,#{optIncQty}
+			,#{optOgQty}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdOptIncOg" parameterType="ProdOptIncOgExDto">
+	/* prodOptIncOgMapper.updateProdOptIncOg */
+		UPDATE CW_PROD_OPT_INC_OG
+		<set>
+		<if test="incOgDivCd != null">
+		INC_OG_DIV_CD = #{incOgDivCd},
+		</if>
+		<if test="optIncQty != null">
+		OPT_INC_QTY = #{optIncQty},
+		</if>
+		<if test="optOgQty != null">
+		OPT_OG_QTY = #{optOgQty},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			OPT_ID = #{optId}
+			AND OPT_INC_OG_DTM = #{optIncOgDtm}
+	</update>
+
+	<delete id="deleteProdOptIncOg" parameterType="ProdOptIncOgExDto">
+	/* prodOptIncOgMapper.deleteProdOptIncOg */
+	DELETE FROM CW_PROD_OPT_INC_OG
+	WHERE
+		OPT_ID = #{optId}
+		AND OPT_INC_OG_DTM = #{optIncOgDtm}
+	</delete>
+</mapper>

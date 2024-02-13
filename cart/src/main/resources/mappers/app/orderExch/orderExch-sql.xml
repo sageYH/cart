@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderExchMapper">
+	<sql id="where-orderExch">
+		WHERE 1=1
+			<if test="ordExchId != null and ordExchId != '' ">
+			AND OE.ORD_EXCH_ID = #{ordExchId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OE.ORD_ID = #{ordId}
+			</if>
+			<if test="exchReqDtm != null and exchReqDtm != '' ">
+			AND OE.EXCH_REQ_DTM = STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="exchCollDtm != null and exchCollDtm != '' ">
+			AND OE.EXCH_COLL_DTM = STR_TO_DATE(#{exchCollDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="exchCpltDtm != null and exchCpltDtm != '' ">
+			AND OE.EXCH_CPLT_DTM = STR_TO_DATE(#{exchCpltDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="collDelivFee != null and collDelivFee != '' ">
+			AND OE.COLL_DELIV_FEE = #{collDelivFee}
+			</if>
+			<if test="exchDelivFee != null and exchDelivFee != '' ">
+			AND OE.EXCH_DELIV_FEE = #{exchDelivFee}
+			</if>
+			<if test="delivFeeTgtCd != null and delivFeeTgtCd != '' ">
+			AND OE.DELIV_FEE_TGT_CD = #{delivFeeTgtCd}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND OE.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+	</sql>
+
+	<select id="getOrderExchListCount" parameterType="OrderExchExDto" resultType="Integer">
+	/* orderExchMapper.getOrderExchListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_EXCH OE
+		<include refid="where-orderExch" />
+	</select>
+
+	<select id="getOrderExchList" parameterType="OrderExchExDto" resultType="OrderExchExDto">
+	/* orderExchMapper.getOrderExchList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OE.ORD_EXCH_ID
+			,OE.ORD_ID
+			,EXCH_REQ_DTM
+			,EXCH_COLL_DTM
+			,EXCH_CPLT_DTM
+			,OE.COLL_DELIV_FEE
+			,OE.EXCH_DELIV_FEE
+			,OE.DELIV_FEE_TGT_CD
+			,OE.PYMT_COMP_ID
+			,OE.REG_USER_ID
+			,REG_DTM
+			,OE.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH OE
+		<include refid="where-orderExch" />
+		ORDER BY
+			OE.ORD_EXCH_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderExch" parameterType="OrderExchExDto" resultType="OrderExchExDto">
+	/* orderExchMapper.getOrderExch */
+		SELECT
+			OE.ORD_EXCH_ID
+			,OE.ORD_ID
+			,EXCH_REQ_DTM
+			,EXCH_COLL_DTM
+			,EXCH_CPLT_DTM
+			,OE.COLL_DELIV_FEE
+			,OE.EXCH_DELIV_FEE
+			,OE.DELIV_FEE_TGT_CD
+			,OE.PYMT_COMP_ID
+			,OE.REG_USER_ID
+			,REG_DTM
+			,OE.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_EXCH OE
+		WHERE
+			OE.ORD_EXCH_ID = #{ordExchId}
+	</select>
+
+	<insert id="insertOrderExch" parameterType="OrderExchExDto">
+	/* orderExchMapper.insertOrderExch */
+		INSERT INTO CW_ORDER_EXCH (
+			ORD_EXCH_ID
+			,ORD_ID
+			,EXCH_REQ_DTM
+			,EXCH_COLL_DTM
+			,EXCH_CPLT_DTM
+			,COLL_DELIV_FEE
+			,EXCH_DELIV_FEE
+			,DELIV_FEE_TGT_CD
+			,PYMT_COMP_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordExchId}
+			,#{ordId}
+			,STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{exchCollDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{exchCpltDtm}, '%Y%m%d %h%i%s')
+			,#{collDelivFee}
+			,#{exchDelivFee}
+			,#{delivFeeTgtCd}
+			,#{pymtCompId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderExch" parameterType="OrderExchExDto">
+	/* orderExchMapper.updateOrderExch */
+		UPDATE CW_ORDER_EXCH
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="exchReqDtm != null">
+		EXCH_REQ_DTM = STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="exchCollDtm != null">
+		EXCH_COLL_DTM = STR_TO_DATE(#{exchCollDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="exchCpltDtm != null">
+		EXCH_CPLT_DTM = STR_TO_DATE(#{exchCpltDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="collDelivFee != null">
+		COLL_DELIV_FEE = #{collDelivFee},
+		</if>
+		<if test="exchDelivFee != null">
+		EXCH_DELIV_FEE = #{exchDelivFee},
+		</if>
+		<if test="delivFeeTgtCd != null">
+		DELIV_FEE_TGT_CD = #{delivFeeTgtCd},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_EXCH_ID = #{ordExchId}
+	</update>
+
+	<delete id="deleteOrderExch" parameterType="OrderExchExDto">
+	/* orderExchMapper.deleteOrderExch */
+	DELETE FROM CW_ORDER_EXCH
+	WHERE
+		ORD_EXCH_ID = #{ordExchId}
+	</delete>
+</mapper>

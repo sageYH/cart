@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["menuId"] = '[[${transData.menuId}]]';
+    map["langCd"] = '[[${transData.langCd}]]';
+	if (isEmpty(map["menuId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("menuId").setAttribute('readonly', true);
+		getEleByObj("langCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/menuLang/getMenuLang.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["menuId","","자료(메뉴코드)를 확인하세요."]
+		["langCd","","자료(언어코드)를 확인하세요."]
+		["menuNm","","자료(메뉴명)를 확인하세요."]
+		["menuDesc","","자료(메뉴설명)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/menuLang/updateMenuLang.do";
+	if (mode=="NEW"){
+		url = "/app/menuLang/insertMenuLang.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formMenuLangPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvMenuLangPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formMenuLangPop" name="formMenuLangPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">메뉴코드</th>
+						<td><input type="text" name="menuId" id="menuId" style="width:70%" readonly >
+						</td>
+					<th scope="row">언어코드</th>
+					<td><input type="text" name="langCd" id="langCd" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">메뉴명</th>
+						<td><input type="text" name="menuNm" id="menuNm" style="width:70%" >
+						</td>
+					<th scope="row">메뉴설명</th>
+					<td><input type="text" name="menuDesc" id="menuDesc" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용여부</th>
+						<td><input type="text" name="useYn" id="useYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

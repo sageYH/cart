@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="termsDetsMapper">
+	<sql id="where-termsDets">
+		WHERE 1=1
+			<if test="termsId != null and termsId != '' ">
+			AND TD.TERMS_ID = #{termsId}
+			</if>
+			<if test="termsDtlId != null and termsDtlId != '' ">
+			AND TD.TERMS_DTL_ID = #{termsDtlId}
+			</if>
+			<if test="termsDtlNm != null and termsDtlNm != '' ">
+			AND TD.TERMS_DTL_NM = #{termsDtlNm}
+			</if>
+			<if test="termsDtlCont != null and termsDtlCont != '' ">
+			AND TD.TERMS_DTL_CONT = #{termsDtlCont}
+			</if>
+			<if test="acptDivCd != null and acptDivCd != '' ">
+			AND TD.ACPT_DIV_CD = #{acptDivCd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND TD.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getTermsDetsListCount" parameterType="TermsDetsExDto" resultType="Integer">
+	/* termsDetsMapper.getTermsDetsListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_TERMS_DETS TD
+		<include refid="where-termsDets" />
+	</select>
+
+	<select id="getTermsDetsList" parameterType="TermsDetsExDto" resultType="TermsDetsExDto">
+	/* termsDetsMapper.getTermsDetsList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			TD.TERMS_ID
+			,TD.TERMS_DTL_ID
+			,TD.TERMS_DTL_NM
+			,TD.TERMS_DTL_CONT
+			,TD.ACPT_DIV_CD
+			,TD.USE_YN
+			,TD.REG_USER_ID
+			,REG_DTM
+			,TD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS_DETS TD
+		<include refid="where-termsDets" />
+		ORDER BY
+			TD.TERMS_ID
+			,TD.TERMS_DTL_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getTermsDets" parameterType="TermsDetsExDto" resultType="TermsDetsExDto">
+	/* termsDetsMapper.getTermsDets */
+		SELECT
+			TD.TERMS_ID
+			,TD.TERMS_DTL_ID
+			,TD.TERMS_DTL_NM
+			,TD.TERMS_DTL_CONT
+			,TD.ACPT_DIV_CD
+			,TD.USE_YN
+			,TD.REG_USER_ID
+			,REG_DTM
+			,TD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS_DETS TD
+		WHERE
+			TD.TERMS_ID = #{termsId}
+			AND TD.TERMS_DTL_ID = #{termsDtlId}
+	</select>
+
+	<insert id="insertTermsDets" parameterType="TermsDetsExDto">
+	/* termsDetsMapper.insertTermsDets */
+		INSERT INTO CW_TERMS_DETS (
+			TERMS_ID
+			,TERMS_DTL_ID
+			,TERMS_DTL_NM
+			,TERMS_DTL_CONT
+			,ACPT_DIV_CD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{termsId}
+			,#{termsDtlId}
+			,#{termsDtlNm}
+			,#{termsDtlCont}
+			,#{acptDivCd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateTermsDets" parameterType="TermsDetsExDto">
+	/* termsDetsMapper.updateTermsDets */
+		UPDATE CW_TERMS_DETS
+		<set>
+		<if test="termsDtlNm != null">
+		TERMS_DTL_NM = #{termsDtlNm},
+		</if>
+		<if test="termsDtlCont != null">
+		TERMS_DTL_CONT = #{termsDtlCont},
+		</if>
+		<if test="acptDivCd != null">
+		ACPT_DIV_CD = #{acptDivCd},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			TERMS_ID = #{termsId}
+			AND TERMS_DTL_ID = #{termsDtlId}
+	</update>
+
+	<delete id="deleteTermsDets" parameterType="TermsDetsExDto">
+	/* termsDetsMapper.deleteTermsDets */
+	DELETE FROM CW_TERMS_DETS
+	WHERE
+		TERMS_ID = #{termsId}
+		AND TERMS_DTL_ID = #{termsDtlId}
+	</delete>
+</mapper>

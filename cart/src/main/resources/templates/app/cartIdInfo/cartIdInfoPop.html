@@ -1,0 +1,129 @@
+<div id="divCartIdInfoPop" class="sub_wrap" style="display:none;width:92%" title="카트고유번호정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>카트고유번호정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cartId_g1">카트ID</label>
+						<div class="wrap">
+							<input type="text" id="cartId_g1" name="cartId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="connIp_g1">등록일시</label>
+						<div class="wrap">
+							<input type="text" id="connIp_g1" name="connIp_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CartIdInfoPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CartIdInfoPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CartIdInfoPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CartIdInfoPop = new $W.load("divCartIdInfoPop");
+CartIdInfoPop.ready(function(){
+	//
+});
+
+CartIdInfoPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCartIdInfoPop");
+	CartIdInfoPop.mode = mode;
+	if (!isEmpty(func)){
+		CartIdInfoPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCartIdInfoPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cartId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/cartIdInfo/getCartIdInfo.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("connIp_g1").focus();
+	}else{
+		readOnlyFalse(["cartId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CartIdInfoPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cartId_g1","","자료(카트ID)를 확인하세요."]
+		,["connIp_g1","","자료(등록일시)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCartIdInfoPop");
+	var url = "/app/cartIdInfo/updateCartIdInfo.do";
+	if (CartIdInfoPop.mode=="CREATE"){
+		url = "/app/cartIdInfo/insertCartIdInfo.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CartIdInfoPop.func)){
+			CartIdInfoPop.func();
+			CartIdInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CartIdInfoPop.fnDelete = function(){
+	if (CartIdInfoPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/cartIdInfo/deleteCartIdInfo.do";
+	var params = {};
+	params["cartId"] = getElement("cartId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CartIdInfoPop.func)){
+			CartIdInfoPop.func();
+			CartIdInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CartIdInfoPop.fnClose = function(){
+	layerToggle("divCartIdInfoPop",{"mode":0});
+};
+</script>

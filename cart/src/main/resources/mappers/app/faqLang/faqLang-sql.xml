@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="faqLangMapper">
+	<sql id="where-faqLang">
+		WHERE 1=1
+			<if test="faqId != null and faqId != '' ">
+			AND FL.FAQ_ID = #{faqId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND FL.LANG_CD = #{langCd}
+			</if>
+			<if test="faqTitle != null and faqTitle != '' ">
+			AND FL.FAQ_TITLE = #{faqTitle}
+			</if>
+			<if test="faqCont != null and faqCont != '' ">
+			AND FL.FAQ_CONT = #{faqCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND FL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getFaqLangListCount" parameterType="FaqLangExDto" resultType="Integer">
+	/* faqLangMapper.getFaqLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_FAQ_LANG FL
+		<include refid="where-faqLang" />
+	</select>
+
+	<select id="getFaqLangList" parameterType="FaqLangExDto" resultType="FaqLangExDto">
+	/* faqLangMapper.getFaqLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			FL.FAQ_ID
+			,FL.LANG_CD
+			,FL.FAQ_TITLE
+			,FL.FAQ_CONT
+			,FL.USE_YN
+			,FL.REG_USER_ID
+			,REG_DTM
+			,FL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FAQ_LANG FL
+		<include refid="where-faqLang" />
+		ORDER BY
+			FL.FAQ_ID
+			,FL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getFaqLang" parameterType="FaqLangExDto" resultType="FaqLangExDto">
+	/* faqLangMapper.getFaqLang */
+		SELECT
+			FL.FAQ_ID
+			,FL.LANG_CD
+			,FL.FAQ_TITLE
+			,FL.FAQ_CONT
+			,FL.USE_YN
+			,FL.REG_USER_ID
+			,REG_DTM
+			,FL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_FAQ_LANG FL
+		WHERE
+			FL.FAQ_ID = #{faqId}
+			AND FL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertFaqLang" parameterType="FaqLangExDto">
+	/* faqLangMapper.insertFaqLang */
+		INSERT INTO CW_FAQ_LANG (
+			FAQ_ID
+			,LANG_CD
+			,FAQ_TITLE
+			,FAQ_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{faqId}
+			,#{langCd}
+			,#{faqTitle}
+			,#{faqCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateFaqLang" parameterType="FaqLangExDto">
+	/* faqLangMapper.updateFaqLang */
+		UPDATE CW_FAQ_LANG
+		<set>
+		<if test="faqTitle != null">
+		FAQ_TITLE = #{faqTitle},
+		</if>
+		<if test="faqCont != null">
+		FAQ_CONT = #{faqCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			FAQ_ID = #{faqId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteFaqLang" parameterType="FaqLangExDto">
+	/* faqLangMapper.deleteFaqLang */
+	DELETE FROM CW_FAQ_LANG
+	WHERE
+		FAQ_ID = #{faqId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

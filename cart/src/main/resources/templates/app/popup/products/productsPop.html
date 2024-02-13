@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["prodId"] = '[[${transData.prodId}]]';
+	if (isEmpty(map["prodId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("prodId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/products/getProducts.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["prodId","","자료(상품ID)를 확인하세요."]
+		["prodNm","","자료(상품명)를 확인하세요."]
+		["prntProdId","","자료(상위상품분류ID)를 확인하세요."]
+		["compId","","자료(상품레벨)를 확인하세요."]
+		["prodSkin","","자료(상품스킨)를 확인하세요."]
+		["prodMobiSkin","","자료(상품모바일스킨)를 확인하세요."]
+		["prodMfr","","자료(상품제조사)를 확인하세요."]
+		["prodOrigin","","자료(상품원산지)를 확인하세요."]
+		["prodBrand","","자료(상품브랜드)를 확인하세요."]
+		["prodModel","","자료(상품모델)를 확인하세요."]
+		["prodAmt","","자료(상품금액)를 확인하세요."]
+		["prodInvQty","","자료(상품재고수량)를 확인하세요."]
+		["prodUseQty","","자료(상품사용수량)를 확인하세요."]
+		["prodInQty","","자료(상품입고수량)를 확인하세요."]
+		["soldOutYn","","자료(품절여부)를 확인하세요."]
+		["pointId","","자료(포인트ID)를 확인하세요."]
+		["cpnId","","자료(쿠폰ID)를 확인하세요."]
+		["prodWeight","","자료(상품무게)를 확인하세요."]
+		["prodInclQty","","자료(상품포함수량)를 확인하세요."]
+		["delivFeeTypCd","","자료(배송비유형코드[DV01])를 확인하세요."]
+		["baseDelivFee","","자료(기본배송비)를 확인하세요."]
+		["delivFreeMinAmt","","자료(배송무료최소금액)를 확인하세요."]
+		["delivBaseWeight","","자료(배송기준무게)를 확인하세요."]
+		["delivBaseQty","","자료(배송기준수량)를 확인하세요."]
+		["prodViews","","자료(상품조회수)를 확인하세요."]
+		["prodRegDtm","","자료(상품등록일시)를 확인하세요."]
+		["prodUpdDtm","","자료(상품변경일시)를 확인하세요."]
+		["regIp","","자료(등록 IP)를 확인하세요."]
+		["sortSeq","","자료(정렬순서)를 확인하세요."]
+		["salesQty","","자료(판매수량)를 확인하세요."]
+		["incSmsNotifYn","","자료(재입고SMS알림 여부)를 확인하세요."]
+		["reviewNum","","자료(사용후기 수)를 확인하세요."]
+		["reviewRtgAvg","","자료(사용후기 별점 평균)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/products/updateProducts.do";
+	if (mode=="NEW"){
+		url = "/app/products/insertProducts.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formProductsPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvProductsPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formProductsPop" name="formProductsPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">상품ID</th>
+						<td><input type="text" name="prodId" id="prodId" style="width:70%" readonly >
+						</td>
+					<th scope="row">상품명</th>
+					<td><input type="text" name="prodNm" id="prodNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상위상품분류ID</th>
+						<td><input type="text" name="prntProdId" id="prntProdId" style="width:70%" >
+						</td>
+					<th scope="row">상품레벨</th>
+					<td><input type="text" name="compId" id="compId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품스킨</th>
+						<td><input type="text" name="prodSkin" id="prodSkin" style="width:70%" >
+						</td>
+					<th scope="row">상품모바일스킨</th>
+					<td><input type="text" name="prodMobiSkin" id="prodMobiSkin" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품제조사</th>
+						<td><input type="text" name="prodMfr" id="prodMfr" style="width:70%" >
+						</td>
+					<th scope="row">상품원산지</th>
+					<td><input type="text" name="prodOrigin" id="prodOrigin" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품브랜드</th>
+						<td><input type="text" name="prodBrand" id="prodBrand" style="width:70%" >
+						</td>
+					<th scope="row">상품모델</th>
+					<td><input type="text" name="prodModel" id="prodModel" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품금액</th>
+						<td><input type="text" name="prodAmt" id="prodAmt" style="width:70%" >
+						</td>
+					<th scope="row">상품재고수량</th>
+					<td><input type="text" name="prodInvQty" id="prodInvQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품사용수량</th>
+						<td><input type="text" name="prodUseQty" id="prodUseQty" style="width:70%" >
+						</td>
+					<th scope="row">상품입고수량</th>
+					<td><input type="text" name="prodInQty" id="prodInQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">품절여부</th>
+						<td><input type="text" name="soldOutYn" id="soldOutYn" style="width:70%" >
+						</td>
+					<th scope="row">포인트ID</th>
+					<td><input type="text" name="pointId" id="pointId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰ID</th>
+						<td><input type="text" name="cpnId" id="cpnId" style="width:70%" >
+						</td>
+					<th scope="row">상품무게</th>
+					<td><input type="text" name="prodWeight" id="prodWeight" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품포함수량</th>
+						<td><input type="text" name="prodInclQty" id="prodInclQty" style="width:70%" >
+						</td>
+					<th scope="row">배송비유형코드[DV01]</th>
+					<td><input type="text" name="delivFeeTypCd" id="delivFeeTypCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">기본배송비</th>
+						<td><input type="text" name="baseDelivFee" id="baseDelivFee" style="width:70%" >
+						</td>
+					<th scope="row">배송무료최소금액</th>
+					<td><input type="text" name="delivFreeMinAmt" id="delivFreeMinAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송기준무게</th>
+						<td><input type="text" name="delivBaseWeight" id="delivBaseWeight" style="width:70%" >
+						</td>
+					<th scope="row">배송기준수량</th>
+					<td><input type="text" name="delivBaseQty" id="delivBaseQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품조회수</th>
+						<td><input type="text" name="prodViews" id="prodViews" style="width:70%" >
+						</td>
+					<th scope="row">상품등록일시</th>
+					<td><input type="text" name="prodRegDtm" id="prodRegDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상품변경일시</th>
+						<td><input type="text" name="prodUpdDtm" id="prodUpdDtm" style="width:70%" >
+						</td>
+					<th scope="row">등록 IP</th>
+					<td><input type="text" name="regIp" id="regIp" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">정렬순서</th>
+						<td><input type="text" name="sortSeq" id="sortSeq" style="width:70%" >
+						</td>
+					<th scope="row">판매수량</th>
+					<td><input type="text" name="salesQty" id="salesQty" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">재입고SMS알림 여부</th>
+						<td><input type="text" name="incSmsNotifYn" id="incSmsNotifYn" style="width:70%" >
+						</td>
+					<th scope="row">사용후기 수</th>
+					<td><input type="text" name="reviewNum" id="reviewNum" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">사용후기 별점 평균</th>
+						<td><input type="text" name="reviewRtgAvg" id="reviewRtgAvg" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

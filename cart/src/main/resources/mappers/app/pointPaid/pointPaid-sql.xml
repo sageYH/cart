@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pointPaidMapper">
+	<sql id="where-pointPaid">
+		WHERE 1=1
+			<if test="pointPaidId != null and pointPaidId != '' ">
+			AND PP.POINT_PAID_ID = #{pointPaidId}
+			</if>
+			<if test="pointIssueId != null and pointIssueId != '' ">
+			AND PP.POINT_ISSUE_ID = #{pointIssueId}
+			</if>
+			<if test="pointAmt != null and pointAmt != '' ">
+			AND PP.POINT_AMT = #{pointAmt}
+			</if>
+			<if test="pointCancAmt != null and pointCancAmt != '' ">
+			AND PP.POINT_CANC_AMT = #{pointCancAmt}
+			</if>
+			<if test="pointApplAmt != null and pointApplAmt != '' ">
+			AND PP.POINT_APPL_AMT = #{pointApplAmt}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND PP.ORD_ID = #{ordId}
+			</if>
+			<if test="eventId != null and eventId != '' ">
+			AND PP.EVENT_ID = #{eventId}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND PP.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+	</sql>
+
+	<select id="getPointPaidListCount" parameterType="PointPaidExDto" resultType="Integer">
+	/* pointPaidMapper.getPointPaidListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_POINT_PAID PP
+		<include refid="where-pointPaid" />
+	</select>
+
+	<select id="getPointPaidList" parameterType="PointPaidExDto" resultType="PointPaidExDto">
+	/* pointPaidMapper.getPointPaidList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PP.POINT_PAID_ID
+			,PP.POINT_ISSUE_ID
+			,PP.POINT_AMT
+			,PP.POINT_CANC_AMT
+			,PP.POINT_APPL_AMT
+			,PP.ORD_ID
+			,PP.EVENT_ID
+			,PP.PYMT_COMP_ID
+			,PP.REG_USER_ID
+			,REG_DTM
+			,PP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_PAID PP
+		<include refid="where-pointPaid" />
+		ORDER BY
+			PP.POINT_PAID_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getPointPaid" parameterType="PointPaidExDto" resultType="PointPaidExDto">
+	/* pointPaidMapper.getPointPaid */
+		SELECT
+			PP.POINT_PAID_ID
+			,PP.POINT_ISSUE_ID
+			,PP.POINT_AMT
+			,PP.POINT_CANC_AMT
+			,PP.POINT_APPL_AMT
+			,PP.ORD_ID
+			,PP.EVENT_ID
+			,PP.PYMT_COMP_ID
+			,PP.REG_USER_ID
+			,REG_DTM
+			,PP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_PAID PP
+		WHERE
+			PP.POINT_PAID_ID = #{pointPaidId}
+	</select>
+
+	<insert id="insertPointPaid" parameterType="PointPaidExDto">
+	/* pointPaidMapper.insertPointPaid */
+		INSERT INTO CW_POINT_PAID (
+			POINT_PAID_ID
+			,POINT_ISSUE_ID
+			,POINT_AMT
+			,POINT_CANC_AMT
+			,POINT_APPL_AMT
+			,ORD_ID
+			,EVENT_ID
+			,PYMT_COMP_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{pointPaidId}
+			,#{pointIssueId}
+			,#{pointAmt}
+			,#{pointCancAmt}
+			,#{pointApplAmt}
+			,#{ordId}
+			,#{eventId}
+			,#{pymtCompId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updatePointPaid" parameterType="PointPaidExDto">
+	/* pointPaidMapper.updatePointPaid */
+		UPDATE CW_POINT_PAID
+		<set>
+		<if test="pointIssueId != null">
+		POINT_ISSUE_ID = #{pointIssueId},
+		</if>
+		<if test="pointAmt != null">
+		POINT_AMT = #{pointAmt},
+		</if>
+		<if test="pointCancAmt != null">
+		POINT_CANC_AMT = #{pointCancAmt},
+		</if>
+		<if test="pointApplAmt != null">
+		POINT_APPL_AMT = #{pointApplAmt},
+		</if>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="eventId != null">
+		EVENT_ID = #{eventId},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			POINT_PAID_ID = #{pointPaidId}
+	</update>
+
+	<delete id="deletePointPaid" parameterType="PointPaidExDto">
+	/* pointPaidMapper.deletePointPaid */
+	DELETE FROM CW_POINT_PAID
+	WHERE
+		POINT_PAID_ID = #{pointPaidId}
+	</delete>
+</mapper>

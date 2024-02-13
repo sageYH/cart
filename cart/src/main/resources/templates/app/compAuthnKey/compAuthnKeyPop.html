@@ -1,0 +1,173 @@
+<div id="divCompAuthnKeyPop" class="sub_wrap" style="display:none;width:92%" title="업체인증Key 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>업체인증Key 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="ptnrCompId_g1">파트너사ID</label>
+						<div class="wrap">
+							<input type="text" id="ptnrCompId_g1" name="ptnrCompId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="authnDivCd_g1">인증구분코드</label>
+						<div class="wrap">
+							<input type="text" id="authnDivCd_g1" name="authnDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="ownCompAuthnId_g1">자사인증ID</label>
+						<div class="wrap">
+							<input type="text" id="ownCompAuthnId_g1" name="ownCompAuthnId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="ownCompAuthnPwd_g1">자사인증비밀번호</label>
+						<div class="wrap">
+							<input type="text" id="ownCompAuthnPwd_g1" name="ownCompAuthnPwd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="ptnrCwCompAuthnKey_g1">파트너사인증KEY</label>
+						<div class="wrap">
+							<input type="text" id="ptnrCwCompAuthnKey_g1" name="ptnrCwCompAuthnKey_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="authnIshDtm_g1">인증발급일시</label>
+						<div class="wrap">
+							<input type="text" id="authnIshDtm_g1" name="authnIshDtm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="authnUpdDtm_g1">인증갱신일시</label>
+						<div class="wrap">
+							<input type="text" id="authnUpdDtm_g1" name="authnUpdDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CompAuthnKeyPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CompAuthnKeyPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CompAuthnKeyPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CompAuthnKeyPop = new $W.load("divCompAuthnKeyPop");
+CompAuthnKeyPop.ready(function(){
+	//
+});
+
+CompAuthnKeyPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCompAuthnKeyPop");
+	CompAuthnKeyPop.mode = mode;
+	if (!isEmpty(func)){
+		CompAuthnKeyPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCompAuthnKeyPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["ptnrCompId_g1","authnDivCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/compAuthnKey/getCompAuthnKey.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("ownCompAuthnId_g1").focus();
+	}else{
+		readOnlyFalse(["ptnrCompId_g1","authnDivCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CompAuthnKeyPop.fnSave = function(){
+
+	var valid = 0 || [
+		["ptnrCompId_g1","","자료(파트너사ID)를 확인하세요."]
+		,["authnDivCd_g1","","자료(인증구분코드)를 확인하세요."]
+		,["ownCompAuthnId_g1","","자료(자사인증ID)를 확인하세요."]
+		,["ownCompAuthnPwd_g1","","자료(자사인증비밀번호)를 확인하세요."]
+		,["ptnrCwCompAuthnKey_g1","","자료(파트너사인증KEY)를 확인하세요."]
+		,["authnIshDtm_g1","","자료(인증발급일시)를 확인하세요."]
+		,["authnUpdDtm_g1","","자료(인증갱신일시)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCompAuthnKeyPop");
+	var url = "/app/compAuthnKey/updateCompAuthnKey.do";
+	if (CompAuthnKeyPop.mode=="CREATE"){
+		url = "/app/compAuthnKey/insertCompAuthnKey.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CompAuthnKeyPop.func)){
+			CompAuthnKeyPop.func();
+			CompAuthnKeyPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CompAuthnKeyPop.fnDelete = function(){
+	if (CompAuthnKeyPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/compAuthnKey/deleteCompAuthnKey.do";
+	var params = {};
+	params["ptnrCompId"] = getElement("ptnrCompId_g1").value;
+	params["authnDivCd"] = getElement("authnDivCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CompAuthnKeyPop.func)){
+			CompAuthnKeyPop.func();
+			CompAuthnKeyPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CompAuthnKeyPop.fnClose = function(){
+	layerToggle("divCompAuthnKeyPop",{"mode":0});
+};
+</script>

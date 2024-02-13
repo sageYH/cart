@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/orderExch/orderExchGrid.js"></script>
+<script>
+var gridOrderExch = null;
+window.onload = function() {
+	gridOrderExch = setGridOrderExch("dvGridOrderExchSearch");
+	gridOrderExch.setBodyHeight(300);
+	fixedColGrid(gridOrderExch);
+
+	gridOrderExch.on("click",function(ev){
+		toggleGrid(gridOrderExch,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridOrderExch.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridOrderExch)==false){
+			dblClickGridOrderExch();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridOrderExch(){
+	getResultData();
+}
+
+//page
+var pageClsOrderExch = new pageCls("dvOrderExchPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridOrderExch);
+
+	var params = {};
+	if (isEmpty(getEVal("ordExchId"))==false) params["ordExchId"] = getEVal("ordExchId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("exchReqDtm"))==false) params["exchReqDtm"] = getEVal("exchReqDtm");
+	if (isEmpty(getEVal("exchCollDtm"))==false) params["exchCollDtm"] = getEVal("exchCollDtm");
+	if (isEmpty(getEVal("exchCpltDtm"))==false) params["exchCpltDtm"] = getEVal("exchCpltDtm");
+	if (isEmpty(getEVal("collDelivFee"))==false) params["collDelivFee"] = getEVal("collDelivFee");
+	if (isEmpty(getEVal("exchDelivFee"))==false) params["exchDelivFee"] = getEVal("exchDelivFee");
+	if (isEmpty(getEVal("delivFeeTgtCd"))==false) params["delivFeeTgtCd"] = getEVal("delivFeeTgtCd");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	//page set
+	params = pageClsOrderExch.getPageInfo(params);
+
+	var url = "/app/orderExch/getOrderExchPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridOrderExch,result.payloads);
+		//set total
+		pageClsOrderExch.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridOrderExch);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderExchSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridOrderExchSearch" class="addr-list" ></div>
+					<div id="dvOrderExchPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

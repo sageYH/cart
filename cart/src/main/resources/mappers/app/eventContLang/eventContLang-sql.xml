@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eventContLangMapper">
+	<sql id="where-eventContLang">
+		WHERE 1=1
+			<if test="eventId != null and eventId != '' ">
+			AND ECL.EVENT_ID = #{eventId}
+			</if>
+			<if test="eventContId != null and eventContId != '' ">
+			AND ECL.EVENT_CONT_ID = #{eventContId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND ECL.LANG_CD = #{langCd}
+			</if>
+			<if test="eventCont != null and eventCont != '' ">
+			AND ECL.EVENT_CONT = #{eventCont}
+			</if>
+			<if test="eventMobiCont != null and eventMobiCont != '' ">
+			AND ECL.EVENT_MOBI_CONT = #{eventMobiCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND ECL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getEventContLangListCount" parameterType="EventContLangExDto" resultType="Integer">
+	/* eventContLangMapper.getEventContLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_EVENT_CONT_LANG ECL
+		<include refid="where-eventContLang" />
+	</select>
+
+	<select id="getEventContLangList" parameterType="EventContLangExDto" resultType="EventContLangExDto">
+	/* eventContLangMapper.getEventContLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ECL.EVENT_ID
+			,ECL.EVENT_CONT_ID
+			,ECL.LANG_CD
+			,ECL.EVENT_CONT
+			,ECL.EVENT_MOBI_CONT
+			,ECL.USE_YN
+			,ECL.REG_USER_ID
+			,REG_DTM
+			,ECL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_CONT_LANG ECL
+		<include refid="where-eventContLang" />
+		ORDER BY
+			ECL.EVENT_ID
+			,ECL.EVENT_CONT_ID
+			,ECL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getEventContLang" parameterType="EventContLangExDto" resultType="EventContLangExDto">
+	/* eventContLangMapper.getEventContLang */
+		SELECT
+			ECL.EVENT_ID
+			,ECL.EVENT_CONT_ID
+			,ECL.LANG_CD
+			,ECL.EVENT_CONT
+			,ECL.EVENT_MOBI_CONT
+			,ECL.USE_YN
+			,ECL.REG_USER_ID
+			,REG_DTM
+			,ECL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_CONT_LANG ECL
+		WHERE
+			ECL.EVENT_ID = #{eventId}
+			AND ECL.EVENT_CONT_ID = #{eventContId}
+			AND ECL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertEventContLang" parameterType="EventContLangExDto">
+	/* eventContLangMapper.insertEventContLang */
+		INSERT INTO CW_EVENT_CONT_LANG (
+			EVENT_ID
+			,EVENT_CONT_ID
+			,LANG_CD
+			,EVENT_CONT
+			,EVENT_MOBI_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{eventId}
+			,#{eventContId}
+			,#{langCd}
+			,#{eventCont}
+			,#{eventMobiCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateEventContLang" parameterType="EventContLangExDto">
+	/* eventContLangMapper.updateEventContLang */
+		UPDATE CW_EVENT_CONT_LANG
+		<set>
+		<if test="eventCont != null">
+		EVENT_CONT = #{eventCont},
+		</if>
+		<if test="eventMobiCont != null">
+		EVENT_MOBI_CONT = #{eventMobiCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			EVENT_ID = #{eventId}
+			AND EVENT_CONT_ID = #{eventContId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteEventContLang" parameterType="EventContLangExDto">
+	/* eventContLangMapper.deleteEventContLang */
+	DELETE FROM CW_EVENT_CONT_LANG
+	WHERE
+		EVENT_ID = #{eventId}
+		AND EVENT_CONT_ID = #{eventContId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderDtlOptMapper">
+	<sql id="where-orderDtlOpt">
+		WHERE 1=1
+			<if test="ordDtlId != null and ordDtlId != '' ">
+			AND ODO.ORD_DTL_ID = #{ordDtlId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND ODO.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND ODO.PROD_ID = #{prodId}
+			</if>
+			<if test="optId != null and optId != '' ">
+			AND ODO.OPT_ID = #{optId}
+			</if>
+			<if test="optQty != null and optQty != '' ">
+			AND ODO.OPT_QTY = #{optQty}
+			</if>
+			<if test="optAmt != null and optAmt != '' ">
+			AND ODO.OPT_AMT = #{optAmt}
+			</if>
+	</sql>
+
+	<select id="getOrderDtlOptListCount" parameterType="OrderDtlOptExDto" resultType="Integer">
+	/* orderDtlOptMapper.getOrderDtlOptListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_DTL_OPT ODO
+		<include refid="where-orderDtlOpt" />
+	</select>
+
+	<select id="getOrderDtlOptList" parameterType="OrderDtlOptExDto" resultType="OrderDtlOptExDto">
+	/* orderDtlOptMapper.getOrderDtlOptList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ODO.ORD_DTL_ID
+			,ODO.ORD_ID
+			,ODO.PROD_ID
+			,ODO.OPT_ID
+			,ODO.OPT_QTY
+			,ODO.OPT_AMT
+			,ODO.REG_USER_ID
+			,REG_DTM
+			,ODO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DTL_OPT ODO
+		<include refid="where-orderDtlOpt" />
+		ORDER BY
+			ODO.ORD_DTL_ID
+			,ODO.OPT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderDtlOpt" parameterType="OrderDtlOptExDto" resultType="OrderDtlOptExDto">
+	/* orderDtlOptMapper.getOrderDtlOpt */
+		SELECT
+			ODO.ORD_DTL_ID
+			,ODO.ORD_ID
+			,ODO.PROD_ID
+			,ODO.OPT_ID
+			,ODO.OPT_QTY
+			,ODO.OPT_AMT
+			,ODO.REG_USER_ID
+			,REG_DTM
+			,ODO.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DTL_OPT ODO
+		WHERE
+			ODO.ORD_DTL_ID = #{ordDtlId}
+			AND ODO.OPT_ID = #{optId}
+	</select>
+
+	<insert id="insertOrderDtlOpt" parameterType="OrderDtlOptExDto">
+	/* orderDtlOptMapper.insertOrderDtlOpt */
+		INSERT INTO CW_ORDER_DTL_OPT (
+			ORD_DTL_ID
+			,ORD_ID
+			,PROD_ID
+			,OPT_ID
+			,OPT_QTY
+			,OPT_AMT
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordDtlId}
+			,#{ordId}
+			,#{prodId}
+			,#{optId}
+			,#{optQty}
+			,#{optAmt}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderDtlOpt" parameterType="OrderDtlOptExDto">
+	/* orderDtlOptMapper.updateOrderDtlOpt */
+		UPDATE CW_ORDER_DTL_OPT
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="optQty != null">
+		OPT_QTY = #{optQty},
+		</if>
+		<if test="optAmt != null">
+		OPT_AMT = #{optAmt},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_DTL_ID = #{ordDtlId}
+			AND OPT_ID = #{optId}
+	</update>
+
+	<delete id="deleteOrderDtlOpt" parameterType="OrderDtlOptExDto">
+	/* orderDtlOptMapper.deleteOrderDtlOpt */
+	DELETE FROM CW_ORDER_DTL_OPT
+	WHERE
+		ORD_DTL_ID = #{ordDtlId}
+		AND OPT_ID = #{optId}
+	</delete>
+</mapper>

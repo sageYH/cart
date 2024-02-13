@@ -1,0 +1,169 @@
+<div id="divCouponIssueMbrPop" class="sub_wrap" style="display:none;width:92%" title="쿠폰발급멤버 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>쿠폰발급멤버 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cpnIssueId_g1">쿠폰발급ID</label>
+						<div class="wrap">
+							<input type="text" id="cpnIssueId_g1" name="cpnIssueId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mbrId_g1">멤버ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrId_g1" name="mbrId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cpnId_g1">쿠폰ID</label>
+						<div class="wrap">
+							<input type="text" id="cpnId_g1" name="cpnId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cpnIssueDtm_g1">쿠폰발급일시</label>
+						<div class="wrap">
+							<input type="text" id="cpnIssueDtm_g1" name="cpnIssueDtm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cpnUseDtm_g1">쿠폰사용일시</label>
+						<div class="wrap">
+							<input type="text" id="cpnUseDtm_g1" name="cpnUseDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CouponIssueMbrPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CouponIssueMbrPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CouponIssueMbrPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CouponIssueMbrPop = new $W.load("divCouponIssueMbrPop");
+CouponIssueMbrPop.ready(function(){
+	//
+});
+
+CouponIssueMbrPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCouponIssueMbrPop");
+	CouponIssueMbrPop.mode = mode;
+	if (!isEmpty(func)){
+		CouponIssueMbrPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCouponIssueMbrPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cpnIssueId_g1","mbrId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/couponIssueMbr/getCouponIssueMbr.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cpnId_g1").focus();
+	}else{
+		readOnlyFalse(["cpnIssueId_g1","mbrId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CouponIssueMbrPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cpnIssueId_g1","","자료(쿠폰발급ID)를 확인하세요."]
+		,["mbrId_g1","","자료(멤버ID)를 확인하세요."]
+		,["cpnId_g1","","자료(쿠폰ID)를 확인하세요."]
+		,["cpnIssueDtm_g1","","자료(쿠폰발급일시)를 확인하세요."]
+		,["cpnUseDtm_g1","","자료(쿠폰사용일시)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCouponIssueMbrPop");
+	var url = "/app/couponIssueMbr/updateCouponIssueMbr.do";
+	if (CouponIssueMbrPop.mode=="CREATE"){
+		url = "/app/couponIssueMbr/insertCouponIssueMbr.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponIssueMbrPop.func)){
+			CouponIssueMbrPop.func();
+			CouponIssueMbrPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CouponIssueMbrPop.fnDelete = function(){
+	if (CouponIssueMbrPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/couponIssueMbr/deleteCouponIssueMbr.do";
+	var params = {};
+	params["cpnIssueId"] = getElement("cpnIssueId_g1").value;
+	params["mbrId"] = getElement("mbrId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponIssueMbrPop.func)){
+			CouponIssueMbrPop.func();
+			CouponIssueMbrPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CouponIssueMbrPop.fnClose = function(){
+	layerToggle("divCouponIssueMbrPop",{"mode":0});
+};
+</script>

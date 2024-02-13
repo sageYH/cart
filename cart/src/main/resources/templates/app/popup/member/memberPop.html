@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["mbrId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("mbrId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/member/getMember.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["mbrLvlCd","","자료(멤버등급코드)를 확인하세요."]
+		["mbrDivCd","","자료(멤버구분코드)를 확인하세요."]
+		["phoneNo","","자료(폰번호)를 확인하세요."]
+		["email","","자료(이메일)를 확인하세요."]
+		["birthYmd","","자료(생년월일)를 확인하세요."]
+		["sexDivCd","","자료(성별구분코드)를 확인하세요."]
+		["cntryCd","","자료(국가코드)를 확인하세요."]
+		["compId","","자료(업체ID)를 확인하세요."]
+		["signupDtm","","자료(가입일시)를 확인하세요."]
+		["zipCd","","자료(우편번호)를 확인하세요."]
+		["addr","","자료(주소)를 확인하세요."]
+		["dtlAddr","","자료(상세주소)를 확인하세요."]
+		["dtlAddr2","","자료(상세주소2)를 확인하세요."]
+		["signupPathCd","","자료(가입경로코드)를 확인하세요."]
+		["latestAccChanCd","","자료(최근접속채널코드)를 확인하세요."]
+		["lastAccDtm","","자료(최종접속일시)를 확인하세요."]
+		["latestAccYmd","","자료(최근접속년월일)를 확인하세요."]
+		["smsRecvAcptYn","","자료(SMS수신동의여부)를 확인하세요."]
+		["emailRecvAcptYn","","자료(이메일수신동의여부)를 확인하세요."]
+		["pushRecvAcptYn","","자료(PUSH수신동의여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/member/updateMember.do";
+	if (mode=="NEW"){
+		url = "/app/member/insertMember.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formMemberPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvMemberPop" class="modal shot-pop" title="멤버 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formMemberPop" name="formMemberPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">멤버ID</th>
+						<td><input type="text" name="mbrId" id="mbrId" style="width:70%" readonly >
+						</td>
+					<th scope="row">멤버등급코드</th>
+					<td><input type="text" name="mbrLvlCd" id="mbrLvlCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">멤버구분코드</th>
+						<td><input type="text" name="mbrDivCd" id="mbrDivCd" style="width:70%" >
+						</td>
+					<th scope="row">폰번호</th>
+					<td><input type="text" name="phoneNo" id="phoneNo" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">이메일</th>
+						<td><input type="text" name="email" id="email" style="width:70%" >
+						</td>
+					<th scope="row">생년월일</th>
+					<td><input type="text" name="birthYmd" id="birthYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">성별구분코드</th>
+						<td><input type="text" name="sexDivCd" id="sexDivCd" style="width:70%" >
+						</td>
+					<th scope="row">국가코드</th>
+					<td><input type="text" name="cntryCd" id="cntryCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">업체ID</th>
+						<td><input type="text" name="compId" id="compId" style="width:70%" >
+						</td>
+					<th scope="row">가입일시</th>
+					<td><input type="text" name="signupDtm" id="signupDtm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">우편번호</th>
+						<td><input type="text" name="zipCd" id="zipCd" style="width:70%" >
+						</td>
+					<th scope="row">주소</th>
+					<td><input type="text" name="addr" id="addr" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상세주소</th>
+						<td><input type="text" name="dtlAddr" id="dtlAddr" style="width:70%" >
+						</td>
+					<th scope="row">상세주소2</th>
+					<td><input type="text" name="dtlAddr2" id="dtlAddr2" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">가입경로코드</th>
+						<td><input type="text" name="signupPathCd" id="signupPathCd" style="width:70%" >
+						</td>
+					<th scope="row">최근접속채널코드</th>
+					<td><input type="text" name="latestAccChanCd" id="latestAccChanCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">최종접속일시</th>
+						<td><input type="text" name="lastAccDtm" id="lastAccDtm" style="width:70%" >
+						</td>
+					<th scope="row">최근접속년월일</th>
+					<td><input type="text" name="latestAccYmd" id="latestAccYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">SMS수신동의여부</th>
+						<td><input type="text" name="smsRecvAcptYn" id="smsRecvAcptYn" style="width:70%" >
+						</td>
+					<th scope="row">이메일수신동의여부</th>
+					<td><input type="text" name="emailRecvAcptYn" id="emailRecvAcptYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">PUSH수신동의여부</th>
+						<td><input type="text" name="pushRecvAcptYn" id="pushRecvAcptYn" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

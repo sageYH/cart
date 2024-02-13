@@ -1,0 +1,216 @@
+<div id="divNewsPop" class="sub_wrap" style="display:none;width:92%" title="NEWS 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>NEWS 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="newsId_g1">NEWS_ID</label>
+						<div class="wrap">
+							<input type="text" id="newsId_g1" name="newsId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="newsTypCd_g1">NEWS유형코드</label>
+						<div class="wrap">
+							<input type="text" id="newsTypCd_g1" name="newsTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="newsTitle_g1">제목</label>
+						<div class="wrap">
+							<input type="text" id="newsTitle_g1" name="newsTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="newsCont_g1">NEWS내용</label>
+						<div class="wrap">
+							<input type="text" id="newsCont_g1" name="newsCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="newsViews_g1">NEWS조회수</label>
+						<div class="wrap">
+							<input type="text" id="newsViews_g1" name="newsViews_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prntNewsId_g1">상위NEWS_ID</label>
+						<div class="wrap">
+							<input type="text" id="prntNewsId_g1" name="prntNewsId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="grpNewsId_g1">그룹NEWS_ID</label>
+						<div class="wrap">
+							<input type="text" id="grpNewsId_g1" name="grpNewsId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="newsFrYmd_g1">NEWS시작일</label>
+						<div class="wrap">
+							<input type="text" id="newsFrYmd_g1" name="newsFrYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="newsToYmd_g1">NEWS종료일</label>
+						<div class="wrap">
+							<input type="text" id="newsToYmd_g1" name="newsToYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="popupYn_g1">팝업여부</label>
+						<div class="wrap">
+							<input type="text" id="popupYn_g1" name="popupYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="NewsPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="NewsPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="NewsPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var NewsPop = new $W.load("divNewsPop");
+NewsPop.ready(function(){
+	//
+});
+
+NewsPop.fnOpen = function(mode, params, func) {
+	clearObjects("divNewsPop");
+	NewsPop.mode = mode;
+	if (!isEmpty(func)){
+		NewsPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divNewsPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["newsId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/news/getNews.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("newsTypCd_g1").focus();
+	}else{
+		readOnlyFalse(["newsId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+NewsPop.fnSave = function(){
+
+	var valid = 0 || [
+		["newsId_g1","","자료(NEWS_ID)를 확인하세요."]
+		,["newsTypCd_g1","","자료(NEWS유형코드)를 확인하세요."]
+		,["newsTitle_g1","","자료(제목)를 확인하세요."]
+		,["newsCont_g1","","자료(NEWS내용)를 확인하세요."]
+		,["newsViews_g1","","자료(NEWS조회수)를 확인하세요."]
+		,["prntNewsId_g1","","자료(상위NEWS_ID)를 확인하세요."]
+		,["grpNewsId_g1","","자료(그룹NEWS_ID)를 확인하세요."]
+		,["newsFrYmd_g1","","자료(NEWS시작일)를 확인하세요."]
+		,["newsToYmd_g1","","자료(NEWS종료일)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["popupYn_g1","","자료(팝업여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divNewsPop");
+	var url = "/app/news/updateNews.do";
+	if (NewsPop.mode=="CREATE"){
+		url = "/app/news/insertNews.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NewsPop.func)){
+			NewsPop.func();
+			NewsPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+NewsPop.fnDelete = function(){
+	if (NewsPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/news/deleteNews.do";
+	var params = {};
+	params["newsId"] = getElement("newsId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NewsPop.func)){
+			NewsPop.func();
+			NewsPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+NewsPop.fnClose = function(){
+	layerToggle("divNewsPop",{"mode":0});
+};
+</script>

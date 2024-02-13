@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userTermsAcptMapper">
+	<sql id="where-userTermsAcpt">
+		WHERE 1=1
+			<if test="userTermsId != null and userTermsId != '' ">
+			AND UTA.USER_TERMS_ID = #{userTermsId}
+			</if>
+			<if test="userId != null and userId != '' ">
+			AND UTA.USER_ID = #{userId}
+			</if>
+			<if test="termsId != null and termsId != '' ">
+			AND UTA.TERMS_ID = #{termsId}
+			</if>
+			<if test="termsDtlId != null and termsDtlId != '' ">
+			AND UTA.TERMS_DTL_ID = #{termsDtlId}
+			</if>
+			<if test="acptDivCd != null and acptDivCd != '' ">
+			AND UTA.ACPT_DIV_CD = #{acptDivCd}
+			</if>
+			<if test="reqdAcptYn != null and reqdAcptYn != '' ">
+			AND UTA.REQD_ACPT_YN = #{reqdAcptYn}
+			</if>
+			<if test="optAcptYn != null and optAcptYn != '' ">
+			AND UTA.OPT_ACPT_YN = #{optAcptYn}
+			</if>
+	</sql>
+
+	<select id="getUserTermsAcptListCount" parameterType="UserTermsAcptExDto" resultType="Integer">
+	/* userTermsAcptMapper.getUserTermsAcptListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_USER_TERMS_ACPT UTA
+		<include refid="where-userTermsAcpt" />
+	</select>
+
+	<select id="getUserTermsAcptList" parameterType="UserTermsAcptExDto" resultType="UserTermsAcptExDto">
+	/* userTermsAcptMapper.getUserTermsAcptList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			UTA.USER_TERMS_ID
+			,UTA.USER_ID
+			,UTA.TERMS_ID
+			,UTA.TERMS_DTL_ID
+			,UTA.ACPT_DIV_CD
+			,UTA.REQD_ACPT_YN
+			,UTA.OPT_ACPT_YN
+			,UTA.REG_USER_ID
+			,REG_DTM
+			,UTA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_TERMS_ACPT UTA
+		<include refid="where-userTermsAcpt" />
+		ORDER BY
+			UTA.USER_TERMS_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getUserTermsAcpt" parameterType="UserTermsAcptExDto" resultType="UserTermsAcptExDto">
+	/* userTermsAcptMapper.getUserTermsAcpt */
+		SELECT
+			UTA.USER_TERMS_ID
+			,UTA.USER_ID
+			,UTA.TERMS_ID
+			,UTA.TERMS_DTL_ID
+			,UTA.ACPT_DIV_CD
+			,UTA.REQD_ACPT_YN
+			,UTA.OPT_ACPT_YN
+			,UTA.REG_USER_ID
+			,REG_DTM
+			,UTA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_TERMS_ACPT UTA
+		WHERE
+			UTA.USER_TERMS_ID = #{userTermsId}
+	</select>
+
+	<insert id="insertUserTermsAcpt" parameterType="UserTermsAcptExDto">
+	/* userTermsAcptMapper.insertUserTermsAcpt */
+		INSERT INTO CW_USER_TERMS_ACPT (
+			USER_TERMS_ID
+			,USER_ID
+			,TERMS_ID
+			,TERMS_DTL_ID
+			,ACPT_DIV_CD
+			,REQD_ACPT_YN
+			,OPT_ACPT_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{userTermsId}
+			,#{userId}
+			,#{termsId}
+			,#{termsDtlId}
+			,#{acptDivCd}
+			,#{reqdAcptYn}
+			,#{optAcptYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateUserTermsAcpt" parameterType="UserTermsAcptExDto">
+	/* userTermsAcptMapper.updateUserTermsAcpt */
+		UPDATE CW_USER_TERMS_ACPT
+		<set>
+		<if test="userId != null">
+		USER_ID = #{userId},
+		</if>
+		<if test="termsId != null">
+		TERMS_ID = #{termsId},
+		</if>
+		<if test="termsDtlId != null">
+		TERMS_DTL_ID = #{termsDtlId},
+		</if>
+		<if test="acptDivCd != null">
+		ACPT_DIV_CD = #{acptDivCd},
+		</if>
+		<if test="reqdAcptYn != null">
+		REQD_ACPT_YN = #{reqdAcptYn},
+		</if>
+		<if test="optAcptYn != null">
+		OPT_ACPT_YN = #{optAcptYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			USER_TERMS_ID = #{userTermsId}
+	</update>
+
+	<delete id="deleteUserTermsAcpt" parameterType="UserTermsAcptExDto">
+	/* userTermsAcptMapper.deleteUserTermsAcpt */
+	DELETE FROM CW_USER_TERMS_ACPT
+	WHERE
+		USER_TERMS_ID = #{userTermsId}
+	</delete>
+</mapper>

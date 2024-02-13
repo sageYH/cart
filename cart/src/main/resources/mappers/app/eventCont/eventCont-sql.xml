@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eventContMapper">
+	<sql id="where-eventCont">
+		WHERE 1=1
+			<if test="eventId != null and eventId != '' ">
+			AND EC.EVENT_ID = #{eventId}
+			</if>
+			<if test="eventContId != null and eventContId != '' ">
+			AND EC.EVENT_CONT_ID = #{eventContId}
+			</if>
+			<if test="eventContCd != null and eventContCd != '' ">
+			AND EC.EVENT_CONT_CD = #{eventContCd}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND EC.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="eventCont != null and eventCont != '' ">
+			AND EC.EVENT_CONT = #{eventCont}
+			</if>
+			<if test="eventMobiCont != null and eventMobiCont != '' ">
+			AND EC.EVENT_MOBI_CONT = #{eventMobiCont}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND EC.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="mobiFileRefId != null and mobiFileRefId != '' ">
+			AND EC.MOBI_FILE_REF_ID = #{mobiFileRefId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND EC.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getEventContListCount" parameterType="EventContExDto" resultType="Integer">
+	/* eventContMapper.getEventContListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_EVENT_CONT EC
+		<include refid="where-eventCont" />
+	</select>
+
+	<select id="getEventContList" parameterType="EventContExDto" resultType="EventContExDto">
+	/* eventContMapper.getEventContList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			EC.EVENT_ID
+			,EC.EVENT_CONT_ID
+			,EC.EVENT_CONT_CD
+			,EC.SORT_SEQ
+			,EC.EVENT_CONT
+			,EC.EVENT_MOBI_CONT
+			,EC.FILE_REF_ID
+			,EC.MOBI_FILE_REF_ID
+			,EC.USE_YN
+			,EC.REG_USER_ID
+			,REG_DTM
+			,EC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_CONT EC
+		<include refid="where-eventCont" />
+		ORDER BY
+			EC.EVENT_ID
+			,EC.EVENT_CONT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getEventCont" parameterType="EventContExDto" resultType="EventContExDto">
+	/* eventContMapper.getEventCont */
+		SELECT
+			EC.EVENT_ID
+			,EC.EVENT_CONT_ID
+			,EC.EVENT_CONT_CD
+			,EC.SORT_SEQ
+			,EC.EVENT_CONT
+			,EC.EVENT_MOBI_CONT
+			,EC.FILE_REF_ID
+			,EC.MOBI_FILE_REF_ID
+			,EC.USE_YN
+			,EC.REG_USER_ID
+			,REG_DTM
+			,EC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_CONT EC
+		WHERE
+			EC.EVENT_ID = #{eventId}
+			AND EC.EVENT_CONT_ID = #{eventContId}
+	</select>
+
+	<insert id="insertEventCont" parameterType="EventContExDto">
+	/* eventContMapper.insertEventCont */
+		INSERT INTO CW_EVENT_CONT (
+			EVENT_ID
+			,EVENT_CONT_ID
+			,EVENT_CONT_CD
+			,SORT_SEQ
+			,EVENT_CONT
+			,EVENT_MOBI_CONT
+			,FILE_REF_ID
+			,MOBI_FILE_REF_ID
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{eventId}
+			,#{eventContId}
+			,#{eventContCd}
+			,#{sortSeq}
+			,#{eventCont}
+			,#{eventMobiCont}
+			,#{fileRefId}
+			,#{mobiFileRefId}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateEventCont" parameterType="EventContExDto">
+	/* eventContMapper.updateEventCont */
+		UPDATE CW_EVENT_CONT
+		<set>
+		<if test="eventContCd != null">
+		EVENT_CONT_CD = #{eventContCd},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="eventCont != null">
+		EVENT_CONT = #{eventCont},
+		</if>
+		<if test="eventMobiCont != null">
+		EVENT_MOBI_CONT = #{eventMobiCont},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="mobiFileRefId != null">
+		MOBI_FILE_REF_ID = #{mobiFileRefId},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			EVENT_ID = #{eventId}
+			AND EVENT_CONT_ID = #{eventContId}
+	</update>
+
+	<delete id="deleteEventCont" parameterType="EventContExDto">
+	/* eventContMapper.deleteEventCont */
+	DELETE FROM CW_EVENT_CONT
+	WHERE
+		EVENT_ID = #{eventId}
+		AND EVENT_CONT_ID = #{eventContId}
+	</delete>
+</mapper>

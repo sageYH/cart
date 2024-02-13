@@ -1,0 +1,177 @@
+<div id="divAfCompBillPop" class="sub_wrap" style="display:none;width:92%" title="제휴업체정산 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>제휴업체정산 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="afCompBillId_g1">제휴업체정산ID</label>
+						<div class="wrap">
+							<input type="text" id="afCompBillId_g1" name="afCompBillId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="afCompBillYmd_g1">제휴업체정산년월일</label>
+						<div class="wrap">
+							<input type="text" id="afCompBillYmd_g1" name="afCompBillYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="afCompId_g1">제휴업체ID</label>
+						<div class="wrap">
+							<input type="text" id="afCompId_g1" name="afCompId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="afDivCd_g1">제휴구분코드[CP02]</label>
+						<div class="wrap">
+							<input type="text" id="afDivCd_g1" name="afDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="afBillQty_g1">제휴정산건수</label>
+						<div class="wrap">
+							<input type="text" id="afBillQty_g1" name="afBillQty_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="afBillAmt_g1">제휴정산금액</label>
+						<div class="wrap">
+							<input type="text" id="afBillAmt_g1" name="afBillAmt_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="billCfmYn_g1">정산확정여부</label>
+						<div class="wrap">
+							<input type="text" id="billCfmYn_g1" name="billCfmYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="billCfmYmd_g1">정산확정년월일</label>
+						<div class="wrap">
+							<input type="text" id="billCfmYmd_g1" name="billCfmYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="AfCompBillPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="AfCompBillPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="AfCompBillPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var AfCompBillPop = new $W.load("divAfCompBillPop");
+AfCompBillPop.ready(function(){
+	//
+});
+
+AfCompBillPop.fnOpen = function(mode, params, func) {
+	clearObjects("divAfCompBillPop");
+	AfCompBillPop.mode = mode;
+	if (!isEmpty(func)){
+		AfCompBillPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divAfCompBillPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["afCompBillId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/afCompBill/getAfCompBill.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("afCompBillYmd_g1").focus();
+	}else{
+		readOnlyFalse(["afCompBillId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+AfCompBillPop.fnSave = function(){
+
+	var valid = 0 || [
+		["afCompBillId_g1","","자료(제휴업체정산ID)를 확인하세요."]
+		,["afCompBillYmd_g1","","자료(제휴업체정산년월일)를 확인하세요."]
+		,["afCompId_g1","","자료(제휴업체ID)를 확인하세요."]
+		,["afDivCd_g1","","자료(제휴구분코드[CP02])를 확인하세요."]
+		,["afBillQty_g1","","자료(제휴정산건수)를 확인하세요."]
+		,["afBillAmt_g1","","자료(제휴정산금액)를 확인하세요."]
+		,["billCfmYn_g1","","자료(정산확정여부)를 확인하세요."]
+		,["billCfmYmd_g1","","자료(정산확정년월일)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divAfCompBillPop");
+	var url = "/app/afCompBill/updateAfCompBill.do";
+	if (AfCompBillPop.mode=="CREATE"){
+		url = "/app/afCompBill/insertAfCompBill.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(AfCompBillPop.func)){
+			AfCompBillPop.func();
+			AfCompBillPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+AfCompBillPop.fnDelete = function(){
+	if (AfCompBillPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/afCompBill/deleteAfCompBill.do";
+	var params = {};
+	params["afCompBillId"] = getElement("afCompBillId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(AfCompBillPop.func)){
+			AfCompBillPop.func();
+			AfCompBillPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+AfCompBillPop.fnClose = function(){
+	layerToggle("divAfCompBillPop",{"mode":0});
+};
+</script>

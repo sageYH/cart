@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eventMapper">
+	<sql id="where-event">
+		WHERE 1=1
+			<if test="eventId != null and eventId != '' ">
+			AND E.EVENT_ID = #{eventId}
+			</if>
+			<if test="eventTtl != null and eventTtl != '' ">
+			AND E.EVENT_TTL = #{eventTtl}
+			</if>
+			<if test="eventTypCd != null and eventTypCd != '' ">
+			AND E.EVENT_TYP_CD = #{eventTypCd}
+			</if>
+			<if test="eventFrYmd != null and eventFrYmd != '' ">
+			AND E.EVENT_FR_YMD = #{eventFrYmd}
+			</if>
+			<if test="eventToYmd != null and eventToYmd != '' ">
+			AND E.EVENT_TO_YMD = #{eventToYmd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND E.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getEventListCount" parameterType="EventExDto" resultType="Integer">
+	/* eventMapper.getEventListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_EVENT E
+		<include refid="where-event" />
+	</select>
+
+	<select id="getEventList" parameterType="EventExDto" resultType="EventExDto">
+	/* eventMapper.getEventList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			E.EVENT_ID
+			,E.EVENT_TTL
+			,E.EVENT_TYP_CD
+			,E.EVENT_FR_YMD
+			,E.EVENT_TO_YMD
+			,E.USE_YN
+			,E.REG_USER_ID
+			,REG_DTM
+			,E.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT E
+		<include refid="where-event" />
+		ORDER BY
+			E.EVENT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getEvent" parameterType="EventExDto" resultType="EventExDto">
+	/* eventMapper.getEvent */
+		SELECT
+			E.EVENT_ID
+			,E.EVENT_TTL
+			,E.EVENT_TYP_CD
+			,E.EVENT_FR_YMD
+			,E.EVENT_TO_YMD
+			,E.USE_YN
+			,E.REG_USER_ID
+			,REG_DTM
+			,E.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT E
+		WHERE
+			E.EVENT_ID = #{eventId}
+	</select>
+
+	<insert id="insertEvent" parameterType="EventExDto">
+	/* eventMapper.insertEvent */
+		INSERT INTO CW_EVENT (
+			EVENT_ID
+			,EVENT_TTL
+			,EVENT_TYP_CD
+			,EVENT_FR_YMD
+			,EVENT_TO_YMD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{eventId}
+			,#{eventTtl}
+			,#{eventTypCd}
+			,#{eventFrYmd}
+			,#{eventToYmd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateEvent" parameterType="EventExDto">
+	/* eventMapper.updateEvent */
+		UPDATE CW_EVENT
+		<set>
+		<if test="eventTtl != null">
+		EVENT_TTL = #{eventTtl},
+		</if>
+		<if test="eventTypCd != null">
+		EVENT_TYP_CD = #{eventTypCd},
+		</if>
+		<if test="eventFrYmd != null">
+		EVENT_FR_YMD = #{eventFrYmd},
+		</if>
+		<if test="eventToYmd != null">
+		EVENT_TO_YMD = #{eventToYmd},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			EVENT_ID = #{eventId}
+	</update>
+
+	<delete id="deleteEvent" parameterType="EventExDto">
+	/* eventMapper.deleteEvent */
+	DELETE FROM CW_EVENT
+	WHERE
+		EVENT_ID = #{eventId}
+	</delete>
+</mapper>

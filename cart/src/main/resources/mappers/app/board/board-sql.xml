@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="boardMapper">
+	<sql id="where-board">
+		WHERE 1=1
+			<if test="boardId != null and boardId != '' ">
+			AND B.BOARD_ID = #{boardId}
+			</if>
+			<if test="boardTypCd != null and boardTypCd != '' ">
+			AND B.BOARD_TYP_CD = #{boardTypCd}
+			</if>
+			<if test="boardTitle != null and boardTitle != '' ">
+			AND B.BOARD_TITLE = #{boardTitle}
+			</if>
+			<if test="boardCont != null and boardCont != '' ">
+			AND B.BOARD_CONT = #{boardCont}
+			</if>
+			<if test="boardViews != null and boardViews != '' ">
+			AND B.BOARD_VIEWS = #{boardViews}
+			</if>
+			<if test="prntBoardId != null and prntBoardId != '' ">
+			AND B.PRNT_BOARD_ID = #{prntBoardId}
+			</if>
+			<if test="grpBoardId != null and grpBoardId != '' ">
+			AND B.GRP_BOARD_ID = #{grpBoardId}
+			</if>
+			<if test="boardFrYmd != null and boardFrYmd != '' ">
+			AND B.BOARD_FR_YMD = #{boardFrYmd}
+			</if>
+			<if test="boardToYmd != null and boardToYmd != '' ">
+			AND B.BOARD_TO_YMD = #{boardToYmd}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND B.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="popupYn != null and popupYn != '' ">
+			AND B.POPUP_YN = #{popupYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND B.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getBoardListCount" parameterType="BoardExDto" resultType="Integer">
+	/* boardMapper.getBoardListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_BOARD B
+		<include refid="where-board" />
+	</select>
+
+	<select id="getBoardList" parameterType="BoardExDto" resultType="BoardExDto">
+	/* boardMapper.getBoardList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			B.BOARD_ID
+			,B.BOARD_TYP_CD
+			,B.BOARD_TITLE
+			,B.BOARD_CONT
+			,B.BOARD_VIEWS
+			,B.PRNT_BOARD_ID
+			,B.GRP_BOARD_ID
+			,B.BOARD_FR_YMD
+			,B.BOARD_TO_YMD
+			,B.FILE_REF_ID
+			,B.POPUP_YN
+			,B.USE_YN
+			,B.REG_USER_ID
+			,REG_DTM
+			,B.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_BOARD B
+		<include refid="where-board" />
+		ORDER BY
+			B.BOARD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getBoard" parameterType="BoardExDto" resultType="BoardExDto">
+	/* boardMapper.getBoard */
+		SELECT
+			B.BOARD_ID
+			,B.BOARD_TYP_CD
+			,B.BOARD_TITLE
+			,B.BOARD_CONT
+			,B.BOARD_VIEWS
+			,B.PRNT_BOARD_ID
+			,B.GRP_BOARD_ID
+			,B.BOARD_FR_YMD
+			,B.BOARD_TO_YMD
+			,B.FILE_REF_ID
+			,B.POPUP_YN
+			,B.USE_YN
+			,B.REG_USER_ID
+			,REG_DTM
+			,B.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_BOARD B
+		WHERE
+			B.BOARD_ID = #{boardId}
+	</select>
+
+	<insert id="insertBoard" parameterType="BoardExDto">
+	/* boardMapper.insertBoard */
+		INSERT INTO CW_BOARD (
+			BOARD_ID
+			,BOARD_TYP_CD
+			,BOARD_TITLE
+			,BOARD_CONT
+			,BOARD_VIEWS
+			,PRNT_BOARD_ID
+			,GRP_BOARD_ID
+			,BOARD_FR_YMD
+			,BOARD_TO_YMD
+			,FILE_REF_ID
+			,POPUP_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{boardId}
+			,#{boardTypCd}
+			,#{boardTitle}
+			,#{boardCont}
+			,#{boardViews}
+			,#{prntBoardId}
+			,#{grpBoardId}
+			,#{boardFrYmd}
+			,#{boardToYmd}
+			,#{fileRefId}
+			,#{popupYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateBoard" parameterType="BoardExDto">
+	/* boardMapper.updateBoard */
+		UPDATE CW_BOARD
+		<set>
+		<if test="boardTypCd != null">
+		BOARD_TYP_CD = #{boardTypCd},
+		</if>
+		<if test="boardTitle != null">
+		BOARD_TITLE = #{boardTitle},
+		</if>
+		<if test="boardCont != null">
+		BOARD_CONT = #{boardCont},
+		</if>
+		<if test="boardViews != null">
+		BOARD_VIEWS = #{boardViews},
+		</if>
+		<if test="prntBoardId != null">
+		PRNT_BOARD_ID = #{prntBoardId},
+		</if>
+		<if test="grpBoardId != null">
+		GRP_BOARD_ID = #{grpBoardId},
+		</if>
+		<if test="boardFrYmd != null">
+		BOARD_FR_YMD = #{boardFrYmd},
+		</if>
+		<if test="boardToYmd != null">
+		BOARD_TO_YMD = #{boardToYmd},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="popupYn != null">
+		POPUP_YN = #{popupYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			BOARD_ID = #{boardId}
+	</update>
+
+	<delete id="deleteBoard" parameterType="BoardExDto">
+	/* boardMapper.deleteBoard */
+	DELETE FROM CW_BOARD
+	WHERE
+		BOARD_ID = #{boardId}
+	</delete>
+</mapper>

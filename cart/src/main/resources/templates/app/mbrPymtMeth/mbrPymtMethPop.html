@@ -1,0 +1,228 @@
+<div id="divMbrPymtMethPop" class="sub_wrap" style="display:none;width:92%" title="멤버결제수단 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>멤버결제수단 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="mbrId_g1">멤버ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrId_g1" name="mbrId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardNo_g1">카드번호</label>
+						<div class="wrap">
+							<input type="text" id="cardNo_g1" name="cardNo_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cwPymtAgcyCompCd_g1">결제대행사코드</label>
+						<div class="wrap">
+							<input type="text" id="cwPymtAgcyCompCd_g1" name="cwPymtAgcyCompCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="billKey_g1">정산키</label>
+						<div class="wrap">
+							<input type="text" id="billKey_g1" name="billKey_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="mnPymtCardYn_g1">주결제카드여부</label>
+						<div class="wrap">
+							<input type="text" id="mnPymtCardYn_g1" name="mnPymtCardYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="bin_g1">카드식별번호</label>
+						<div class="wrap">
+							<input type="text" id="bin_g1" name="bin_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardRegDtm_g1">카드등록일시</label>
+						<div class="wrap">
+							<input type="text" id="cardRegDtm_g1" name="cardRegDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardValdYm_g1">카드유효년월</label>
+						<div class="wrap">
+							<input type="text" id="cardValdYm_g1" name="cardValdYm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="issueCompKindCd_g1">발급사종류코드</label>
+						<div class="wrap">
+							<input type="text" id="issueCompKindCd_g1" name="issueCompKindCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardBrandCd_g1">카드브랜드코드</label>
+						<div class="wrap">
+							<input type="text" id="cardBrandCd_g1" name="cardBrandCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardTypCd_g1">카드유형코드</label>
+						<div class="wrap">
+							<input type="text" id="cardTypCd_g1" name="cardTypCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardStopDtm_g1">카드중지일시</label>
+						<div class="wrap">
+							<input type="text" id="cardStopDtm_g1" name="cardStopDtm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="MbrPymtMethPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="MbrPymtMethPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="MbrPymtMethPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var MbrPymtMethPop = new $W.load("divMbrPymtMethPop");
+MbrPymtMethPop.ready(function(){
+	//
+});
+
+MbrPymtMethPop.fnOpen = function(mode, params, func) {
+	clearObjects("divMbrPymtMethPop");
+	MbrPymtMethPop.mode = mode;
+	if (!isEmpty(func)){
+		MbrPymtMethPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divMbrPymtMethPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["mbrId_g1","cardNo_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/mbrPymtMeth/getMbrPymtMeth.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cwPymtAgcyCompCd_g1").focus();
+	}else{
+		readOnlyFalse(["mbrId_g1","cardNo_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+MbrPymtMethPop.fnSave = function(){
+
+	var valid = 0 || [
+		["mbrId_g1","","자료(멤버ID)를 확인하세요."]
+		,["cardNo_g1","","자료(카드번호)를 확인하세요."]
+		,["cwPymtAgcyCompCd_g1","","자료(결제대행사코드)를 확인하세요."]
+		,["billKey_g1","","자료(정산키)를 확인하세요."]
+		,["mnPymtCardYn_g1","","자료(주결제카드여부)를 확인하세요."]
+		,["bin_g1","","자료(카드식별번호)를 확인하세요."]
+		,["cardRegDtm_g1","","자료(카드등록일시)를 확인하세요."]
+		,["cardValdYm_g1","","자료(카드유효년월)를 확인하세요."]
+		,["issueCompKindCd_g1","","자료(발급사종류코드)를 확인하세요."]
+		,["cardBrandCd_g1","","자료(카드브랜드코드)를 확인하세요."]
+		,["cardTypCd_g1","","자료(카드유형코드)를 확인하세요."]
+		,["cardStopDtm_g1","","자료(카드중지일시)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divMbrPymtMethPop");
+	var url = "/app/mbrPymtMeth/updateMbrPymtMeth.do";
+	if (MbrPymtMethPop.mode=="CREATE"){
+		url = "/app/mbrPymtMeth/insertMbrPymtMeth.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrPymtMethPop.func)){
+			MbrPymtMethPop.func();
+			MbrPymtMethPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+MbrPymtMethPop.fnDelete = function(){
+	if (MbrPymtMethPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/mbrPymtMeth/deleteMbrPymtMeth.do";
+	var params = {};
+	params["mbrId"] = getElement("mbrId_g1").value;
+	params["cardNo"] = getElement("cardNo_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MbrPymtMethPop.func)){
+			MbrPymtMethPop.func();
+			MbrPymtMethPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+MbrPymtMethPop.fnClose = function(){
+	layerToggle("divMbrPymtMethPop",{"mode":0});
+};
+</script>

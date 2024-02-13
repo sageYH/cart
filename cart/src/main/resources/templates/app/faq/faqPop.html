@@ -1,0 +1,216 @@
+<div id="divFaqPop" class="sub_wrap" style="display:none;width:92%" title="FAQ 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>FAQ 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="faqId_g1">FAQ_ID</label>
+						<div class="wrap">
+							<input type="text" id="faqId_g1" name="faqId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="faqTypCd_g1">FAQ유형코드[BB02]</label>
+						<div class="wrap">
+							<input type="text" id="faqTypCd_g1" name="faqTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="faqTitle_g1">제목</label>
+						<div class="wrap">
+							<input type="text" id="faqTitle_g1" name="faqTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="faqCont_g1">FAQ내용</label>
+						<div class="wrap">
+							<input type="text" id="faqCont_g1" name="faqCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="faqViews_g1">FAQ조회수</label>
+						<div class="wrap">
+							<input type="text" id="faqViews_g1" name="faqViews_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prntFaqId_g1">상위FAQ_ID</label>
+						<div class="wrap">
+							<input type="text" id="prntFaqId_g1" name="prntFaqId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="grpFaqId_g1">그룹FAQ_ID</label>
+						<div class="wrap">
+							<input type="text" id="grpFaqId_g1" name="grpFaqId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="faqFrYmd_g1">FAQ시작일</label>
+						<div class="wrap">
+							<input type="text" id="faqFrYmd_g1" name="faqFrYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="faqToYmd_g1">FAQ종료일</label>
+						<div class="wrap">
+							<input type="text" id="faqToYmd_g1" name="faqToYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="popupYn_g1">팝업여부</label>
+						<div class="wrap">
+							<input type="text" id="popupYn_g1" name="popupYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="FaqPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="FaqPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="FaqPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var FaqPop = new $W.load("divFaqPop");
+FaqPop.ready(function(){
+	//
+});
+
+FaqPop.fnOpen = function(mode, params, func) {
+	clearObjects("divFaqPop");
+	FaqPop.mode = mode;
+	if (!isEmpty(func)){
+		FaqPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divFaqPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["faqId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/faq/getFaq.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("faqTypCd_g1").focus();
+	}else{
+		readOnlyFalse(["faqId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+FaqPop.fnSave = function(){
+
+	var valid = 0 || [
+		["faqId_g1","","자료(FAQ_ID)를 확인하세요."]
+		,["faqTypCd_g1","","자료(FAQ유형코드[BB02])를 확인하세요."]
+		,["faqTitle_g1","","자료(제목)를 확인하세요."]
+		,["faqCont_g1","","자료(FAQ내용)를 확인하세요."]
+		,["faqViews_g1","","자료(FAQ조회수)를 확인하세요."]
+		,["prntFaqId_g1","","자료(상위FAQ_ID)를 확인하세요."]
+		,["grpFaqId_g1","","자료(그룹FAQ_ID)를 확인하세요."]
+		,["faqFrYmd_g1","","자료(FAQ시작일)를 확인하세요."]
+		,["faqToYmd_g1","","자료(FAQ종료일)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["popupYn_g1","","자료(팝업여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divFaqPop");
+	var url = "/app/faq/updateFaq.do";
+	if (FaqPop.mode=="CREATE"){
+		url = "/app/faq/insertFaq.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(FaqPop.func)){
+			FaqPop.func();
+			FaqPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+FaqPop.fnDelete = function(){
+	if (FaqPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/faq/deleteFaq.do";
+	var params = {};
+	params["faqId"] = getElement("faqId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(FaqPop.func)){
+			FaqPop.func();
+			FaqPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+FaqPop.fnClose = function(){
+	layerToggle("divFaqPop",{"mode":0});
+};
+</script>

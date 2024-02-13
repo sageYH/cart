@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cmnCd"] = '[[${transData.cmnCd}]]';
+    map["grpCd"] = '[[${transData.grpCd}]]';
+	if (isEmpty(map["cmnCd"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cmnCd").setAttribute('readonly', true);
+		getEleByObj("grpCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/cmnCode/getCmnCode.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cmnCd","","자료(공통코드)를 확인하세요."]
+		["cmnCdNm","","자료(공통코드명)를 확인하세요."]
+		["grpCd","","자료(그룹코드)를 확인하세요."]
+		["ref1","","자료(참조1)를 확인하세요."]
+		["ref2","","자료(참조2)를 확인하세요."]
+		["ref3","","자료(참조3)를 확인하세요."]
+		["sortSeq","","자료(정렬순서)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/cmnCode/updateCmnCode.do";
+	if (mode=="NEW"){
+		url = "/app/cmnCode/insertCmnCode.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCmnCodePop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCmnCodePop" class="modal shot-pop" title="공통코드 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCmnCodePop" name="formCmnCodePop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">공통코드</th>
+						<td><input type="text" name="cmnCd" id="cmnCd" style="width:70%" readonly >
+						</td>
+					<th scope="row">공통코드명</th>
+					<td><input type="text" name="cmnCdNm" id="cmnCdNm" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">그룹코드</th>
+						<td><input type="text" name="grpCd" id="grpCd" style="width:70%" >
+						</td>
+					<th scope="row">참조1</th>
+					<td><input type="text" name="ref1" id="ref1" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">참조2</th>
+						<td><input type="text" name="ref2" id="ref2" style="width:70%" >
+						</td>
+					<th scope="row">참조3</th>
+					<td><input type="text" name="ref3" id="ref3" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">정렬순서</th>
+						<td><input type="text" name="sortSeq" id="sortSeq" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

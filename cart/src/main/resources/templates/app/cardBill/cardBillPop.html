@@ -1,0 +1,220 @@
+<div id="divCardBillPop" class="sub_wrap" style="display:none;width:92%" title="카드사정산 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>카드사정산 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cardBillId_g1">카드정산ID</label>
+						<div class="wrap">
+							<input type="text" id="cardBillId_g1" name="cardBillId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardBillYmd_g1">카드정산년월일</label>
+						<div class="wrap">
+							<input type="text" id="cardBillYmd_g1" name="cardBillYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pymtAgcyCompCd_g1">결제대행사코드</label>
+						<div class="wrap">
+							<input type="text" id="pymtAgcyCompCd_g1" name="pymtAgcyCompCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardCompCd_g1">카드사코드</label>
+						<div class="wrap">
+							<input type="text" id="cardCompCd_g1" name="cardCompCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardQty_g1">카드건수</label>
+						<div class="wrap">
+							<input type="text" id="cardQty_g1" name="cardQty_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardAmt_g1">카드금액</label>
+						<div class="wrap">
+							<input type="text" id="cardAmt_g1" name="cardAmt_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardFeeAmt_g1">카드수수료금액</label>
+						<div class="wrap">
+							<input type="text" id="cardFeeAmt_g1" name="cardFeeAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cardErrQty_g1">카드오류건수</label>
+						<div class="wrap">
+							<input type="text" id="cardErrQty_g1" name="cardErrQty_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cardErrAmt_g1">카드오류금액</label>
+						<div class="wrap">
+							<input type="text" id="cardErrAmt_g1" name="cardErrAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="billQty_g1">정산건수</label>
+						<div class="wrap">
+							<input type="text" id="billQty_g1" name="billQty_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="billAmt_g1">정산금액</label>
+						<div class="wrap">
+							<input type="text" id="billAmt_g1" name="billAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="billCfmYn_g1">정산확정여부</label>
+						<div class="wrap">
+							<input type="text" id="billCfmYn_g1" name="billCfmYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="billCfmYmd_g1">정산확정년월일</label>
+						<div class="wrap">
+							<input type="text" id="billCfmYmd_g1" name="billCfmYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CardBillPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CardBillPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CardBillPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CardBillPop = new $W.load("divCardBillPop");
+CardBillPop.ready(function(){
+	//
+});
+
+CardBillPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCardBillPop");
+	CardBillPop.mode = mode;
+	if (!isEmpty(func)){
+		CardBillPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCardBillPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cardBillId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/cardBill/getCardBill.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cardBillYmd_g1").focus();
+	}else{
+		readOnlyFalse(["cardBillId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CardBillPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cardBillId_g1","","자료(카드정산ID)를 확인하세요."]
+		,["cardBillYmd_g1","","자료(카드정산년월일)를 확인하세요."]
+		,["pymtAgcyCompCd_g1","","자료(결제대행사코드)를 확인하세요."]
+		,["cardCompCd_g1","","자료(카드사코드)를 확인하세요."]
+		,["cardQty_g1","","자료(카드건수)를 확인하세요."]
+		,["cardAmt_g1","","자료(카드금액)를 확인하세요."]
+		,["cardFeeAmt_g1","","자료(카드수수료금액)를 확인하세요."]
+		,["cardErrQty_g1","","자료(카드오류건수)를 확인하세요."]
+		,["cardErrAmt_g1","","자료(카드오류금액)를 확인하세요."]
+		,["billQty_g1","","자료(정산건수)를 확인하세요."]
+		,["billAmt_g1","","자료(정산금액)를 확인하세요."]
+		,["billCfmYn_g1","","자료(정산확정여부)를 확인하세요."]
+		,["billCfmYmd_g1","","자료(정산확정년월일)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCardBillPop");
+	var url = "/app/cardBill/updateCardBill.do";
+	if (CardBillPop.mode=="CREATE"){
+		url = "/app/cardBill/insertCardBill.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CardBillPop.func)){
+			CardBillPop.func();
+			CardBillPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CardBillPop.fnDelete = function(){
+	if (CardBillPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/cardBill/deleteCardBill.do";
+	var params = {};
+	params["cardBillId"] = getElement("cardBillId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CardBillPop.func)){
+			CardBillPop.func();
+			CardBillPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CardBillPop.fnClose = function(){
+	layerToggle("divCardBillPop",{"mode":0});
+};
+</script>

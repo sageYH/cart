@@ -1,0 +1,188 @@
+<div id="divMemberCertPop" class="sub_wrap" style="display:none;width:92%" title="멤버인증 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>멤버인증 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="mbrCertId_g1">멤버인증ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrCertId_g1" name="mbrCertId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mbrId_g1">멤버ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrId_g1" name="mbrId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="certMethCd_g1">인증수단코드[CM03]</label>
+						<div class="wrap">
+							<input type="text" id="certMethCd_g1" name="certMethCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mbrCertKey_g1">멤버인증키</label>
+						<div class="wrap">
+							<input type="text" id="mbrCertKey_g1" name="mbrCertKey_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="certFrDtm_g1">인증시작일시</label>
+						<div class="wrap">
+							<input type="text" id="certFrDtm_g1" name="certFrDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="certToDtm_g1">인증종료일시</label>
+						<div class="wrap">
+							<input type="text" id="certToDtm_g1" name="certToDtm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="certSendDtm_g1">인증발송일시</label>
+						<div class="wrap">
+							<input type="text" id="certSendDtm_g1" name="certSendDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="certCfmDtm_g1">인증확정일시</label>
+						<div class="wrap">
+							<input type="text" id="certCfmDtm_g1" name="certCfmDtm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="certCfmYn_g1">인증확정여부</label>
+						<div class="wrap">
+							<input type="text" id="certCfmYn_g1" name="certCfmYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="MemberCertPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="MemberCertPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="MemberCertPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var MemberCertPop = new $W.load("divMemberCertPop");
+MemberCertPop.ready(function(){
+	//
+});
+
+MemberCertPop.fnOpen = function(mode, params, func) {
+	clearObjects("divMemberCertPop");
+	MemberCertPop.mode = mode;
+	if (!isEmpty(func)){
+		MemberCertPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divMemberCertPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["mbrCertId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/memberCert/getMemberCert.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("mbrId_g1").focus();
+	}else{
+		readOnlyFalse(["mbrCertId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+MemberCertPop.fnSave = function(){
+
+	var valid = 0 || [
+		["mbrCertId_g1","","자료(멤버인증ID)를 확인하세요."]
+		,["mbrId_g1","","자료(멤버ID)를 확인하세요."]
+		,["certMethCd_g1","","자료(인증수단코드[CM03])를 확인하세요."]
+		,["mbrCertKey_g1","","자료(멤버인증키)를 확인하세요."]
+		,["certFrDtm_g1","","자료(인증시작일시)를 확인하세요."]
+		,["certToDtm_g1","","자료(인증종료일시)를 확인하세요."]
+		,["certSendDtm_g1","","자료(인증발송일시)를 확인하세요."]
+		,["certCfmDtm_g1","","자료(인증확정일시)를 확인하세요."]
+		,["certCfmYn_g1","","자료(인증확정여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divMemberCertPop");
+	var url = "/app/memberCert/updateMemberCert.do";
+	if (MemberCertPop.mode=="CREATE"){
+		url = "/app/memberCert/insertMemberCert.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MemberCertPop.func)){
+			MemberCertPop.func();
+			MemberCertPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+MemberCertPop.fnDelete = function(){
+	if (MemberCertPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/memberCert/deleteMemberCert.do";
+	var params = {};
+	params["mbrCertId"] = getElement("mbrCertId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(MemberCertPop.func)){
+			MemberCertPop.func();
+			MemberCertPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+MemberCertPop.fnClose = function(){
+	layerToggle("divMemberCertPop",{"mode":0});
+};
+</script>

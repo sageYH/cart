@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="termsDetsLangMapper">
+	<sql id="where-termsDetsLang">
+		WHERE 1=1
+			<if test="termsId != null and termsId != '' ">
+			AND TDL.TERMS_ID = #{termsId}
+			</if>
+			<if test="termsDtlId != null and termsDtlId != '' ">
+			AND TDL.TERMS_DTL_ID = #{termsDtlId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND TDL.LANG_CD = #{langCd}
+			</if>
+			<if test="termsDtlNm != null and termsDtlNm != '' ">
+			AND TDL.TERMS_DTL_NM = #{termsDtlNm}
+			</if>
+			<if test="termsDtlCont != null and termsDtlCont != '' ">
+			AND TDL.TERMS_DTL_CONT = #{termsDtlCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND TDL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getTermsDetsLangListCount" parameterType="TermsDetsLangExDto" resultType="Integer">
+	/* termsDetsLangMapper.getTermsDetsLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_TERMS_DETS_LANG TDL
+		<include refid="where-termsDetsLang" />
+	</select>
+
+	<select id="getTermsDetsLangList" parameterType="TermsDetsLangExDto" resultType="TermsDetsLangExDto">
+	/* termsDetsLangMapper.getTermsDetsLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			TDL.TERMS_ID
+			,TDL.TERMS_DTL_ID
+			,TDL.LANG_CD
+			,TDL.TERMS_DTL_NM
+			,TDL.TERMS_DTL_CONT
+			,TDL.USE_YN
+			,TDL.REG_USER_ID
+			,REG_DTM
+			,TDL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS_DETS_LANG TDL
+		<include refid="where-termsDetsLang" />
+		ORDER BY
+			TDL.TERMS_ID
+			,TDL.TERMS_DTL_ID
+			,TDL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getTermsDetsLang" parameterType="TermsDetsLangExDto" resultType="TermsDetsLangExDto">
+	/* termsDetsLangMapper.getTermsDetsLang */
+		SELECT
+			TDL.TERMS_ID
+			,TDL.TERMS_DTL_ID
+			,TDL.LANG_CD
+			,TDL.TERMS_DTL_NM
+			,TDL.TERMS_DTL_CONT
+			,TDL.USE_YN
+			,TDL.REG_USER_ID
+			,REG_DTM
+			,TDL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_TERMS_DETS_LANG TDL
+		WHERE
+			TDL.TERMS_ID = #{termsId}
+			AND TDL.TERMS_DTL_ID = #{termsDtlId}
+			AND TDL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertTermsDetsLang" parameterType="TermsDetsLangExDto">
+	/* termsDetsLangMapper.insertTermsDetsLang */
+		INSERT INTO CW_TERMS_DETS_LANG (
+			TERMS_ID
+			,TERMS_DTL_ID
+			,LANG_CD
+			,TERMS_DTL_NM
+			,TERMS_DTL_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{termsId}
+			,#{termsDtlId}
+			,#{langCd}
+			,#{termsDtlNm}
+			,#{termsDtlCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateTermsDetsLang" parameterType="TermsDetsLangExDto">
+	/* termsDetsLangMapper.updateTermsDetsLang */
+		UPDATE CW_TERMS_DETS_LANG
+		<set>
+		<if test="termsDtlNm != null">
+		TERMS_DTL_NM = #{termsDtlNm},
+		</if>
+		<if test="termsDtlCont != null">
+		TERMS_DTL_CONT = #{termsDtlCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			TERMS_ID = #{termsId}
+			AND TERMS_DTL_ID = #{termsDtlId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteTermsDetsLang" parameterType="TermsDetsLangExDto">
+	/* termsDetsLangMapper.deleteTermsDetsLang */
+	DELETE FROM CW_TERMS_DETS_LANG
+	WHERE
+		TERMS_ID = #{termsId}
+		AND TERMS_DTL_ID = #{termsDtlId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["eventId"] = '[[${transData.eventId}]]';
+    map["eventContId"] = '[[${transData.eventContId}]]';
+	if (isEmpty(map["eventId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/eventCont/getEventCont.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvEventContPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="eventId" id="eventId">
+				<input type="hidden" name="eventContId" id="eventContId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">이벤트내용코드[EV02]</th>
+							<td><span name="eventContCd" id="eventContCd"></span></td>
+							<th scope="row">이벤트순서</th>
+							<td><span name="sortSeq" id="sortSeq"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">이벤트내용</th>
+							<td><span name="eventCont" id="eventCont"></span></td>
+							<th scope="row">이벤트모바일내용</th>
+							<td><span name="eventMobiCont" id="eventMobiCont"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">파일참조ID</th>
+							<td><span name="fileRefId" id="fileRefId"></span></td>
+							<th scope="row">모바일파일참조ID</th>
+							<td><span name="mobiFileRefId" id="mobiFileRefId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

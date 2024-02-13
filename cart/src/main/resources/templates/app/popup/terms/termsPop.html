@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["termsId"] = '[[${transData.termsId}]]';
+	if (isEmpty(map["termsId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("termsId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/terms/getTerms.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["termsId","","자료(약관ID)를 확인하세요."]
+		["termsDivCd","","자료(약관구분코드[TM01])를 확인하세요."]
+		["termsFrYmd","","자료(약관시작일)를 확인하세요."]
+		["termsToYmd","","자료(약관종료일)를 확인하세요."]
+		["termsTgtCd","","자료(약관대상코드[TM02])를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/terms/updateTerms.do";
+	if (mode=="NEW"){
+		url = "/app/terms/insertTerms.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formTermsPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvTermsPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formTermsPop" name="formTermsPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">약관ID</th>
+						<td><input type="text" name="termsId" id="termsId" style="width:70%" readonly >
+						</td>
+					<th scope="row">약관구분코드[TM01]</th>
+					<td><input type="text" name="termsDivCd" id="termsDivCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">약관시작일</th>
+						<td><input type="text" name="termsFrYmd" id="termsFrYmd" style="width:70%" >
+						</td>
+					<th scope="row">약관종료일</th>
+					<td><input type="text" name="termsToYmd" id="termsToYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">약관대상코드[TM02]</th>
+						<td><input type="text" name="termsTgtCd" id="termsTgtCd" style="width:70%" >
+						</td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<div id="divPointIssuePop" class="sub_wrap" style="display:none;width:92%" title="포인트발급 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>포인트발급 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="pointIssueId_g1">포인트발급ID</label>
+						<div class="wrap">
+							<input type="text" id="pointIssueId_g1" name="pointIssueId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pointId_g1">포인트ID</label>
+						<div class="wrap">
+							<input type="text" id="pointId_g1" name="pointId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pointCont_g1">포인트내용</label>
+						<div class="wrap">
+							<input type="text" id="pointCont_g1" name="pointCont_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pymtCompId_g1">지급업체ID</label>
+						<div class="wrap">
+							<input type="text" id="pymtCompId_g1" name="pymtCompId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pointApplFrYmd_g1">포인트적용시작일</label>
+						<div class="wrap">
+							<input type="text" id="pointApplFrYmd_g1" name="pointApplFrYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pointApplToYmd_g1">포인트적용종료일</label>
+						<div class="wrap">
+							<input type="text" id="pointApplToYmd_g1" name="pointApplToYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pointTotAmt_g1">포인트총액</label>
+						<div class="wrap">
+							<input type="text" id="pointTotAmt_g1" name="pointTotAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pointAmt_g1">포인트금액</label>
+						<div class="wrap">
+							<input type="text" id="pointAmt_g1" name="pointAmt_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="prodMinAmt_g1">상품최소금액</label>
+						<div class="wrap">
+							<input type="text" id="prodMinAmt_g1" name="prodMinAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="ordMinAmt_g1">주문최소금액</label>
+						<div class="wrap">
+							<input type="text" id="ordMinAmt_g1" name="ordMinAmt_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pointPaidTotAmt_g1">포인트지급총액</label>
+						<div class="wrap">
+							<input type="text" id="pointPaidTotAmt_g1" name="pointPaidTotAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="PointIssuePop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="PointIssuePop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="PointIssuePop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var PointIssuePop = new $W.load("divPointIssuePop");
+PointIssuePop.ready(function(){
+	//
+});
+
+PointIssuePop.fnOpen = function(mode, params, func) {
+	clearObjects("divPointIssuePop");
+	PointIssuePop.mode = mode;
+	if (!isEmpty(func)){
+		PointIssuePop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divPointIssuePop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["pointIssueId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/pointIssue/getPointIssue.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("pointId_g1").focus();
+	}else{
+		readOnlyFalse(["pointIssueId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+PointIssuePop.fnSave = function(){
+
+	var valid = 0 || [
+		["pointIssueId_g1","","자료(포인트발급ID)를 확인하세요."]
+		,["pointId_g1","","자료(포인트ID)를 확인하세요."]
+		,["pointCont_g1","","자료(포인트내용)를 확인하세요."]
+		,["pymtCompId_g1","","자료(지급업체ID)를 확인하세요."]
+		,["pointApplFrYmd_g1","","자료(포인트적용시작일)를 확인하세요."]
+		,["pointApplToYmd_g1","","자료(포인트적용종료일)를 확인하세요."]
+		,["pointTotAmt_g1","","자료(포인트총액)를 확인하세요."]
+		,["pointAmt_g1","","자료(포인트금액)를 확인하세요."]
+		,["prodMinAmt_g1","","자료(상품최소금액)를 확인하세요."]
+		,["ordMinAmt_g1","","자료(주문최소금액)를 확인하세요."]
+		,["pointPaidTotAmt_g1","","자료(포인트지급총액)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divPointIssuePop");
+	var url = "/app/pointIssue/updatePointIssue.do";
+	if (PointIssuePop.mode=="CREATE"){
+		url = "/app/pointIssue/insertPointIssue.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PointIssuePop.func)){
+			PointIssuePop.func();
+			PointIssuePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+PointIssuePop.fnDelete = function(){
+	if (PointIssuePop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/pointIssue/deletePointIssue.do";
+	var params = {};
+	params["pointIssueId"] = getElement("pointIssueId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(PointIssuePop.func)){
+			PointIssuePop.func();
+			PointIssuePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+PointIssuePop.fnClose = function(){
+	layerToggle("divPointIssuePop",{"mode":0});
+};
+</script>

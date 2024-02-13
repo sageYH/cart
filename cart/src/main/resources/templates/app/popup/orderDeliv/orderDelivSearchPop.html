@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/orderDeliv/orderDelivGrid.js"></script>
+<script>
+var gridOrderDeliv = null;
+window.onload = function() {
+	gridOrderDeliv = setGridOrderDeliv("dvGridOrderDelivSearch");
+	gridOrderDeliv.setBodyHeight(300);
+	fixedColGrid(gridOrderDeliv);
+
+	gridOrderDeliv.on("click",function(ev){
+		toggleGrid(gridOrderDeliv,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridOrderDeliv.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridOrderDeliv)==false){
+			dblClickGridOrderDeliv();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridOrderDeliv(){
+	getResultData();
+}
+
+//page
+var pageClsOrderDeliv = new pageCls("dvOrderDelivPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridOrderDeliv);
+
+	var params = {};
+	if (isEmpty(getEVal("ordDelivId"))==false) params["ordDelivId"] = getEVal("ordDelivId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("delivCompId"))==false) params["delivCompId"] = getEVal("delivCompId");
+	if (isEmpty(getEVal("delivFee"))==false) params["delivFee"] = getEVal("delivFee");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("delivYn"))==false) params["delivYn"] = getEVal("delivYn");
+	if (isEmpty(getEVal("delivExpectedYmd"))==false) params["delivExpectedYmd"] = getEVal("delivExpectedYmd");
+	if (isEmpty(getEVal("delivYmd"))==false) params["delivYmd"] = getEVal("delivYmd");
+	//page set
+	params = pageClsOrderDeliv.getPageInfo(params);
+
+	var url = "/app/orderDeliv/getOrderDelivPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridOrderDeliv,result.payloads);
+		//set total
+		pageClsOrderDeliv.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridOrderDeliv);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderDelivSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridOrderDelivSearch" class="addr-list" ></div>
+					<div id="dvOrderDelivPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsMbrTermsAcpt = new pageCls("dvMbrTermsAcptPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("mbrTermsId"))==false) params["mbrTermsId"] = getEVal("mbrTermsId");
+	if (isEmpty(getEVal("mbrId"))==false) params["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("termsId"))==false) params["termsId"] = getEVal("termsId");
+	if (isEmpty(getEVal("termsDtlId"))==false) params["termsDtlId"] = getEVal("termsDtlId");
+	if (isEmpty(getEVal("acptDivCd"))==false) params["acptDivCd"] = getEVal("acptDivCd");
+	if (isEmpty(getEVal("reqdAcptYn"))==false) params["reqdAcptYn"] = getEVal("reqdAcptYn");
+	if (isEmpty(getEVal("optAcptYn"))==false) params["optAcptYn"] = getEVal("optAcptYn");
+	//page set
+	params = pageClsMbrTermsAcpt.getPageInfo(params);
+
+	var url = "/app/mbrTermsAcpt/getMbrTermsAcptPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["mbrTermsId","mbrId","termsId","termsDtlId","acptDivCd","reqdAcptYn","optAcptYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,7);
+	pageClsMbrTermsAcpt.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsMbrTermsAcptDown(){
+	var url = "/app/mbrTermsAcpt/getMbrTermsAcptExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("mbrTermsId"))==false) paramXls["mbrTermsId"] = getEVal("mbrTermsId");
+	if (isEmpty(getEVal("mbrId"))==false) paramXls["mbrId"] = getEVal("mbrId");
+	if (isEmpty(getEVal("termsId"))==false) paramXls["termsId"] = getEVal("termsId");
+	if (isEmpty(getEVal("termsDtlId"))==false) paramXls["termsDtlId"] = getEVal("termsDtlId");
+	if (isEmpty(getEVal("acptDivCd"))==false) paramXls["acptDivCd"] = getEVal("acptDivCd");
+	if (isEmpty(getEVal("reqdAcptYn"))==false) paramXls["reqdAcptYn"] = getEVal("reqdAcptYn");
+	if (isEmpty(getEVal("optAcptYn"))==false) paramXls["optAcptYn"] = getEVal("optAcptYn");
+
+	var params = {"xlsName":"멤버약관동의"
+		,"sheetName":"시트"
+		,"columnHeaders":["사용자약관ID","멤버ID","약관ID","약관상세ID","동의구분코드[TM03]","필수동의여부","선택동의여부"]
+		,"columnNames":["mbrTermsId","mbrId","termsId","termsDtlId","acptDivCd","reqdAcptYn","optAcptYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["mbrTermsId"] = arr[0].trim();
+		params["mbrId"] = arr[1].trim();
+	}
+	MbrTermsAcptPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvMbrTermsAcptSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvMbrTermsAcptSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsMbrTermsAcpt.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">사용자약관ID</th>
+							<th scope="col">멤버ID</th>
+							<th scope="col">약관ID</th>
+							<th scope="col">약관상세ID</th>
+							<th scope="col">동의구분코드[TM03]</th>
+							<th scope="col">필수동의여부</th>
+							<th scope="col">선택동의여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{mbrTermsId}},{{mbrId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{mbrTermsId}}</td>
+						<td>{{mbrId}}</td>
+						<td>{{termsId}}</td>
+						<td>{{termsDtlId}}</td>
+						<td>{{acptDivCd}}</td>
+						<td>{{reqdAcptYn}}</td>
+						<td>{{optAcptYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvMbrTermsAcptPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/mbrTermsAcpt/mbrTermsAcptPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

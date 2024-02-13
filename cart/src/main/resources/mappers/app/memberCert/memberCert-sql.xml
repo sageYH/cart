@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="memberCertMapper">
+	<sql id="where-memberCert">
+		WHERE 1=1
+			<if test="mbrCertId != null and mbrCertId != '' ">
+			AND MC.MBR_CERT_ID = #{mbrCertId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND MC.MBR_ID = #{mbrId}
+			</if>
+			<if test="certMethCd != null and certMethCd != '' ">
+			AND MC.CERT_METH_CD = #{certMethCd}
+			</if>
+			<if test="mbrCertKey != null and mbrCertKey != '' ">
+			AND MC.MBR_CERT_KEY = #{mbrCertKey}
+			</if>
+			<if test="certFrDtm != null and certFrDtm != '' ">
+			AND MC.CERT_FR_DTM = STR_TO_DATE(#{certFrDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="certToDtm != null and certToDtm != '' ">
+			AND MC.CERT_TO_DTM = STR_TO_DATE(#{certToDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="certSendDtm != null and certSendDtm != '' ">
+			AND MC.CERT_SEND_DTM = STR_TO_DATE(#{certSendDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="certCfmDtm != null and certCfmDtm != '' ">
+			AND MC.CERT_CFM_DTM = STR_TO_DATE(#{certCfmDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="certCfmYn != null and certCfmYn != '' ">
+			AND MC.CERT_CFM_YN = #{certCfmYn}
+			</if>
+	</sql>
+
+	<select id="getMemberCertListCount" parameterType="MemberCertExDto" resultType="Integer">
+	/* memberCertMapper.getMemberCertListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MEMBER_CERT MC
+		<include refid="where-memberCert" />
+	</select>
+
+	<select id="getMemberCertList" parameterType="MemberCertExDto" resultType="MemberCertExDto">
+	/* memberCertMapper.getMemberCertList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MC.MBR_CERT_ID
+			,MC.MBR_ID
+			,MC.CERT_METH_CD
+			,MC.MBR_CERT_KEY
+			,CERT_FR_DTM
+			,CERT_TO_DTM
+			,CERT_SEND_DTM
+			,CERT_CFM_DTM
+			,MC.CERT_CFM_YN
+			,MC.REG_USER_ID
+			,REG_DTM
+			,MC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MEMBER_CERT MC
+		<include refid="where-memberCert" />
+		ORDER BY
+			MC.MBR_CERT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMemberCert" parameterType="MemberCertExDto" resultType="MemberCertExDto">
+	/* memberCertMapper.getMemberCert */
+		SELECT
+			MC.MBR_CERT_ID
+			,MC.MBR_ID
+			,MC.CERT_METH_CD
+			,MC.MBR_CERT_KEY
+			,CERT_FR_DTM
+			,CERT_TO_DTM
+			,CERT_SEND_DTM
+			,CERT_CFM_DTM
+			,MC.CERT_CFM_YN
+			,MC.REG_USER_ID
+			,REG_DTM
+			,MC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MEMBER_CERT MC
+		WHERE
+			MC.MBR_CERT_ID = #{mbrCertId}
+	</select>
+
+	<insert id="insertMemberCert" parameterType="MemberCertExDto">
+	/* memberCertMapper.insertMemberCert */
+		INSERT INTO CW_MEMBER_CERT (
+			MBR_CERT_ID
+			,MBR_ID
+			,CERT_METH_CD
+			,MBR_CERT_KEY
+			,CERT_FR_DTM
+			,CERT_TO_DTM
+			,CERT_SEND_DTM
+			,CERT_CFM_DTM
+			,CERT_CFM_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrCertId}
+			,#{mbrId}
+			,#{certMethCd}
+			,#{mbrCertKey}
+			,STR_TO_DATE(#{certFrDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{certToDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{certSendDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{certCfmDtm}, '%Y%m%d %h%i%s')
+			,#{certCfmYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMemberCert" parameterType="MemberCertExDto">
+	/* memberCertMapper.updateMemberCert */
+		UPDATE CW_MEMBER_CERT
+		<set>
+		<if test="mbrId != null">
+		MBR_ID = #{mbrId},
+		</if>
+		<if test="certMethCd != null">
+		CERT_METH_CD = #{certMethCd},
+		</if>
+		<if test="mbrCertKey != null">
+		MBR_CERT_KEY = #{mbrCertKey},
+		</if>
+		<if test="certFrDtm != null">
+		CERT_FR_DTM = STR_TO_DATE(#{certFrDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="certToDtm != null">
+		CERT_TO_DTM = STR_TO_DATE(#{certToDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="certSendDtm != null">
+		CERT_SEND_DTM = STR_TO_DATE(#{certSendDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="certCfmDtm != null">
+		CERT_CFM_DTM = STR_TO_DATE(#{certCfmDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="certCfmYn != null">
+		CERT_CFM_YN = #{certCfmYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_CERT_ID = #{mbrCertId}
+	</update>
+
+	<delete id="deleteMemberCert" parameterType="MemberCertExDto">
+	/* memberCertMapper.deleteMemberCert */
+	DELETE FROM CW_MEMBER_CERT
+	WHERE
+		MBR_CERT_ID = #{mbrCertId}
+	</delete>
+</mapper>

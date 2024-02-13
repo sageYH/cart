@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cartId"] = '[[${transData.cartId}]]';
+	if (isEmpty(map["cartId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/cart/getCart.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCartPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="cartId" id="cartId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">멤버ID</th>
+							<td><span name="mbrId" id="mbrId"></span></td>
+							<th scope="row">상품ID</th>
+							<td><span name="prodId" id="prodId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품수량</th>
+							<td><span name="prodQty" id="prodQty"></span></td>
+							<th scope="row">상품금액</th>
+							<td><span name="prodAmt" id="prodAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션총금액</th>
+							<td><span name="optTotAmt" id="optTotAmt"></span></td>
+							<th scope="row">장바구니일시</th>
+							<td><span name="cartDtm" id="cartDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품경로코드[PD08]</th>
+							<td><span name="prodPathCd" id="prodPathCd"></span></td>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cpnPymtId"] = '[[${transData.cpnPymtId}]]';
+	if (isEmpty(map["cpnPymtId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cpnPymtId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/couponPymt/getCouponPymt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cpnPymtId","","자료(쿠폰지급ID)를 확인하세요."]
+		["cpnIssueId","","자료(쿠폰발급ID)를 확인하세요."]
+		["cpnId","","자료(쿠폰ID)를 확인하세요."]
+		["cpnAmt","","자료(쿠폰금액)를 확인하세요."]
+		["cpnCancAmt","","자료(쿠폰취소금액)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["eventId","","자료(이벤트ID)를 확인하세요."]
+		["afCpnId","","자료(제휴쿠폰ID)를 확인하세요."]
+		["pymtCompId","","자료(지급업체ID)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/couponPymt/updateCouponPymt.do";
+	if (mode=="NEW"){
+		url = "/app/couponPymt/insertCouponPymt.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formCouponPymtPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvCouponPymtPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formCouponPymtPop" name="formCouponPymtPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">쿠폰지급ID</th>
+						<td><input type="text" name="cpnPymtId" id="cpnPymtId" style="width:70%" readonly >
+						</td>
+					<th scope="row">쿠폰발급ID</th>
+					<td><input type="text" name="cpnIssueId" id="cpnIssueId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰ID</th>
+						<td><input type="text" name="cpnId" id="cpnId" style="width:70%" >
+						</td>
+					<th scope="row">쿠폰금액</th>
+					<td><input type="text" name="cpnAmt" id="cpnAmt" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">쿠폰취소금액</th>
+						<td><input type="text" name="cpnCancAmt" id="cpnCancAmt" style="width:70%" >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">이벤트ID</th>
+						<td><input type="text" name="eventId" id="eventId" style="width:70%" >
+						</td>
+					<th scope="row">제휴쿠폰ID</th>
+					<td><input type="text" name="afCpnId" id="afCpnId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">지급업체ID</th>
+						<td><input type="text" name="pymtCompId" id="pymtCompId" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

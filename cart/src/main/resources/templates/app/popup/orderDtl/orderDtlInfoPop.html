@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordDtlId"] = '[[${transData.ordDtlId}]]';
+	if (isEmpty(map["ordDtlId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderDtl/getOrderDtl.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderDtlPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="ordDtlId" id="ordDtlId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">주문ID</th>
+							<td><span name="ordId" id="ordId"></span></td>
+							<th scope="row">상품ID</th>
+							<td><span name="prodId" id="prodId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">장바구니ID</th>
+							<td><span name="cartId" id="cartId"></span></td>
+							<th scope="row">주문상품수량</th>
+							<td><span name="ordProdQty" id="ordProdQty"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">주문상품금액</th>
+							<td><span name="ordProdAmt" id="ordProdAmt"></span></td>
+							<th scope="row">주문옵션금액</th>
+							<td><span name="ordOptAmt" id="ordOptAmt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션상세내용</th>
+							<td><span name="optDtlCont" id="optDtlCont"></span></td>
+							<th scope="row">장바구니일시</th>
+							<td><span name="cartDtm" id="cartDtm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상품경로코드[PD08]</th>
+							<td><span name="prodPathCd" id="prodPathCd"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

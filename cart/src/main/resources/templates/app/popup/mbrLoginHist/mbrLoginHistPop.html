@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["mbrLoginSeqNo"] = '[[${transData.mbrLoginSeqNo}]]';
+	if (isEmpty(map["mbrLoginSeqNo"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("mbrLoginSeqNo").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/mbrLoginHist/getMbrLoginHist.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["mbrLoginSeqNo","","자료(멤버로그인일련번호)를 확인하세요."]
+		["accYmd","","자료(접속년월일)를 확인하세요."]
+		["accHms","","자료(접속시분초)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["accDevCd","","자료(접근기기코드[MB04])를 확인하세요."]
+		["accChanCd","","자료(접속채널코드[MB08])를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/mbrLoginHist/updateMbrLoginHist.do";
+	if (mode=="NEW"){
+		url = "/app/mbrLoginHist/insertMbrLoginHist.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formMbrLoginHistPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvMbrLoginHistPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formMbrLoginHistPop" name="formMbrLoginHistPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">멤버로그인일련번호</th>
+						<td><input type="text" name="mbrLoginSeqNo" id="mbrLoginSeqNo" style="width:70%" readonly >
+						</td>
+					<th scope="row">접속년월일</th>
+					<td><input type="text" name="accYmd" id="accYmd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">접속시분초</th>
+						<td><input type="text" name="accHms" id="accHms" style="width:70%" >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">접근기기코드[MB04]</th>
+						<td><input type="text" name="accDevCd" id="accDevCd" style="width:70%" >
+						</td>
+					<th scope="row">접속채널코드[MB08]</th>
+					<td><input type="text" name="accChanCd" id="accChanCd" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

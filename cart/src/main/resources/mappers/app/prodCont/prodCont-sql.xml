@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodContMapper">
+	<sql id="where-prodCont">
+		WHERE 1=1
+			<if test="prodId != null and prodId != '' ">
+			AND PC.PROD_ID = #{prodId}
+			</if>
+			<if test="prodContId != null and prodContId != '' ">
+			AND PC.PROD_CONT_ID = #{prodContId}
+			</if>
+			<if test="prodContCd != null and prodContCd != '' ">
+			AND PC.PROD_CONT_CD = #{prodContCd}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND PC.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="prodCont != null and prodCont != '' ">
+			AND PC.PROD_CONT = #{prodCont}
+			</if>
+			<if test="mobiProdCont != null and mobiProdCont != '' ">
+			AND PC.MOBI_PROD_CONT = #{mobiProdCont}
+			</if>
+			<if test="fileRefId != null and fileRefId != '' ">
+			AND PC.FILE_REF_ID = #{fileRefId}
+			</if>
+			<if test="mobiFileRefId != null and mobiFileRefId != '' ">
+			AND PC.MOBI_FILE_REF_ID = #{mobiFileRefId}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PC.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdContListCount" parameterType="ProdContExDto" resultType="Integer">
+	/* prodContMapper.getProdContListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_CONT PC
+		<include refid="where-prodCont" />
+	</select>
+
+	<select id="getProdContList" parameterType="ProdContExDto" resultType="ProdContExDto">
+	/* prodContMapper.getProdContList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PC.PROD_ID
+			,PC.PROD_CONT_ID
+			,PC.PROD_CONT_CD
+			,PC.SORT_SEQ
+			,PC.PROD_CONT
+			,PC.MOBI_PROD_CONT
+			,PC.FILE_REF_ID
+			,PC.MOBI_FILE_REF_ID
+			,PC.USE_YN
+			,PC.REG_USER_ID
+			,REG_DTM
+			,PC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CONT PC
+		<include refid="where-prodCont" />
+		ORDER BY
+			PC.PROD_ID
+			,PC.PROD_CONT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdCont" parameterType="ProdContExDto" resultType="ProdContExDto">
+	/* prodContMapper.getProdCont */
+		SELECT
+			PC.PROD_ID
+			,PC.PROD_CONT_ID
+			,PC.PROD_CONT_CD
+			,PC.SORT_SEQ
+			,PC.PROD_CONT
+			,PC.MOBI_PROD_CONT
+			,PC.FILE_REF_ID
+			,PC.MOBI_FILE_REF_ID
+			,PC.USE_YN
+			,PC.REG_USER_ID
+			,REG_DTM
+			,PC.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CONT PC
+		WHERE
+			PC.PROD_ID = #{prodId}
+			AND PC.PROD_CONT_ID = #{prodContId}
+	</select>
+
+	<insert id="insertProdCont" parameterType="ProdContExDto">
+	/* prodContMapper.insertProdCont */
+		INSERT INTO CW_PROD_CONT (
+			PROD_ID
+			,PROD_CONT_ID
+			,PROD_CONT_CD
+			,SORT_SEQ
+			,PROD_CONT
+			,MOBI_PROD_CONT
+			,FILE_REF_ID
+			,MOBI_FILE_REF_ID
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodId}
+			,#{prodContId}
+			,#{prodContCd}
+			,#{sortSeq}
+			,#{prodCont}
+			,#{mobiProdCont}
+			,#{fileRefId}
+			,#{mobiFileRefId}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdCont" parameterType="ProdContExDto">
+	/* prodContMapper.updateProdCont */
+		UPDATE CW_PROD_CONT
+		<set>
+		<if test="prodContCd != null">
+		PROD_CONT_CD = #{prodContCd},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="prodCont != null">
+		PROD_CONT = #{prodCont},
+		</if>
+		<if test="mobiProdCont != null">
+		MOBI_PROD_CONT = #{mobiProdCont},
+		</if>
+		<if test="fileRefId != null">
+		FILE_REF_ID = #{fileRefId},
+		</if>
+		<if test="mobiFileRefId != null">
+		MOBI_FILE_REF_ID = #{mobiFileRefId},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_ID = #{prodId}
+			AND PROD_CONT_ID = #{prodContId}
+	</update>
+
+	<delete id="deleteProdCont" parameterType="ProdContExDto">
+	/* prodContMapper.deleteProdCont */
+	DELETE FROM CW_PROD_CONT
+	WHERE
+		PROD_ID = #{prodId}
+		AND PROD_CONT_ID = #{prodContId}
+	</delete>
+</mapper>

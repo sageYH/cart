@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commSendMapper">
+	<sql id="where-commSend">
+		WHERE 1=1
+			<if test="commSendId != null and commSendId != '' ">
+			AND CS.COMM_SEND_ID = #{commSendId}
+			</if>
+			<if test="commId != null and commId != '' ">
+			AND CS.COMM_ID = #{commId}
+			</if>
+			<if test="commExpectedYmd != null and commExpectedYmd != '' ">
+			AND CS.COMM_EXPECTED_YMD = #{commExpectedYmd}
+			</if>
+			<if test="commCpltYn != null and commCpltYn != '' ">
+			AND CS.COMM_CPLT_YN = #{commCpltYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CS.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCommSendListCount" parameterType="CommSendExDto" resultType="Integer">
+	/* commSendMapper.getCommSendListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMM_SEND CS
+		<include refid="where-commSend" />
+	</select>
+
+	<select id="getCommSendList" parameterType="CommSendExDto" resultType="CommSendExDto">
+	/* commSendMapper.getCommSendList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CS.COMM_SEND_ID
+			,CS.COMM_ID
+			,CS.COMM_EXPECTED_YMD
+			,CS.COMM_CPLT_YN
+			,CS.USE_YN
+			,CS.REG_USER_ID
+			,REG_DTM
+			,CS.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_SEND CS
+		<include refid="where-commSend" />
+		ORDER BY
+			CS.COMM_SEND_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCommSend" parameterType="CommSendExDto" resultType="CommSendExDto">
+	/* commSendMapper.getCommSend */
+		SELECT
+			CS.COMM_SEND_ID
+			,CS.COMM_ID
+			,CS.COMM_EXPECTED_YMD
+			,CS.COMM_CPLT_YN
+			,CS.USE_YN
+			,CS.REG_USER_ID
+			,REG_DTM
+			,CS.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_SEND CS
+		WHERE
+			CS.COMM_SEND_ID = #{commSendId}
+	</select>
+
+	<insert id="insertCommSend" parameterType="CommSendExDto">
+	/* commSendMapper.insertCommSend */
+		INSERT INTO CW_COMM_SEND (
+			COMM_SEND_ID
+			,COMM_ID
+			,COMM_EXPECTED_YMD
+			,COMM_CPLT_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{commSendId}
+			,#{commId}
+			,#{commExpectedYmd}
+			,#{commCpltYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCommSend" parameterType="CommSendExDto">
+	/* commSendMapper.updateCommSend */
+		UPDATE CW_COMM_SEND
+		<set>
+		<if test="commId != null">
+		COMM_ID = #{commId},
+		</if>
+		<if test="commExpectedYmd != null">
+		COMM_EXPECTED_YMD = #{commExpectedYmd},
+		</if>
+		<if test="commCpltYn != null">
+		COMM_CPLT_YN = #{commCpltYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMM_SEND_ID = #{commSendId}
+	</update>
+
+	<delete id="deleteCommSend" parameterType="CommSendExDto">
+	/* commSendMapper.deleteCommSend */
+	DELETE FROM CW_COMM_SEND
+	WHERE
+		COMM_SEND_ID = #{commSendId}
+	</delete>
+</mapper>

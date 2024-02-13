@@ -1,0 +1,216 @@
+<div id="divNoticePop" class="sub_wrap" style="display:none;width:92%" title="공지사항 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>공지사항 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="noticeId_g1">공지ID</label>
+						<div class="wrap">
+							<input type="text" id="noticeId_g1" name="noticeId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="noticeTypCd_g1">공지유형코드</label>
+						<div class="wrap">
+							<input type="text" id="noticeTypCd_g1" name="noticeTypCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="noticeTitle_g1">공지제목</label>
+						<div class="wrap">
+							<input type="text" id="noticeTitle_g1" name="noticeTitle_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="noticeCont_g1">공지내용</label>
+						<div class="wrap">
+							<input type="text" id="noticeCont_g1" name="noticeCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="noticeViews_g1">공지조회수</label>
+						<div class="wrap">
+							<input type="text" id="noticeViews_g1" name="noticeViews_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prntNoticeId_g1">상위공지ID</label>
+						<div class="wrap">
+							<input type="text" id="prntNoticeId_g1" name="prntNoticeId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="grpNoticeId_g1">그룹공지ID</label>
+						<div class="wrap">
+							<input type="text" id="grpNoticeId_g1" name="grpNoticeId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="noticeFrYmd_g1">공지시작일</label>
+						<div class="wrap">
+							<input type="text" id="noticeFrYmd_g1" name="noticeFrYmd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="noticeToYmd_g1">공지종료일</label>
+						<div class="wrap">
+							<input type="text" id="noticeToYmd_g1" name="noticeToYmd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="popupYn_g1">팝업여부</label>
+						<div class="wrap">
+							<input type="text" id="popupYn_g1" name="popupYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="NoticePop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="NoticePop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="NoticePop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var NoticePop = new $W.load("divNoticePop");
+NoticePop.ready(function(){
+	//
+});
+
+NoticePop.fnOpen = function(mode, params, func) {
+	clearObjects("divNoticePop");
+	NoticePop.mode = mode;
+	if (!isEmpty(func)){
+		NoticePop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divNoticePop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["noticeId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/notice/getNotice.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("noticeTypCd_g1").focus();
+	}else{
+		readOnlyFalse(["noticeId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+NoticePop.fnSave = function(){
+
+	var valid = 0 || [
+		["noticeId_g1","","자료(공지ID)를 확인하세요."]
+		,["noticeTypCd_g1","","자료(공지유형코드)를 확인하세요."]
+		,["noticeTitle_g1","","자료(공지제목)를 확인하세요."]
+		,["noticeCont_g1","","자료(공지내용)를 확인하세요."]
+		,["noticeViews_g1","","자료(공지조회수)를 확인하세요."]
+		,["prntNoticeId_g1","","자료(상위공지ID)를 확인하세요."]
+		,["grpNoticeId_g1","","자료(그룹공지ID)를 확인하세요."]
+		,["noticeFrYmd_g1","","자료(공지시작일)를 확인하세요."]
+		,["noticeToYmd_g1","","자료(공지종료일)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["popupYn_g1","","자료(팝업여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divNoticePop");
+	var url = "/app/notice/updateNotice.do";
+	if (NoticePop.mode=="CREATE"){
+		url = "/app/notice/insertNotice.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NoticePop.func)){
+			NoticePop.func();
+			NoticePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+NoticePop.fnDelete = function(){
+	if (NoticePop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/notice/deleteNotice.do";
+	var params = {};
+	params["noticeId"] = getElement("noticeId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(NoticePop.func)){
+			NoticePop.func();
+			NoticePop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+NoticePop.fnClose = function(){
+	layerToggle("divNoticePop",{"mode":0});
+};
+</script>

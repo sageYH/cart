@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodClassifLangMapper">
+	<sql id="where-prodClassifLang">
+		WHERE 1=1
+			<if test="prodClassifId != null and prodClassifId != '' ">
+			AND PCL.PROD_CLASSIF_ID = #{prodClassifId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND PCL.LANG_CD = #{langCd}
+			</if>
+			<if test="prodClassifNm != null and prodClassifNm != '' ">
+			AND PCL.PROD_CLASSIF_NM = #{prodClassifNm}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PCL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdClassifLangListCount" parameterType="ProdClassifLangExDto" resultType="Integer">
+	/* prodClassifLangMapper.getProdClassifLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_CLASSIF_LANG PCL
+		<include refid="where-prodClassifLang" />
+	</select>
+
+	<select id="getProdClassifLangList" parameterType="ProdClassifLangExDto" resultType="ProdClassifLangExDto">
+	/* prodClassifLangMapper.getProdClassifLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PCL.PROD_CLASSIF_ID
+			,PCL.LANG_CD
+			,PCL.PROD_CLASSIF_NM
+			,PCL.USE_YN
+			,PCL.REG_USER_ID
+			,REG_DTM
+			,PCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CLASSIF_LANG PCL
+		<include refid="where-prodClassifLang" />
+		ORDER BY
+			PCL.PROD_CLASSIF_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdClassifLang" parameterType="ProdClassifLangExDto" resultType="ProdClassifLangExDto">
+	/* prodClassifLangMapper.getProdClassifLang */
+		SELECT
+			PCL.PROD_CLASSIF_ID
+			,PCL.LANG_CD
+			,PCL.PROD_CLASSIF_NM
+			,PCL.USE_YN
+			,PCL.REG_USER_ID
+			,REG_DTM
+			,PCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_CLASSIF_LANG PCL
+		WHERE
+			PCL.PROD_CLASSIF_ID = #{prodClassifId}
+	</select>
+
+	<insert id="insertProdClassifLang" parameterType="ProdClassifLangExDto">
+	/* prodClassifLangMapper.insertProdClassifLang */
+		INSERT INTO CW_PROD_CLASSIF_LANG (
+			PROD_CLASSIF_ID
+			,LANG_CD
+			,PROD_CLASSIF_NM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodClassifId}
+			,#{langCd}
+			,#{prodClassifNm}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdClassifLang" parameterType="ProdClassifLangExDto">
+	/* prodClassifLangMapper.updateProdClassifLang */
+		UPDATE CW_PROD_CLASSIF_LANG
+		<set>
+		<if test="langCd != null">
+		LANG_CD = #{langCd},
+		</if>
+		<if test="prodClassifNm != null">
+		PROD_CLASSIF_NM = #{prodClassifNm},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_CLASSIF_ID = #{prodClassifId}
+	</update>
+
+	<delete id="deleteProdClassifLang" parameterType="ProdClassifLangExDto">
+	/* prodClassifLangMapper.deleteProdClassifLang */
+	DELETE FROM CW_PROD_CLASSIF_LANG
+	WHERE
+		PROD_CLASSIF_ID = #{prodClassifId}
+	</delete>
+</mapper>

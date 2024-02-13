@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/pointIssue/pointIssueGrid.js"></script>
+<script>
+var gridPointIssue = null;
+window.onload = function() {
+	gridPointIssue = setGridPointIssue("dvGridPointIssueSearch");
+	gridPointIssue.setBodyHeight(300);
+	fixedColGrid(gridPointIssue);
+
+	gridPointIssue.on("click",function(ev){
+		toggleGrid(gridPointIssue,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridPointIssue.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridPointIssue)==false){
+			dblClickGridPointIssue();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridPointIssue(){
+	getResultData();
+}
+
+//page
+var pageClsPointIssue = new pageCls("dvPointIssuePageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridPointIssue);
+
+	var params = {};
+	if (isEmpty(getEVal("pointIssueId"))==false) params["pointIssueId"] = getEVal("pointIssueId");
+	if (isEmpty(getEVal("pointId"))==false) params["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("pointCont"))==false) params["pointCont"] = getEVal("pointCont");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("pointApplFrYmd"))==false) params["pointApplFrYmd"] = getEVal("pointApplFrYmd");
+	if (isEmpty(getEVal("pointApplToYmd"))==false) params["pointApplToYmd"] = getEVal("pointApplToYmd");
+	if (isEmpty(getEVal("pointTotAmt"))==false) params["pointTotAmt"] = getEVal("pointTotAmt");
+	if (isEmpty(getEVal("pointAmt"))==false) params["pointAmt"] = getEVal("pointAmt");
+	if (isEmpty(getEVal("prodMinAmt"))==false) params["prodMinAmt"] = getEVal("prodMinAmt");
+	if (isEmpty(getEVal("ordMinAmt"))==false) params["ordMinAmt"] = getEVal("ordMinAmt");
+	if (isEmpty(getEVal("pointPaidTotAmt"))==false) params["pointPaidTotAmt"] = getEVal("pointPaidTotAmt");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsPointIssue.getPageInfo(params);
+
+	var url = "/app/pointIssue/getPointIssuePageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridPointIssue,result.payloads);
+		//set total
+		pageClsPointIssue.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridPointIssue);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvPointIssueSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridPointIssueSearch" class="addr-list" ></div>
+					<div id="dvPointIssuePageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

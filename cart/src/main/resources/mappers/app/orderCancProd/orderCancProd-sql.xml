@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderCancProdMapper">
+	<sql id="where-orderCancProd">
+		WHERE 1=1
+			<if test="ordCnclId != null and ordCnclId != '' ">
+			AND OCP.ORD_CNCL_ID = #{ordCnclId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OCP.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND OCP.PROD_ID = #{prodId}
+			</if>
+			<if test="prodCnclQty != null and prodCnclQty != '' ">
+			AND OCP.PROD_CNCL_QTY = #{prodCnclQty}
+			</if>
+			<if test="prodCnclAmt != null and prodCnclAmt != '' ">
+			AND OCP.PROD_CNCL_AMT = #{prodCnclAmt}
+			</if>
+			<if test="optCnclAmt != null and optCnclAmt != '' ">
+			AND OCP.OPT_CNCL_AMT = #{optCnclAmt}
+			</if>
+	</sql>
+
+	<select id="getOrderCancProdListCount" parameterType="OrderCancProdExDto" resultType="Integer">
+	/* orderCancProdMapper.getOrderCancProdListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_CANC_PROD OCP
+		<include refid="where-orderCancProd" />
+	</select>
+
+	<select id="getOrderCancProdList" parameterType="OrderCancProdExDto" resultType="OrderCancProdExDto">
+	/* orderCancProdMapper.getOrderCancProdList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OCP.ORD_CNCL_ID
+			,OCP.ORD_ID
+			,OCP.PROD_ID
+			,OCP.PROD_CNCL_QTY
+			,OCP.PROD_CNCL_AMT
+			,OCP.OPT_CNCL_AMT
+			,OCP.REG_USER_ID
+			,REG_DTM
+			,OCP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CANC_PROD OCP
+		<include refid="where-orderCancProd" />
+		ORDER BY
+			OCP.ORD_CNCL_ID
+			,OCP.ORD_ID
+			,OCP.PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderCancProd" parameterType="OrderCancProdExDto" resultType="OrderCancProdExDto">
+	/* orderCancProdMapper.getOrderCancProd */
+		SELECT
+			OCP.ORD_CNCL_ID
+			,OCP.ORD_ID
+			,OCP.PROD_ID
+			,OCP.PROD_CNCL_QTY
+			,OCP.PROD_CNCL_AMT
+			,OCP.OPT_CNCL_AMT
+			,OCP.REG_USER_ID
+			,REG_DTM
+			,OCP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_CANC_PROD OCP
+		WHERE
+			OCP.ORD_CNCL_ID = #{ordCnclId}
+			AND OCP.ORD_ID = #{ordId}
+			AND OCP.PROD_ID = #{prodId}
+	</select>
+
+	<insert id="insertOrderCancProd" parameterType="OrderCancProdExDto">
+	/* orderCancProdMapper.insertOrderCancProd */
+		INSERT INTO CW_ORDER_CANC_PROD (
+			ORD_CNCL_ID
+			,ORD_ID
+			,PROD_ID
+			,PROD_CNCL_QTY
+			,PROD_CNCL_AMT
+			,OPT_CNCL_AMT
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordCnclId}
+			,#{ordId}
+			,#{prodId}
+			,#{prodCnclQty}
+			,#{prodCnclAmt}
+			,#{optCnclAmt}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderCancProd" parameterType="OrderCancProdExDto">
+	/* orderCancProdMapper.updateOrderCancProd */
+		UPDATE CW_ORDER_CANC_PROD
+		<set>
+		<if test="prodCnclQty != null">
+		PROD_CNCL_QTY = #{prodCnclQty},
+		</if>
+		<if test="prodCnclAmt != null">
+		PROD_CNCL_AMT = #{prodCnclAmt},
+		</if>
+		<if test="optCnclAmt != null">
+		OPT_CNCL_AMT = #{optCnclAmt},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_CNCL_ID = #{ordCnclId}
+			AND ORD_ID = #{ordId}
+			AND PROD_ID = #{prodId}
+	</update>
+
+	<delete id="deleteOrderCancProd" parameterType="OrderCancProdExDto">
+	/* orderCancProdMapper.deleteOrderCancProd */
+	DELETE FROM CW_ORDER_CANC_PROD
+	WHERE
+		ORD_CNCL_ID = #{ordCnclId}
+		AND ORD_ID = #{ordId}
+		AND PROD_ID = #{prodId}
+	</delete>
+</mapper>

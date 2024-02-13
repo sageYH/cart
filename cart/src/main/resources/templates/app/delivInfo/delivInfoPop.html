@@ -1,0 +1,233 @@
+<div id="divDelivInfoPop" class="sub_wrap" style="display:none;width:92%" title="배송정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>배송정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="delivInfoId_g1">배송정보ID</label>
+						<div class="wrap">
+							<input type="text" id="delivInfoId_g1" name="delivInfoId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mbrId_g1">멤버ID</label>
+						<div class="wrap">
+							<input type="text" id="mbrId_g1" name="mbrId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="delivAddrNm_g1">배송지명</label>
+						<div class="wrap">
+							<input type="text" id="delivAddrNm_g1" name="delivAddrNm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="baseAddrYn_g1">기본주소여부</label>
+						<div class="wrap">
+							<input type="text" id="baseAddrYn_g1" name="baseAddrYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="rcptNm_g1">수령인명</label>
+						<div class="wrap">
+							<input type="text" id="rcptNm_g1" name="rcptNm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="rcptTelNo_g1">수령인전화</label>
+						<div class="wrap">
+							<input type="text" id="rcptTelNo_g1" name="rcptTelNo_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="rcptPhoneNo_g1">수령인폰번호</label>
+						<div class="wrap">
+							<input type="text" id="rcptPhoneNo_g1" name="rcptPhoneNo_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="delivZipCd_g1">배송우편번호</label>
+						<div class="wrap">
+							<input type="text" id="delivZipCd_g1" name="delivZipCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="delivAddr_g1">배송주소</label>
+						<div class="wrap">
+							<input type="text" id="delivAddr_g1" name="delivAddr_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="delivDtlAddr_g1">배송상세주소</label>
+						<div class="wrap">
+							<input type="text" id="delivDtlAddr_g1" name="delivDtlAddr_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="delivDtlAddr2_g1">배송상세주소2</label>
+						<div class="wrap">
+							<input type="text" id="delivDtlAddr2_g1" name="delivDtlAddr2_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="delivRefCont_g1">배송참조내용</label>
+						<div class="wrap">
+							<input type="text" id="delivRefCont_g1" name="delivRefCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="sortSeq_g1">정렬순서</label>
+						<div class="wrap">
+							<input type="text" id="sortSeq_g1" name="sortSeq_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="DelivInfoPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="DelivInfoPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="DelivInfoPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var DelivInfoPop = new $W.load("divDelivInfoPop");
+DelivInfoPop.ready(function(){
+	//
+});
+
+DelivInfoPop.fnOpen = function(mode, params, func) {
+	clearObjects("divDelivInfoPop");
+	DelivInfoPop.mode = mode;
+	if (!isEmpty(func)){
+		DelivInfoPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divDelivInfoPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["delivInfoId_g1","mbrId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/delivInfo/getDelivInfo.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("delivAddrNm_g1").focus();
+	}else{
+		readOnlyFalse(["delivInfoId_g1","mbrId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+DelivInfoPop.fnSave = function(){
+
+	var valid = 0 || [
+		["delivInfoId_g1","","자료(배송정보ID)를 확인하세요."]
+		,["mbrId_g1","","자료(멤버ID)를 확인하세요."]
+		,["delivAddrNm_g1","","자료(배송지명)를 확인하세요."]
+		,["baseAddrYn_g1","","자료(기본주소여부)를 확인하세요."]
+		,["rcptNm_g1","","자료(수령인명)를 확인하세요."]
+		,["rcptTelNo_g1","","자료(수령인전화)를 확인하세요."]
+		,["rcptPhoneNo_g1","","자료(수령인폰번호)를 확인하세요."]
+		,["delivZipCd_g1","","자료(배송우편번호)를 확인하세요."]
+		,["delivAddr_g1","","자료(배송주소)를 확인하세요."]
+		,["delivDtlAddr_g1","","자료(배송상세주소)를 확인하세요."]
+		,["delivDtlAddr2_g1","","자료(배송상세주소2)를 확인하세요."]
+		,["delivRefCont_g1","","자료(배송참조내용)를 확인하세요."]
+		,["sortSeq_g1","","자료(정렬순서)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divDelivInfoPop");
+	var url = "/app/delivInfo/updateDelivInfo.do";
+	if (DelivInfoPop.mode=="CREATE"){
+		url = "/app/delivInfo/insertDelivInfo.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(DelivInfoPop.func)){
+			DelivInfoPop.func();
+			DelivInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+DelivInfoPop.fnDelete = function(){
+	if (DelivInfoPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/delivInfo/deleteDelivInfo.do";
+	var params = {};
+	params["delivInfoId"] = getElement("delivInfoId_g1").value;
+	params["mbrId"] = getElement("mbrId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(DelivInfoPop.func)){
+			DelivInfoPop.func();
+			DelivInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+DelivInfoPop.fnClose = function(){
+	layerToggle("divDelivInfoPop",{"mode":0});
+};
+</script>

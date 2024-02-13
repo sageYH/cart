@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsPointInfo = new pageCls("dvPointInfoPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("pointId"))==false) params["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("pointKindCd"))==false) params["pointKindCd"] = getEVal("pointKindCd");
+	if (isEmpty(getEVal("pointNm"))==false) params["pointNm"] = getEVal("pointNm");
+	if (isEmpty(getEVal("alwaysYn"))==false) params["alwaysYn"] = getEVal("alwaysYn");
+	if (isEmpty(getEVal("firstComeYn"))==false) params["firstComeYn"] = getEVal("firstComeYn");
+	if (isEmpty(getEVal("dupePymtYn"))==false) params["dupePymtYn"] = getEVal("dupePymtYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsPointInfo.getPageInfo(params);
+
+	var url = "/app/pointInfo/getPointInfoPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["pointId","pointKindCd","pointNm","alwaysYn","firstComeYn","dupePymtYn","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,7);
+	pageClsPointInfo.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsPointInfoDown(){
+	var url = "/app/pointInfo/getPointInfoExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("pointId"))==false) paramXls["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("pointKindCd"))==false) paramXls["pointKindCd"] = getEVal("pointKindCd");
+	if (isEmpty(getEVal("pointNm"))==false) paramXls["pointNm"] = getEVal("pointNm");
+	if (isEmpty(getEVal("alwaysYn"))==false) paramXls["alwaysYn"] = getEVal("alwaysYn");
+	if (isEmpty(getEVal("firstComeYn"))==false) paramXls["firstComeYn"] = getEVal("firstComeYn");
+	if (isEmpty(getEVal("dupePymtYn"))==false) paramXls["dupePymtYn"] = getEVal("dupePymtYn");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"포인트정보"
+		,"sheetName":"시트"
+		,"columnHeaders":["포인트ID","포인트종류코드[PS01]","포인트명","상시여부","선착순여부","중복지급여부","사용여부"]
+		,"columnNames":["pointId","pointKindCd","pointNm","alwaysYn","firstComeYn","dupePymtYn","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["pointId"] = arr[0].trim();
+	}
+	PointInfoPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvPointInfoSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvPointInfoSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsPointInfo.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">포인트ID</th>
+							<th scope="col">포인트종류코드[PS01]</th>
+							<th scope="col">포인트명</th>
+							<th scope="col">상시여부</th>
+							<th scope="col">선착순여부</th>
+							<th scope="col">중복지급여부</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{pointId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{pointId}}</td>
+						<td>{{pointKindCd}}</td>
+						<td>{{pointNm}}</td>
+						<td>{{alwaysYn}}</td>
+						<td>{{firstComeYn}}</td>
+						<td>{{dupePymtYn}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvPointInfoPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/pointInfo/pointInfoPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

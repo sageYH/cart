@@ -1,0 +1,129 @@
+<div id="divSeqPop" class="sub_wrap" style="display:none;width:92%" title="일련번호 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>일련번호 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="tableName_g1">테이블명</label>
+						<div class="wrap">
+							<input type="text" id="tableName_g1" name="tableName_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="nextId_g1">SEQ_ID</label>
+						<div class="wrap">
+							<input type="text" id="nextId_g1" name="nextId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="SeqPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="SeqPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="SeqPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var SeqPop = new $W.load("divSeqPop");
+SeqPop.ready(function(){
+	//
+});
+
+SeqPop.fnOpen = function(mode, params, func) {
+	clearObjects("divSeqPop");
+	SeqPop.mode = mode;
+	if (!isEmpty(func)){
+		SeqPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divSeqPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["tableName_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/seq/getSeq.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("nextId_g1").focus();
+	}else{
+		readOnlyFalse(["tableName_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+SeqPop.fnSave = function(){
+
+	var valid = 0 || [
+		["tableName_g1","","자료(테이블명)를 확인하세요."]
+		,["nextId_g1","","자료(SEQ_ID)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divSeqPop");
+	var url = "/app/seq/updateSeq.do";
+	if (SeqPop.mode=="CREATE"){
+		url = "/app/seq/insertSeq.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(SeqPop.func)){
+			SeqPop.func();
+			SeqPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+SeqPop.fnDelete = function(){
+	if (SeqPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/seq/deleteSeq.do";
+	var params = {};
+	params["tableName"] = getElement("tableName_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(SeqPop.func)){
+			SeqPop.func();
+			SeqPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+SeqPop.fnClose = function(){
+	layerToggle("divSeqPop",{"mode":0});
+};
+</script>

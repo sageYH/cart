@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsOrderCanc = new pageCls("dvOrderCancPageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("ordCnclId"))==false) params["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("ordCnclDtm"))==false) params["ordCnclDtm"] = getEVal("ordCnclDtm");
+	if (isEmpty(getEVal("ordCnclDivCd"))==false) params["ordCnclDivCd"] = getEVal("ordCnclDivCd");
+	if (isEmpty(getEVal("ordCnclAmt"))==false) params["ordCnclAmt"] = getEVal("ordCnclAmt");
+	if (isEmpty(getEVal("pymtCnclPointId"))==false) params["pymtCnclPointId"] = getEVal("pymtCnclPointId");
+	if (isEmpty(getEVal("pymtCnclCpnId"))==false) params["pymtCnclCpnId"] = getEVal("pymtCnclCpnId");
+	if (isEmpty(getEVal("cnclDelivFee"))==false) params["cnclDelivFee"] = getEVal("cnclDelivFee");
+	if (isEmpty(getEVal("delivFeeTgtCd"))==false) params["delivFeeTgtCd"] = getEVal("delivFeeTgtCd");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	//page set
+	params = pageClsOrderCanc.getPageInfo(params);
+
+	var url = "/app/orderCanc/getOrderCancPageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["ordCnclId","ordId","ordCnclDtm","ordCnclDivCd","ordCnclAmt","pymtCnclPointId","pymtCnclCpnId","cnclDelivFee","delivFeeTgtCd","pymtCompId"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,10);
+	pageClsOrderCanc.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsOrderCancDown(){
+	var url = "/app/orderCanc/getOrderCancExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("ordCnclId"))==false) paramXls["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("ordCnclDtm"))==false) paramXls["ordCnclDtm"] = getEVal("ordCnclDtm");
+	if (isEmpty(getEVal("ordCnclDivCd"))==false) paramXls["ordCnclDivCd"] = getEVal("ordCnclDivCd");
+	if (isEmpty(getEVal("ordCnclAmt"))==false) paramXls["ordCnclAmt"] = getEVal("ordCnclAmt");
+	if (isEmpty(getEVal("pymtCnclPointId"))==false) paramXls["pymtCnclPointId"] = getEVal("pymtCnclPointId");
+	if (isEmpty(getEVal("pymtCnclCpnId"))==false) paramXls["pymtCnclCpnId"] = getEVal("pymtCnclCpnId");
+	if (isEmpty(getEVal("cnclDelivFee"))==false) paramXls["cnclDelivFee"] = getEVal("cnclDelivFee");
+	if (isEmpty(getEVal("delivFeeTgtCd"))==false) paramXls["delivFeeTgtCd"] = getEVal("delivFeeTgtCd");
+	if (isEmpty(getEVal("pymtCompId"))==false) paramXls["pymtCompId"] = getEVal("pymtCompId");
+
+	var params = {"xlsName":"주문취소"
+		,"sheetName":"시트"
+		,"columnHeaders":["주문취소ID","주문ID","주문취소일시","주문취소구분[OD04]","주문취소총액","지급취소포인트ID","지급취소쿠폰ID","취소배송비","배송비대상코드[OD05]","지급사ID"]
+		,"columnNames":["ordCnclId","ordId","ordCnclDtm","ordCnclDivCd","ordCnclAmt","pymtCnclPointId","pymtCnclCpnId","cnclDelivFee","delivFeeTgtCd","pymtCompId"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["ordCnclId"] = arr[0].trim();
+	}
+	OrderCancPop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvOrderCancSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvOrderCancSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsOrderCanc.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">주문취소ID</th>
+							<th scope="col">주문ID</th>
+							<th scope="col">주문취소일시</th>
+							<th scope="col">주문취소구분[OD04]</th>
+							<th scope="col">주문취소총액</th>
+							<th scope="col">지급취소포인트ID</th>
+							<th scope="col">지급취소쿠폰ID</th>
+							<th scope="col">취소배송비</th>
+							<th scope="col">배송비대상코드[OD05]</th>
+							<th scope="col">지급사ID</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{ordCnclId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{ordCnclId}}</td>
+						<td>{{ordId}}</td>
+						<td>{{ordCnclDtm}}</td>
+						<td>{{ordCnclDivCd}}</td>
+						<td>{{ordCnclAmt}}</td>
+						<td>{{pymtCnclPointId}}</td>
+						<td>{{pymtCnclCpnId}}</td>
+						<td>{{cnclDelivFee}}</td>
+						<td>{{delivFeeTgtCd}}</td>
+						<td>{{pymtCompId}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvOrderCancPageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/orderCanc/orderCancPop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

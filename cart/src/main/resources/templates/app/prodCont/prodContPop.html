@@ -1,0 +1,196 @@
+<div id="divProdContPop" class="sub_wrap" style="display:none;width:92%" title="상품내용 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>상품내용 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="prodId_g1">상품ID</label>
+						<div class="wrap">
+							<input type="text" id="prodId_g1" name="prodId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="prodContId_g1">상품내용ID</label>
+						<div class="wrap">
+							<input type="text" id="prodContId_g1" name="prodContId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="prodContCd_g1">상품내용코드[PD01]</label>
+						<div class="wrap">
+							<input type="text" id="prodContCd_g1" name="prodContCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="sortSeq_g1">정렬순서</label>
+						<div class="wrap">
+							<input type="text" id="sortSeq_g1" name="sortSeq_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="prodCont_g1">상품내용</label>
+						<div class="wrap">
+							<input type="text" id="prodCont_g1" name="prodCont_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mobiProdCont_g1">모바일상품내용</label>
+						<div class="wrap">
+							<input type="text" id="mobiProdCont_g1" name="mobiProdCont_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="fileRefId_g1">파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="fileRefId_g1" name="fileRefId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="mobiFileRefId_g1">모바일파일참조ID</label>
+						<div class="wrap">
+							<input type="text" id="mobiFileRefId_g1" name="mobiFileRefId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="ProdContPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="ProdContPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="ProdContPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var ProdContPop = new $W.load("divProdContPop");
+ProdContPop.ready(function(){
+	//
+});
+
+ProdContPop.fnOpen = function(mode, params, func) {
+	clearObjects("divProdContPop");
+	ProdContPop.mode = mode;
+	if (!isEmpty(func)){
+		ProdContPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divProdContPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["prodId_g1","prodContId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/prodCont/getProdCont.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("prodContCd_g1").focus();
+	}else{
+		readOnlyFalse(["prodId_g1","prodContId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+ProdContPop.fnSave = function(){
+
+	var valid = 0 || [
+		["prodId_g1","","자료(상품ID)를 확인하세요."]
+		,["prodContId_g1","","자료(상품내용ID)를 확인하세요."]
+		,["prodContCd_g1","","자료(상품내용코드[PD01])를 확인하세요."]
+		,["sortSeq_g1","","자료(정렬순서)를 확인하세요."]
+		,["prodCont_g1","","자료(상품내용)를 확인하세요."]
+		,["mobiProdCont_g1","","자료(모바일상품내용)를 확인하세요."]
+		,["fileRefId_g1","","자료(파일참조ID)를 확인하세요."]
+		,["mobiFileRefId_g1","","자료(모바일파일참조ID)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divProdContPop");
+	var url = "/app/prodCont/updateProdCont.do";
+	if (ProdContPop.mode=="CREATE"){
+		url = "/app/prodCont/insertProdCont.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ProdContPop.func)){
+			ProdContPop.func();
+			ProdContPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+ProdContPop.fnDelete = function(){
+	if (ProdContPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/prodCont/deleteProdCont.do";
+	var params = {};
+	params["prodId"] = getElement("prodId_g1").value;
+	params["prodContId"] = getElement("prodContId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(ProdContPop.func)){
+			ProdContPop.func();
+			ProdContPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+ProdContPop.fnClose = function(){
+	layerToggle("divProdContPop",{"mode":0});
+};
+</script>

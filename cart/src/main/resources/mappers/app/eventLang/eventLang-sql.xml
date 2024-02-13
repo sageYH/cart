@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="eventLangMapper">
+	<sql id="where-eventLang">
+		WHERE 1=1
+			<if test="eventId != null and eventId != '' ">
+			AND EL.EVENT_ID = #{eventId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND EL.LANG_CD = #{langCd}
+			</if>
+			<if test="eventTtl != null and eventTtl != '' ">
+			AND EL.EVENT_TTL = #{eventTtl}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND EL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getEventLangListCount" parameterType="EventLangExDto" resultType="Integer">
+	/* eventLangMapper.getEventLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_EVENT_LANG EL
+		<include refid="where-eventLang" />
+	</select>
+
+	<select id="getEventLangList" parameterType="EventLangExDto" resultType="EventLangExDto">
+	/* eventLangMapper.getEventLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			EL.EVENT_ID
+			,EL.LANG_CD
+			,EL.EVENT_TTL
+			,EL.USE_YN
+			,EL.REG_USER_ID
+			,REG_DTM
+			,EL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_LANG EL
+		<include refid="where-eventLang" />
+		ORDER BY
+			EL.EVENT_ID
+			,EL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getEventLang" parameterType="EventLangExDto" resultType="EventLangExDto">
+	/* eventLangMapper.getEventLang */
+		SELECT
+			EL.EVENT_ID
+			,EL.LANG_CD
+			,EL.EVENT_TTL
+			,EL.USE_YN
+			,EL.REG_USER_ID
+			,REG_DTM
+			,EL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_EVENT_LANG EL
+		WHERE
+			EL.EVENT_ID = #{eventId}
+			AND EL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertEventLang" parameterType="EventLangExDto">
+	/* eventLangMapper.insertEventLang */
+		INSERT INTO CW_EVENT_LANG (
+			EVENT_ID
+			,LANG_CD
+			,EVENT_TTL
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{eventId}
+			,#{langCd}
+			,#{eventTtl}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateEventLang" parameterType="EventLangExDto">
+	/* eventLangMapper.updateEventLang */
+		UPDATE CW_EVENT_LANG
+		<set>
+		<if test="eventTtl != null">
+		EVENT_TTL = #{eventTtl},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			EVENT_ID = #{eventId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteEventLang" parameterType="EventLangExDto">
+	/* eventLangMapper.deleteEventLang */
+	DELETE FROM CW_EVENT_LANG
+	WHERE
+		EVENT_ID = #{eventId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

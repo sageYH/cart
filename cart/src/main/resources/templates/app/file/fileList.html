@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsFile = new pageCls("dvFilePageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("fileId"))==false) params["fileId"] = getEVal("fileId");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("fileNm"))==false) params["fileNm"] = getEVal("fileNm");
+	if (isEmpty(getEVal("fileSize"))==false) params["fileSize"] = getEVal("fileSize");
+	if (isEmpty(getEVal("filePath"))==false) params["filePath"] = getEVal("filePath");
+	if (isEmpty(getEVal("fileSortSeq"))==false) params["fileSortSeq"] = getEVal("fileSortSeq");
+	//page set
+	params = pageClsFile.getPageInfo(params);
+
+	var url = "/app/file/getFilePageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["fileId","fileRefId","fileNm","fileSize","filePath","fileSortSeq"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,6);
+	pageClsFile.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsFileDown(){
+	var url = "/app/file/getFileExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("fileId"))==false) paramXls["fileId"] = getEVal("fileId");
+	if (isEmpty(getEVal("fileRefId"))==false) paramXls["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("fileNm"))==false) paramXls["fileNm"] = getEVal("fileNm");
+	if (isEmpty(getEVal("fileSize"))==false) paramXls["fileSize"] = getEVal("fileSize");
+	if (isEmpty(getEVal("filePath"))==false) paramXls["filePath"] = getEVal("filePath");
+	if (isEmpty(getEVal("fileSortSeq"))==false) paramXls["fileSortSeq"] = getEVal("fileSortSeq");
+
+	var params = {"xlsName":"파일"
+		,"sheetName":"시트"
+		,"columnHeaders":["파일ID","파일참조ID","파일명","파일크기","파일경로","파일순서번호"]
+		,"columnNames":["fileId","fileRefId","fileNm","fileSize","filePath","fileSortSeq"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["fileId"] = arr[0].trim();
+	}
+	FilePop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvFileSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvFileSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsFile.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">파일ID</th>
+							<th scope="col">파일참조ID</th>
+							<th scope="col">파일명</th>
+							<th scope="col">파일크기</th>
+							<th scope="col">파일경로</th>
+							<th scope="col">파일순서번호</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{fileId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{fileId}}</td>
+						<td>{{fileRefId}}</td>
+						<td>{{fileNm}}</td>
+						<td>{{fileSize}}</td>
+						<td>{{filePath}}</td>
+						<td>{{fileSortSeq}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvFilePageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/file/filePop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

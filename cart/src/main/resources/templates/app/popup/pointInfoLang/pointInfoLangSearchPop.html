@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/pointInfoLang/pointInfoLangGrid.js"></script>
+<script>
+var gridPointInfoLang = null;
+window.onload = function() {
+	gridPointInfoLang = setGridPointInfoLang("dvGridPointInfoLangSearch");
+	gridPointInfoLang.setBodyHeight(300);
+	fixedColGrid(gridPointInfoLang);
+
+	gridPointInfoLang.on("click",function(ev){
+		toggleGrid(gridPointInfoLang,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridPointInfoLang.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridPointInfoLang)==false){
+			dblClickGridPointInfoLang();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridPointInfoLang(){
+	getResultData();
+}
+
+//page
+var pageClsPointInfoLang = new pageCls("dvPointInfoLangPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridPointInfoLang);
+
+	var params = {};
+	if (isEmpty(getEVal("pointId"))==false) params["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("langCd"))==false) params["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("pointNm"))==false) params["pointNm"] = getEVal("pointNm");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsPointInfoLang.getPageInfo(params);
+
+	var url = "/app/pointInfoLang/getPointInfoLangPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridPointInfoLang,result.payloads);
+		//set total
+		pageClsPointInfoLang.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridPointInfoLang);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvPointInfoLangSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridPointInfoLangSearch" class="addr-list" ></div>
+					<div id="dvPointInfoLangPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

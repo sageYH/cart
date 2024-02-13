@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cwPymtAgcyCompCd"] = '[[${transData.cwPymtAgcyCompCd}]]';
+	if (isEmpty(map["cwPymtAgcyCompCd"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/pymtAgcyComp/getPymtAgcyComp.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvPymtAgcyCompPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="cwPymtAgcyCompCd" id="cwPymtAgcyCompCd">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">결제대행사명</th>
+							<td><span name="cwPymtAgcyCompNm" id="cwPymtAgcyCompNm"></span></td>
+							<th scope="row">카드사코드</th>
+							<td><span name="cardCompCd" id="cardCompCd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">결제유형코드</th>
+							<td><span name="pymtTypCd" id="pymtTypCd"></span></td>
+							<th scope="row">상점ID</th>
+							<td><span name="storeId" id="storeId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">상점Key</th>
+							<td><span name="storeKey" id="storeKey"></span></td>
+							<th scope="row">거래취소비밀번호</th>
+							<td><span name="txnCancPwd" id="txnCancPwd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">VAN인증키</th>
+							<td><span name="vanAuthnKey" id="vanAuthnKey"></span></td>
+							<th scope="row">PG대표사여부</th>
+							<td><span name="pgRepCompYn" id="pgRepCompYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">VAN대표사여부</th>
+							<td><span name="vanRepCompYn" id="vanRepCompYn"></span></td>
+							<th scope="row">PG사Url</th>
+							<td><span name="pgUrl" id="pgUrl"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">PG사TestUrl</th>
+							<td><span name="pgTestUrl" id="pgTestUrl"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

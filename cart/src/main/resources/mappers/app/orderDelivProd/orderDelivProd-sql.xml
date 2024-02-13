@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderDelivProdMapper">
+	<sql id="where-orderDelivProd">
+		WHERE 1=1
+			<if test="ordDelivId != null and ordDelivId != '' ">
+			AND ODP.ORD_DELIV_ID = #{ordDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND ODP.ORD_ID = #{ordId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND ODP.PROD_ID = #{prodId}
+			</if>
+	</sql>
+
+	<select id="getOrderDelivProdListCount" parameterType="OrderDelivProdExDto" resultType="Integer">
+	/* orderDelivProdMapper.getOrderDelivProdListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_DELIV_PROD ODP
+		<include refid="where-orderDelivProd" />
+	</select>
+
+	<select id="getOrderDelivProdList" parameterType="OrderDelivProdExDto" resultType="OrderDelivProdExDto">
+	/* orderDelivProdMapper.getOrderDelivProdList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			ODP.ORD_DELIV_ID
+			,ODP.ORD_ID
+			,ODP.PROD_ID
+			,ODP.REG_USER_ID
+			,REG_DTM
+			,ODP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DELIV_PROD ODP
+		<include refid="where-orderDelivProd" />
+		ORDER BY
+			ODP.ORD_DELIV_ID
+			,ODP.ORD_ID
+			,ODP.PROD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderDelivProd" parameterType="OrderDelivProdExDto" resultType="OrderDelivProdExDto">
+	/* orderDelivProdMapper.getOrderDelivProd */
+		SELECT
+			ODP.ORD_DELIV_ID
+			,ODP.ORD_ID
+			,ODP.PROD_ID
+			,ODP.REG_USER_ID
+			,REG_DTM
+			,ODP.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DELIV_PROD ODP
+		WHERE
+			ODP.ORD_DELIV_ID = #{ordDelivId}
+			AND ODP.ORD_ID = #{ordId}
+			AND ODP.PROD_ID = #{prodId}
+	</select>
+
+	<insert id="insertOrderDelivProd" parameterType="OrderDelivProdExDto">
+	/* orderDelivProdMapper.insertOrderDelivProd */
+		INSERT INTO CW_ORDER_DELIV_PROD (
+			ORD_DELIV_ID
+			,ORD_ID
+			,PROD_ID
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordDelivId}
+			,#{ordId}
+			,#{prodId}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderDelivProd" parameterType="OrderDelivProdExDto">
+	/* orderDelivProdMapper.updateOrderDelivProd */
+		UPDATE CW_ORDER_DELIV_PROD
+		<set>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_DELIV_ID = #{ordDelivId}
+			AND ORD_ID = #{ordId}
+			AND PROD_ID = #{prodId}
+	</update>
+
+	<delete id="deleteOrderDelivProd" parameterType="OrderDelivProdExDto">
+	/* orderDelivProdMapper.deleteOrderDelivProd */
+	DELETE FROM CW_ORDER_DELIV_PROD
+	WHERE
+		ORD_DELIV_ID = #{ordDelivId}
+		AND ORD_ID = #{ordId}
+		AND PROD_ID = #{prodId}
+	</delete>
+</mapper>

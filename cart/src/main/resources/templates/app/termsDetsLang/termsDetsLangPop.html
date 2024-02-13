@@ -1,0 +1,170 @@
+<div id="divTermsDetsLangPop" class="sub_wrap" style="display:none;width:92%" title="약관세부사항_언어 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>약관세부사항_언어 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="termsId_g1">약관ID</label>
+						<div class="wrap">
+							<input type="text" id="termsId_g1" name="termsId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="termsDtlId_g1">약관상세ID</label>
+						<div class="wrap">
+							<input type="text" id="termsDtlId_g1" name="termsDtlId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="langCd_g1">언어코드</label>
+						<div class="wrap">
+							<input type="text" id="langCd_g1" name="langCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="termsDtlNm_g1">약관상세명</label>
+						<div class="wrap">
+							<input type="text" id="termsDtlNm_g1" name="termsDtlNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="termsDtlCont_g1">약관상세내용</label>
+						<div class="wrap">
+							<input type="text" id="termsDtlCont_g1" name="termsDtlCont_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="TermsDetsLangPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="TermsDetsLangPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="TermsDetsLangPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var TermsDetsLangPop = new $W.load("divTermsDetsLangPop");
+TermsDetsLangPop.ready(function(){
+	//
+});
+
+TermsDetsLangPop.fnOpen = function(mode, params, func) {
+	clearObjects("divTermsDetsLangPop");
+	TermsDetsLangPop.mode = mode;
+	if (!isEmpty(func)){
+		TermsDetsLangPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divTermsDetsLangPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["termsId_g1","termsDtlId_g1","langCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/termsDetsLang/getTermsDetsLang.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("termsDtlNm_g1").focus();
+	}else{
+		readOnlyFalse(["termsId_g1","termsDtlId_g1","langCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+TermsDetsLangPop.fnSave = function(){
+
+	var valid = 0 || [
+		["termsId_g1","","자료(약관ID)를 확인하세요."]
+		,["termsDtlId_g1","","자료(약관상세ID)를 확인하세요."]
+		,["langCd_g1","","자료(언어코드)를 확인하세요."]
+		,["termsDtlNm_g1","","자료(약관상세명)를 확인하세요."]
+		,["termsDtlCont_g1","","자료(약관상세내용)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divTermsDetsLangPop");
+	var url = "/app/termsDetsLang/updateTermsDetsLang.do";
+	if (TermsDetsLangPop.mode=="CREATE"){
+		url = "/app/termsDetsLang/insertTermsDetsLang.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(TermsDetsLangPop.func)){
+			TermsDetsLangPop.func();
+			TermsDetsLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+TermsDetsLangPop.fnDelete = function(){
+	if (TermsDetsLangPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/termsDetsLang/deleteTermsDetsLang.do";
+	var params = {};
+	params["termsId"] = getElement("termsId_g1").value;
+	params["termsDtlId"] = getElement("termsDtlId_g1").value;
+	params["langCd"] = getElement("langCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(TermsDetsLangPop.func)){
+			TermsDetsLangPop.func();
+			TermsDetsLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+TermsDetsLangPop.fnClose = function(){
+	layerToggle("divTermsDetsLangPop",{"mode":0});
+};
+</script>

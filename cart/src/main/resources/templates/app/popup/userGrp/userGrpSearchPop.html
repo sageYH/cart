@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/userGrp/userGrpGrid.js"></script>
+<script>
+var gridUserGrp = null;
+window.onload = function() {
+	gridUserGrp = setGridUserGrp("dvGridUserGrpSearch");
+	gridUserGrp.setBodyHeight(300);
+	fixedColGrid(gridUserGrp);
+
+	gridUserGrp.on("click",function(ev){
+		toggleGrid(gridUserGrp,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridUserGrp.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridUserGrp)==false){
+			dblClickGridUserGrp();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridUserGrp(){
+	getResultData();
+}
+
+//page
+var pageClsUserGrp = new pageCls("dvUserGrpPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridUserGrp);
+
+	var params = {};
+	if (isEmpty(getEVal("userGrpCd"))==false) params["userGrpCd"] = getEVal("userGrpCd");
+	if (isEmpty(getEVal("userGrpNm"))==false) params["userGrpNm"] = getEVal("userGrpNm");
+	if (isEmpty(getEVal("userGrpDesc"))==false) params["userGrpDesc"] = getEVal("userGrpDesc");
+	if (isEmpty(getEVal("userAuthDivCd"))==false) params["userAuthDivCd"] = getEVal("userAuthDivCd");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsUserGrp.getPageInfo(params);
+
+	var url = "/app/userGrp/getUserGrpPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridUserGrp,result.payloads);
+		//set total
+		pageClsUserGrp.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridUserGrp);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvUserGrpSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridUserGrpSearch" class="addr-list" ></div>
+					<div id="dvUserGrpPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

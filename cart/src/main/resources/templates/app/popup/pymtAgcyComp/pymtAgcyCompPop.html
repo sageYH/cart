@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["cwPymtAgcyCompCd"] = '[[${transData.cwPymtAgcyCompCd}]]';
+	if (isEmpty(map["cwPymtAgcyCompCd"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("cwPymtAgcyCompCd").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/pymtAgcyComp/getPymtAgcyComp.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["cwPymtAgcyCompCd","","자료(결제대행사코드)를 확인하세요."]
+		["cwPymtAgcyCompNm","","자료(결제대행사명)를 확인하세요."]
+		["cardCompCd","","자료(카드사코드)를 확인하세요."]
+		["pymtTypCd","","자료(결제유형코드)를 확인하세요."]
+		["storeId","","자료(상점ID)를 확인하세요."]
+		["storeKey","","자료(상점Key)를 확인하세요."]
+		["txnCancPwd","","자료(거래취소비밀번호)를 확인하세요."]
+		["vanAuthnKey","","자료(VAN인증키)를 확인하세요."]
+		["pgRepCompYn","","자료(PG대표사여부)를 확인하세요."]
+		["vanRepCompYn","","자료(VAN대표사여부)를 확인하세요."]
+		["pgUrl","","자료(PG사Url)를 확인하세요."]
+		["pgTestUrl","","자료(PG사TestUrl)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/pymtAgcyComp/updatePymtAgcyComp.do";
+	if (mode=="NEW"){
+		url = "/app/pymtAgcyComp/insertPymtAgcyComp.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formPymtAgcyCompPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvPymtAgcyCompPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formPymtAgcyCompPop" name="formPymtAgcyCompPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">결제대행사코드</th>
+						<td><input type="text" name="cwPymtAgcyCompCd" id="cwPymtAgcyCompCd" style="width:70%" readonly >
+						</td>
+					<th scope="row">결제대행사명</th>
+					<td><input type="text" name="cwPymtAgcyCompNm" id="cwPymtAgcyCompNm" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">카드사코드</th>
+						<td><input type="text" name="cardCompCd" id="cardCompCd" style="width:70%" >
+						</td>
+					<th scope="row">결제유형코드</th>
+					<td><input type="text" name="pymtTypCd" id="pymtTypCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">상점ID</th>
+						<td><input type="text" name="storeId" id="storeId" style="width:70%" >
+						</td>
+					<th scope="row">상점Key</th>
+					<td><input type="text" name="storeKey" id="storeKey" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">거래취소비밀번호</th>
+						<td><input type="text" name="txnCancPwd" id="txnCancPwd" style="width:70%" >
+						</td>
+					<th scope="row">VAN인증키</th>
+					<td><input type="text" name="vanAuthnKey" id="vanAuthnKey" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">PG대표사여부</th>
+						<td><input type="text" name="pgRepCompYn" id="pgRepCompYn" style="width:70%" >
+						</td>
+					<th scope="row">VAN대표사여부</th>
+					<td><input type="text" name="vanRepCompYn" id="vanRepCompYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">PG사Url</th>
+						<td><input type="text" name="pgUrl" id="pgUrl" style="width:70%" >
+						</td>
+					<th scope="row">PG사TestUrl</th>
+					<td><input type="text" name="pgTestUrl" id="pgTestUrl" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

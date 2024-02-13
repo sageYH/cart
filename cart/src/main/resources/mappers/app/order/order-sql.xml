@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderMapper">
+	<sql id="where-order">
+		WHERE 1=1
+			<if test="ordId != null and ordId != '' ">
+			AND O.ORD_ID = #{ordId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND O.MBR_ID = #{mbrId}
+			</if>
+			<if test="ordProgCd != null and ordProgCd != '' ">
+			AND O.ORD_PROG_CD = #{ordProgCd}
+			</if>
+			<if test="prodQty != null and prodQty != '' ">
+			AND O.PROD_QTY = #{prodQty}
+			</if>
+			<if test="prodTotAmt != null and prodTotAmt != '' ">
+			AND O.PROD_TOT_AMT = #{prodTotAmt}
+			</if>
+			<if test="optTotAmt != null and optTotAmt != '' ">
+			AND O.OPT_TOT_AMT = #{optTotAmt}
+			</if>
+			<if test="delivTotAmt != null and delivTotAmt != '' ">
+			AND O.DELIV_TOT_AMT = #{delivTotAmt}
+			</if>
+			<if test="delivFreeAmt != null and delivFreeAmt != '' ">
+			AND O.DELIV_FREE_AMT = #{delivFreeAmt}
+			</if>
+			<if test="delivChrgAmt != null and delivChrgAmt != '' ">
+			AND O.DELIV_CHRG_AMT = #{delivChrgAmt}
+			</if>
+			<if test="delivChrgWeight != null and delivChrgWeight != '' ">
+			AND O.DELIV_CHRG_WEIGHT = #{delivChrgWeight}
+			</if>
+			<if test="delivChrgQty != null and delivChrgQty != '' ">
+			AND O.DELIV_CHRG_QTY = #{delivChrgQty}
+			</if>
+			<if test="ordTotAmt != null and ordTotAmt != '' ">
+			AND O.ORD_TOT_AMT = #{ordTotAmt}
+			</if>
+			<if test="pymtPoint != null and pymtPoint != '' ">
+			AND O.PYMT_POINT = #{pymtPoint}
+			</if>
+			<if test="usePoint != null and usePoint != '' ">
+			AND O.USE_POINT = #{usePoint}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND O.CPN_ID = #{cpnId}
+			</if>
+			<if test="cpnAmt != null and cpnAmt != '' ">
+			AND O.CPN_AMT = #{cpnAmt}
+			</if>
+			<if test="pymtTotAmt != null and pymtTotAmt != '' ">
+			AND O.PYMT_TOT_AMT = #{pymtTotAmt}
+			</if>
+			<if test="pymtMethCd != null and pymtMethCd != '' ">
+			AND O.PYMT_METH_CD = #{pymtMethCd}
+			</if>
+			<if test="ordDtm != null and ordDtm != '' ">
+			AND O.ORD_DTM = STR_TO_DATE(#{ordDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="taxCd != null and taxCd != '' ">
+			AND O.TAX_CD = #{taxCd}
+			</if>
+			<if test="finalDelivYmd != null and finalDelivYmd != '' ">
+			AND O.FINAL_DELIV_YMD = #{finalDelivYmd}
+			</if>
+			<if test="ordDueYmd != null and ordDueYmd != '' ">
+			AND O.ORD_DUE_YMD = #{ordDueYmd}
+			</if>
+			<if test="mbrCfmDtm != null and mbrCfmDtm != '' ">
+			AND O.MBR_CFM_DTM = STR_TO_DATE(#{mbrCfmDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="exchReqDtm != null and exchReqDtm != '' ">
+			AND O.EXCH_REQ_DTM = STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="ordCancReqDtm != null and ordCancReqDtm != '' ">
+			AND O.ORD_CANC_REQ_DTM = STR_TO_DATE(#{ordCancReqDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="ordCancAmt != null and ordCancAmt != '' ">
+			AND O.ORD_CANC_AMT = #{ordCancAmt}
+			</if>
+			<if test="finalPymtAmt != null and finalPymtAmt != '' ">
+			AND O.FINAL_PYMT_AMT = #{finalPymtAmt}
+			</if>
+	</sql>
+
+	<select id="getOrderListCount" parameterType="OrderExDto" resultType="Integer">
+	/* orderMapper.getOrderListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER O
+		<include refid="where-order" />
+	</select>
+
+	<select id="getOrderList" parameterType="OrderExDto" resultType="OrderExDto">
+	/* orderMapper.getOrderList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			O.ORD_ID
+			,O.MBR_ID
+			,O.ORD_PROG_CD
+			,O.PROD_QTY
+			,O.PROD_TOT_AMT
+			,O.OPT_TOT_AMT
+			,O.DELIV_TOT_AMT
+			,O.DELIV_FREE_AMT
+			,O.DELIV_CHRG_AMT
+			,O.DELIV_CHRG_WEIGHT
+			,O.DELIV_CHRG_QTY
+			,O.ORD_TOT_AMT
+			,O.PYMT_POINT
+			,O.USE_POINT
+			,O.CPN_ID
+			,O.CPN_AMT
+			,O.PYMT_TOT_AMT
+			,O.PYMT_METH_CD
+			,ORD_DTM
+			,O.TAX_CD
+			,O.FINAL_DELIV_YMD
+			,O.ORD_DUE_YMD
+			,MBR_CFM_DTM
+			,EXCH_REQ_DTM
+			,ORD_CANC_REQ_DTM
+			,O.ORD_CANC_AMT
+			,O.FINAL_PYMT_AMT
+			,O.REG_USER_ID
+			,REG_DTM
+			,O.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER O
+		<include refid="where-order" />
+		ORDER BY
+			O.ORD_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrder" parameterType="OrderExDto" resultType="OrderExDto">
+	/* orderMapper.getOrder */
+		SELECT
+			O.ORD_ID
+			,O.MBR_ID
+			,O.ORD_PROG_CD
+			,O.PROD_QTY
+			,O.PROD_TOT_AMT
+			,O.OPT_TOT_AMT
+			,O.DELIV_TOT_AMT
+			,O.DELIV_FREE_AMT
+			,O.DELIV_CHRG_AMT
+			,O.DELIV_CHRG_WEIGHT
+			,O.DELIV_CHRG_QTY
+			,O.ORD_TOT_AMT
+			,O.PYMT_POINT
+			,O.USE_POINT
+			,O.CPN_ID
+			,O.CPN_AMT
+			,O.PYMT_TOT_AMT
+			,O.PYMT_METH_CD
+			,ORD_DTM
+			,O.TAX_CD
+			,O.FINAL_DELIV_YMD
+			,O.ORD_DUE_YMD
+			,MBR_CFM_DTM
+			,EXCH_REQ_DTM
+			,ORD_CANC_REQ_DTM
+			,O.ORD_CANC_AMT
+			,O.FINAL_PYMT_AMT
+			,O.REG_USER_ID
+			,REG_DTM
+			,O.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER O
+		WHERE
+			O.ORD_ID = #{ordId}
+	</select>
+
+	<insert id="insertOrder" parameterType="OrderExDto">
+	/* orderMapper.insertOrder */
+		INSERT INTO CW_ORDER (
+			ORD_ID
+			,MBR_ID
+			,ORD_PROG_CD
+			,PROD_QTY
+			,PROD_TOT_AMT
+			,OPT_TOT_AMT
+			,DELIV_TOT_AMT
+			,DELIV_FREE_AMT
+			,DELIV_CHRG_AMT
+			,DELIV_CHRG_WEIGHT
+			,DELIV_CHRG_QTY
+			,ORD_TOT_AMT
+			,PYMT_POINT
+			,USE_POINT
+			,CPN_ID
+			,CPN_AMT
+			,PYMT_TOT_AMT
+			,PYMT_METH_CD
+			,ORD_DTM
+			,TAX_CD
+			,FINAL_DELIV_YMD
+			,ORD_DUE_YMD
+			,MBR_CFM_DTM
+			,EXCH_REQ_DTM
+			,ORD_CANC_REQ_DTM
+			,ORD_CANC_AMT
+			,FINAL_PYMT_AMT
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordId}
+			,#{mbrId}
+			,#{ordProgCd}
+			,#{prodQty}
+			,#{prodTotAmt}
+			,#{optTotAmt}
+			,#{delivTotAmt}
+			,#{delivFreeAmt}
+			,#{delivChrgAmt}
+			,#{delivChrgWeight}
+			,#{delivChrgQty}
+			,#{ordTotAmt}
+			,#{pymtPoint}
+			,#{usePoint}
+			,#{cpnId}
+			,#{cpnAmt}
+			,#{pymtTotAmt}
+			,#{pymtMethCd}
+			,STR_TO_DATE(#{ordDtm}, '%Y%m%d %h%i%s')
+			,#{taxCd}
+			,#{finalDelivYmd}
+			,#{ordDueYmd}
+			,STR_TO_DATE(#{mbrCfmDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{ordCancReqDtm}, '%Y%m%d %h%i%s')
+			,#{ordCancAmt}
+			,#{finalPymtAmt}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrder" parameterType="OrderExDto">
+	/* orderMapper.updateOrder */
+		UPDATE CW_ORDER
+		<set>
+		<if test="mbrId != null">
+		MBR_ID = #{mbrId},
+		</if>
+		<if test="ordProgCd != null">
+		ORD_PROG_CD = #{ordProgCd},
+		</if>
+		<if test="prodQty != null">
+		PROD_QTY = #{prodQty},
+		</if>
+		<if test="prodTotAmt != null">
+		PROD_TOT_AMT = #{prodTotAmt},
+		</if>
+		<if test="optTotAmt != null">
+		OPT_TOT_AMT = #{optTotAmt},
+		</if>
+		<if test="delivTotAmt != null">
+		DELIV_TOT_AMT = #{delivTotAmt},
+		</if>
+		<if test="delivFreeAmt != null">
+		DELIV_FREE_AMT = #{delivFreeAmt},
+		</if>
+		<if test="delivChrgAmt != null">
+		DELIV_CHRG_AMT = #{delivChrgAmt},
+		</if>
+		<if test="delivChrgWeight != null">
+		DELIV_CHRG_WEIGHT = #{delivChrgWeight},
+		</if>
+		<if test="delivChrgQty != null">
+		DELIV_CHRG_QTY = #{delivChrgQty},
+		</if>
+		<if test="ordTotAmt != null">
+		ORD_TOT_AMT = #{ordTotAmt},
+		</if>
+		<if test="pymtPoint != null">
+		PYMT_POINT = #{pymtPoint},
+		</if>
+		<if test="usePoint != null">
+		USE_POINT = #{usePoint},
+		</if>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="cpnAmt != null">
+		CPN_AMT = #{cpnAmt},
+		</if>
+		<if test="pymtTotAmt != null">
+		PYMT_TOT_AMT = #{pymtTotAmt},
+		</if>
+		<if test="pymtMethCd != null">
+		PYMT_METH_CD = #{pymtMethCd},
+		</if>
+		<if test="ordDtm != null">
+		ORD_DTM = STR_TO_DATE(#{ordDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="taxCd != null">
+		TAX_CD = #{taxCd},
+		</if>
+		<if test="finalDelivYmd != null">
+		FINAL_DELIV_YMD = #{finalDelivYmd},
+		</if>
+		<if test="ordDueYmd != null">
+		ORD_DUE_YMD = #{ordDueYmd},
+		</if>
+		<if test="mbrCfmDtm != null">
+		MBR_CFM_DTM = STR_TO_DATE(#{mbrCfmDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="exchReqDtm != null">
+		EXCH_REQ_DTM = STR_TO_DATE(#{exchReqDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="ordCancReqDtm != null">
+		ORD_CANC_REQ_DTM = STR_TO_DATE(#{ordCancReqDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="ordCancAmt != null">
+		ORD_CANC_AMT = #{ordCancAmt},
+		</if>
+		<if test="finalPymtAmt != null">
+		FINAL_PYMT_AMT = #{finalPymtAmt},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_ID = #{ordId}
+	</update>
+
+	<delete id="deleteOrder" parameterType="OrderExDto">
+	/* orderMapper.deleteOrder */
+	DELETE FROM CW_ORDER
+	WHERE
+		ORD_ID = #{ordId}
+	</delete>
+</mapper>

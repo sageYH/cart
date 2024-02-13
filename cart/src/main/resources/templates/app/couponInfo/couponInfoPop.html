@@ -1,0 +1,184 @@
+<div id="divCouponInfoPop" class="sub_wrap" style="display:none;width:92%" title="쿠폰정보 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>쿠폰정보 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cpnId_g1">포인트지급ID</label>
+						<div class="wrap">
+							<input type="text" id="cpnId_g1" name="cpnId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cpnKindCd_g1">쿠폰종류코드[PS02]</label>
+						<div class="wrap">
+							<input type="text" id="cpnKindCd_g1" name="cpnKindCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cpnTypCd_g1">쿠폰유형코드[PS03]</label>
+						<div class="wrap">
+							<input type="text" id="cpnTypCd_g1" name="cpnTypCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cpnNm_g1">쿠폰명</label>
+						<div class="wrap">
+							<input type="text" id="cpnNm_g1" name="cpnNm_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="alwaysYn_g1">상시여부</label>
+						<div class="wrap">
+							<input type="text" id="alwaysYn_g1" name="alwaysYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="firstComeYn_g1">선착순여부</label>
+						<div class="wrap">
+							<input type="text" id="firstComeYn_g1" name="firstComeYn_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="dupePymtYn_g1">중복지급여부</label>
+						<div class="wrap">
+							<input type="text" id="dupePymtYn_g1" name="dupePymtYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CouponInfoPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CouponInfoPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CouponInfoPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CouponInfoPop = new $W.load("divCouponInfoPop");
+CouponInfoPop.ready(function(){
+	//
+});
+
+CouponInfoPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCouponInfoPop");
+	CouponInfoPop.mode = mode;
+	if (!isEmpty(func)){
+		CouponInfoPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCouponInfoPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cpnId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/couponInfo/getCouponInfo.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cpnKindCd_g1").focus();
+	}else{
+		readOnlyFalse(["cpnId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CouponInfoPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cpnId_g1","","자료(포인트지급ID)를 확인하세요."]
+		,["cpnKindCd_g1","","자료(쿠폰종류코드[PS02])를 확인하세요."]
+		,["cpnTypCd_g1","","자료(쿠폰유형코드[PS03])를 확인하세요."]
+		,["cpnNm_g1","","자료(쿠폰명)를 확인하세요."]
+		,["alwaysYn_g1","","자료(상시여부)를 확인하세요."]
+		,["firstComeYn_g1","","자료(선착순여부)를 확인하세요."]
+		,["dupePymtYn_g1","","자료(중복지급여부)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCouponInfoPop");
+	var url = "/app/couponInfo/updateCouponInfo.do";
+	if (CouponInfoPop.mode=="CREATE"){
+		url = "/app/couponInfo/insertCouponInfo.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponInfoPop.func)){
+			CouponInfoPop.func();
+			CouponInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CouponInfoPop.fnDelete = function(){
+	if (CouponInfoPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/couponInfo/deleteCouponInfo.do";
+	var params = {};
+	params["cpnId"] = getElement("cpnId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponInfoPop.func)){
+			CouponInfoPop.func();
+			CouponInfoPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CouponInfoPop.fnClose = function(){
+	layerToggle("divCouponInfoPop",{"mode":0});
+};
+</script>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/productsLang/productsLangGrid.js"></script>
+<script>
+var gridProductsLang = null;
+window.onload = function() {
+	gridProductsLang = setGridProductsLang("dvGridProductsLangSearch");
+	gridProductsLang.setBodyHeight(300);
+	fixedColGrid(gridProductsLang);
+
+	gridProductsLang.on("click",function(ev){
+		toggleGrid(gridProductsLang,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridProductsLang.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridProductsLang)==false){
+			dblClickGridProductsLang();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridProductsLang(){
+	getResultData();
+}
+
+//page
+var pageClsProductsLang = new pageCls("dvProductsLangPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridProductsLang);
+
+	var params = {};
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("langCd"))==false) params["langCd"] = getEVal("langCd");
+	if (isEmpty(getEVal("prodNm"))==false) params["prodNm"] = getEVal("prodNm");
+	if (isEmpty(getEVal("prodSkin"))==false) params["prodSkin"] = getEVal("prodSkin");
+	if (isEmpty(getEVal("prodMobiSkin"))==false) params["prodMobiSkin"] = getEVal("prodMobiSkin");
+	if (isEmpty(getEVal("prodMfr"))==false) params["prodMfr"] = getEVal("prodMfr");
+	if (isEmpty(getEVal("prodOrigin"))==false) params["prodOrigin"] = getEVal("prodOrigin");
+	if (isEmpty(getEVal("prodBrand"))==false) params["prodBrand"] = getEVal("prodBrand");
+	if (isEmpty(getEVal("prodModel"))==false) params["prodModel"] = getEVal("prodModel");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsProductsLang.getPageInfo(params);
+
+	var url = "/app/productsLang/getProductsLangPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridProductsLang,result.payloads);
+		//set total
+		pageClsProductsLang.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridProductsLang);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvProductsLangSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridProductsLangSearch" class="addr-list" ></div>
+					<div id="dvProductsLangPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cartIdInfoMapper">
+	<sql id="where-cartIdInfo">
+		WHERE 1=1
+			<if test="cartId != null and cartId != '' ">
+			AND CII.CART_ID = #{cartId}
+			</if>
+			<if test="connIp != null and connIp != '' ">
+			AND CII.CONN_IP = #{connIp}
+			</if>
+	</sql>
+
+	<select id="getCartIdInfoListCount" parameterType="CartIdInfoExDto" resultType="Integer">
+	/* cartIdInfoMapper.getCartIdInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_CART_ID_INFO CII
+		<include refid="where-cartIdInfo" />
+	</select>
+
+	<select id="getCartIdInfoList" parameterType="CartIdInfoExDto" resultType="CartIdInfoExDto">
+	/* cartIdInfoMapper.getCartIdInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CII.CART_ID
+			,CII.CONN_IP
+			,CII.REG_USER_ID
+			,REG_DTM
+			,CII.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART_ID_INFO CII
+		<include refid="where-cartIdInfo" />
+		ORDER BY
+			CII.CART_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCartIdInfo" parameterType="CartIdInfoExDto" resultType="CartIdInfoExDto">
+	/* cartIdInfoMapper.getCartIdInfo */
+		SELECT
+			CII.CART_ID
+			,CII.CONN_IP
+			,CII.REG_USER_ID
+			,REG_DTM
+			,CII.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_CART_ID_INFO CII
+		WHERE
+			CII.CART_ID = #{cartId}
+	</select>
+
+	<insert id="insertCartIdInfo" parameterType="CartIdInfoExDto">
+	/* cartIdInfoMapper.insertCartIdInfo */
+		INSERT INTO CW_CART_ID_INFO (
+			CART_ID
+			,CONN_IP
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cartId}
+			,#{connIp}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCartIdInfo" parameterType="CartIdInfoExDto">
+	/* cartIdInfoMapper.updateCartIdInfo */
+		UPDATE CW_CART_ID_INFO
+		<set>
+		<if test="connIp != null">
+		CONN_IP = #{connIp},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CART_ID = #{cartId}
+	</update>
+
+	<delete id="deleteCartIdInfo" parameterType="CartIdInfoExDto">
+	/* cartIdInfoMapper.deleteCartIdInfo */
+	DELETE FROM CW_CART_ID_INFO
+	WHERE
+		CART_ID = #{cartId}
+	</delete>
+</mapper>

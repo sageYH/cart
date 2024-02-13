@@ -1,0 +1,193 @@
+<div id="divOrderCancPop" class="sub_wrap" style="display:none;width:92%" title="주문취소 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>주문취소 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="ordCnclId_g1">주문취소ID</label>
+						<div class="wrap">
+							<input type="text" id="ordCnclId_g1" name="ordCnclId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="ordId_g1">주문ID</label>
+						<div class="wrap">
+							<input type="text" id="ordId_g1" name="ordId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="ordCnclDtm_g1">주문취소일시</label>
+						<div class="wrap">
+							<input type="text" id="ordCnclDtm_g1" name="ordCnclDtm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="ordCnclDivCd_g1">주문취소구분[OD04]</label>
+						<div class="wrap">
+							<input type="text" id="ordCnclDivCd_g1" name="ordCnclDivCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="ordCnclAmt_g1">주문취소총액</label>
+						<div class="wrap">
+							<input type="text" id="ordCnclAmt_g1" name="ordCnclAmt_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pymtCnclPointId_g1">지급취소포인트ID</label>
+						<div class="wrap">
+							<input type="text" id="pymtCnclPointId_g1" name="pymtCnclPointId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="pymtCnclCpnId_g1">지급취소쿠폰ID</label>
+						<div class="wrap">
+							<input type="text" id="pymtCnclCpnId_g1" name="pymtCnclCpnId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="cnclDelivFee_g1">취소배송비</label>
+						<div class="wrap">
+							<input type="text" id="cnclDelivFee_g1" name="cnclDelivFee_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="delivFeeTgtCd_g1">배송비대상코드[OD05]</label>
+						<div class="wrap">
+							<input type="text" id="delivFeeTgtCd_g1" name="delivFeeTgtCd_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="pymtCompId_g1">지급사ID</label>
+						<div class="wrap">
+							<input type="text" id="pymtCompId_g1" name="pymtCompId_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="OrderCancPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="OrderCancPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="OrderCancPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var OrderCancPop = new $W.load("divOrderCancPop");
+OrderCancPop.ready(function(){
+	//
+});
+
+OrderCancPop.fnOpen = function(mode, params, func) {
+	clearObjects("divOrderCancPop");
+	OrderCancPop.mode = mode;
+	if (!isEmpty(func)){
+		OrderCancPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divOrderCancPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["ordCnclId_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/orderCanc/getOrderCanc.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("ordId_g1").focus();
+	}else{
+		readOnlyFalse(["ordCnclId_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+OrderCancPop.fnSave = function(){
+
+	var valid = 0 || [
+		["ordCnclId_g1","","자료(주문취소ID)를 확인하세요."]
+		,["ordId_g1","","자료(주문ID)를 확인하세요."]
+		,["ordCnclDtm_g1","","자료(주문취소일시)를 확인하세요."]
+		,["ordCnclDivCd_g1","","자료(주문취소구분[OD04])를 확인하세요."]
+		,["ordCnclAmt_g1","","자료(주문취소총액)를 확인하세요."]
+		,["pymtCnclPointId_g1","","자료(지급취소포인트ID)를 확인하세요."]
+		,["pymtCnclCpnId_g1","","자료(지급취소쿠폰ID)를 확인하세요."]
+		,["cnclDelivFee_g1","","자료(취소배송비)를 확인하세요."]
+		,["delivFeeTgtCd_g1","","자료(배송비대상코드[OD05])를 확인하세요."]
+		,["pymtCompId_g1","","자료(지급사ID)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divOrderCancPop");
+	var url = "/app/orderCanc/updateOrderCanc.do";
+	if (OrderCancPop.mode=="CREATE"){
+		url = "/app/orderCanc/insertOrderCanc.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(OrderCancPop.func)){
+			OrderCancPop.func();
+			OrderCancPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+OrderCancPop.fnDelete = function(){
+	if (OrderCancPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/orderCanc/deleteOrderCanc.do";
+	var params = {};
+	params["ordCnclId"] = getElement("ordCnclId_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(OrderCancPop.func)){
+			OrderCancPop.func();
+			OrderCancPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+OrderCancPop.fnClose = function(){
+	layerToggle("divOrderCancPop",{"mode":0});
+};
+</script>

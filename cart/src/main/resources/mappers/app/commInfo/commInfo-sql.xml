@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commInfoMapper">
+	<sql id="where-commInfo">
+		WHERE 1=1
+			<if test="commId != null and commId != '' ">
+			AND CI.COMM_ID = #{commId}
+			</if>
+			<if test="commPathCd != null and commPathCd != '' ">
+			AND CI.COMM_PATH_CD = #{commPathCd}
+			</if>
+			<if test="commDivCd != null and commDivCd != '' ">
+			AND CI.COMM_DIV_CD = #{commDivCd}
+			</if>
+			<if test="commCont != null and commCont != '' ">
+			AND CI.COMM_CONT = #{commCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND CI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getCommInfoListCount" parameterType="CommInfoExDto" resultType="Integer">
+	/* commInfoMapper.getCommInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COMM_INFO CI
+		<include refid="where-commInfo" />
+	</select>
+
+	<select id="getCommInfoList" parameterType="CommInfoExDto" resultType="CommInfoExDto">
+	/* commInfoMapper.getCommInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CI.COMM_ID
+			,CI.COMM_PATH_CD
+			,CI.COMM_DIV_CD
+			,CI.COMM_CONT
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_INFO CI
+		<include refid="where-commInfo" />
+		ORDER BY
+			CI.COMM_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCommInfo" parameterType="CommInfoExDto" resultType="CommInfoExDto">
+	/* commInfoMapper.getCommInfo */
+		SELECT
+			CI.COMM_ID
+			,CI.COMM_PATH_CD
+			,CI.COMM_DIV_CD
+			,CI.COMM_CONT
+			,CI.USE_YN
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COMM_INFO CI
+		WHERE
+			CI.COMM_ID = #{commId}
+	</select>
+
+	<insert id="insertCommInfo" parameterType="CommInfoExDto">
+	/* commInfoMapper.insertCommInfo */
+		INSERT INTO CW_COMM_INFO (
+			COMM_ID
+			,COMM_PATH_CD
+			,COMM_DIV_CD
+			,COMM_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{commId}
+			,#{commPathCd}
+			,#{commDivCd}
+			,#{commCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCommInfo" parameterType="CommInfoExDto">
+	/* commInfoMapper.updateCommInfo */
+		UPDATE CW_COMM_INFO
+		<set>
+		<if test="commPathCd != null">
+		COMM_PATH_CD = #{commPathCd},
+		</if>
+		<if test="commDivCd != null">
+		COMM_DIV_CD = #{commDivCd},
+		</if>
+		<if test="commCont != null">
+		COMM_CONT = #{commCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			COMM_ID = #{commId}
+	</update>
+
+	<delete id="deleteCommInfo" parameterType="CommInfoExDto">
+	/* commInfoMapper.deleteCommInfo */
+	DELETE FROM CW_COMM_INFO
+	WHERE
+		COMM_ID = #{commId}
+	</delete>
+</mapper>

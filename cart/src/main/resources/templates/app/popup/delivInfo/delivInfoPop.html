@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["delivInfoId"] = '[[${transData.delivInfoId}]]';
+    map["mbrId"] = '[[${transData.mbrId}]]';
+	if (isEmpty(map["delivInfoId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("delivInfoId").setAttribute('readonly', true);
+		getEleByObj("mbrId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/delivInfo/getDelivInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["delivInfoId","","자료(배송정보ID)를 확인하세요."]
+		["mbrId","","자료(멤버ID)를 확인하세요."]
+		["delivAddrNm","","자료(배송지명)를 확인하세요."]
+		["baseAddrYn","","자료(기본주소여부)를 확인하세요."]
+		["rcptNm","","자료(수령인명)를 확인하세요."]
+		["rcptTelNo","","자료(수령인전화)를 확인하세요."]
+		["rcptPhoneNo","","자료(수령인폰번호)를 확인하세요."]
+		["delivZipCd","","자료(배송우편번호)를 확인하세요."]
+		["delivAddr","","자료(배송주소)를 확인하세요."]
+		["delivDtlAddr","","자료(배송상세주소)를 확인하세요."]
+		["delivDtlAddr2","","자료(배송상세주소2)를 확인하세요."]
+		["delivRefCont","","자료(배송참조내용)를 확인하세요."]
+		["sortSeq","","자료(정렬순서)를 확인하세요."]
+		["useYn","","자료(사용여부)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/delivInfo/updateDelivInfo.do";
+	if (mode=="NEW"){
+		url = "/app/delivInfo/insertDelivInfo.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formDelivInfoPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvDelivInfoPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formDelivInfoPop" name="formDelivInfoPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">배송정보ID</th>
+						<td><input type="text" name="delivInfoId" id="delivInfoId" style="width:70%" readonly >
+						</td>
+					<th scope="row">멤버ID</th>
+					<td><input type="text" name="mbrId" id="mbrId" readonly >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송지명</th>
+						<td><input type="text" name="delivAddrNm" id="delivAddrNm" style="width:70%" >
+						</td>
+					<th scope="row">기본주소여부</th>
+					<td><input type="text" name="baseAddrYn" id="baseAddrYn" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">수령인명</th>
+						<td><input type="text" name="rcptNm" id="rcptNm" style="width:70%" >
+						</td>
+					<th scope="row">수령인전화</th>
+					<td><input type="text" name="rcptTelNo" id="rcptTelNo" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">수령인폰번호</th>
+						<td><input type="text" name="rcptPhoneNo" id="rcptPhoneNo" style="width:70%" >
+						</td>
+					<th scope="row">배송우편번호</th>
+					<td><input type="text" name="delivZipCd" id="delivZipCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송주소</th>
+						<td><input type="text" name="delivAddr" id="delivAddr" style="width:70%" >
+						</td>
+					<th scope="row">배송상세주소</th>
+					<td><input type="text" name="delivDtlAddr" id="delivDtlAddr" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송상세주소2</th>
+						<td><input type="text" name="delivDtlAddr2" id="delivDtlAddr2" style="width:70%" >
+						</td>
+					<th scope="row">배송참조내용</th>
+					<td><input type="text" name="delivRefCont" id="delivRefCont" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">정렬순서</th>
+						<td><input type="text" name="sortSeq" id="sortSeq" style="width:70%" >
+						</td>
+					<th scope="row">사용여부</th>
+					<td><input type="text" name="useYn" id="useYn" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

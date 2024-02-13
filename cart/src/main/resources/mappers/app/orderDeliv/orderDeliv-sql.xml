@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orderDelivMapper">
+	<sql id="where-orderDeliv">
+		WHERE 1=1
+			<if test="ordDelivId != null and ordDelivId != '' ">
+			AND OD.ORD_DELIV_ID = #{ordDelivId}
+			</if>
+			<if test="ordId != null and ordId != '' ">
+			AND OD.ORD_ID = #{ordId}
+			</if>
+			<if test="delivCompId != null and delivCompId != '' ">
+			AND OD.DELIV_COMP_ID = #{delivCompId}
+			</if>
+			<if test="delivFee != null and delivFee != '' ">
+			AND OD.DELIV_FEE = #{delivFee}
+			</if>
+			<if test="pymtCompId != null and pymtCompId != '' ">
+			AND OD.PYMT_COMP_ID = #{pymtCompId}
+			</if>
+			<if test="delivYn != null and delivYn != '' ">
+			AND OD.DELIV_YN = #{delivYn}
+			</if>
+			<if test="delivExpectedYmd != null and delivExpectedYmd != '' ">
+			AND OD.DELIV_EXPECTED_YMD = #{delivExpectedYmd}
+			</if>
+			<if test="delivYmd != null and delivYmd != '' ">
+			AND OD.DELIV_YMD = #{delivYmd}
+			</if>
+	</sql>
+
+	<select id="getOrderDelivListCount" parameterType="OrderDelivExDto" resultType="Integer">
+	/* orderDelivMapper.getOrderDelivListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_ORDER_DELIV OD
+		<include refid="where-orderDeliv" />
+	</select>
+
+	<select id="getOrderDelivList" parameterType="OrderDelivExDto" resultType="OrderDelivExDto">
+	/* orderDelivMapper.getOrderDelivList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			OD.ORD_DELIV_ID
+			,OD.ORD_ID
+			,OD.DELIV_COMP_ID
+			,OD.DELIV_FEE
+			,OD.PYMT_COMP_ID
+			,OD.DELIV_YN
+			,OD.DELIV_EXPECTED_YMD
+			,OD.DELIV_YMD
+			,OD.REG_USER_ID
+			,REG_DTM
+			,OD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DELIV OD
+		<include refid="where-orderDeliv" />
+		ORDER BY
+			OD.ORD_DELIV_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getOrderDeliv" parameterType="OrderDelivExDto" resultType="OrderDelivExDto">
+	/* orderDelivMapper.getOrderDeliv */
+		SELECT
+			OD.ORD_DELIV_ID
+			,OD.ORD_ID
+			,OD.DELIV_COMP_ID
+			,OD.DELIV_FEE
+			,OD.PYMT_COMP_ID
+			,OD.DELIV_YN
+			,OD.DELIV_EXPECTED_YMD
+			,OD.DELIV_YMD
+			,OD.REG_USER_ID
+			,REG_DTM
+			,OD.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_ORDER_DELIV OD
+		WHERE
+			OD.ORD_DELIV_ID = #{ordDelivId}
+	</select>
+
+	<insert id="insertOrderDeliv" parameterType="OrderDelivExDto">
+	/* orderDelivMapper.insertOrderDeliv */
+		INSERT INTO CW_ORDER_DELIV (
+			ORD_DELIV_ID
+			,ORD_ID
+			,DELIV_COMP_ID
+			,DELIV_FEE
+			,PYMT_COMP_ID
+			,DELIV_YN
+			,DELIV_EXPECTED_YMD
+			,DELIV_YMD
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{ordDelivId}
+			,#{ordId}
+			,#{delivCompId}
+			,#{delivFee}
+			,#{pymtCompId}
+			,#{delivYn}
+			,#{delivExpectedYmd}
+			,#{delivYmd}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateOrderDeliv" parameterType="OrderDelivExDto">
+	/* orderDelivMapper.updateOrderDeliv */
+		UPDATE CW_ORDER_DELIV
+		<set>
+		<if test="ordId != null">
+		ORD_ID = #{ordId},
+		</if>
+		<if test="delivCompId != null">
+		DELIV_COMP_ID = #{delivCompId},
+		</if>
+		<if test="delivFee != null">
+		DELIV_FEE = #{delivFee},
+		</if>
+		<if test="pymtCompId != null">
+		PYMT_COMP_ID = #{pymtCompId},
+		</if>
+		<if test="delivYn != null">
+		DELIV_YN = #{delivYn},
+		</if>
+		<if test="delivExpectedYmd != null">
+		DELIV_EXPECTED_YMD = #{delivExpectedYmd},
+		</if>
+		<if test="delivYmd != null">
+		DELIV_YMD = #{delivYmd},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			ORD_DELIV_ID = #{ordDelivId}
+	</update>
+
+	<delete id="deleteOrderDeliv" parameterType="OrderDelivExDto">
+	/* orderDelivMapper.deleteOrderDeliv */
+	DELETE FROM CW_ORDER_DELIV
+	WHERE
+		ORD_DELIV_ID = #{ordDelivId}
+	</delete>
+</mapper>

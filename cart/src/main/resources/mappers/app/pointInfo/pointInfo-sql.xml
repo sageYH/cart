@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pointInfoMapper">
+	<sql id="where-pointInfo">
+		WHERE 1=1
+			<if test="pointId != null and pointId != '' ">
+			AND PI.POINT_ID = #{pointId}
+			</if>
+			<if test="pointKindCd != null and pointKindCd != '' ">
+			AND PI.POINT_KIND_CD = #{pointKindCd}
+			</if>
+			<if test="pointNm != null and pointNm != '' ">
+			AND PI.POINT_NM = #{pointNm}
+			</if>
+			<if test="alwaysYn != null and alwaysYn != '' ">
+			AND PI.ALWAYS_YN = #{alwaysYn}
+			</if>
+			<if test="firstComeYn != null and firstComeYn != '' ">
+			AND PI.FIRST_COME_YN = #{firstComeYn}
+			</if>
+			<if test="dupePymtYn != null and dupePymtYn != '' ">
+			AND PI.DUPE_PYMT_YN = #{dupePymtYn}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PI.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getPointInfoListCount" parameterType="PointInfoExDto" resultType="Integer">
+	/* pointInfoMapper.getPointInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_POINT_INFO PI
+		<include refid="where-pointInfo" />
+	</select>
+
+	<select id="getPointInfoList" parameterType="PointInfoExDto" resultType="PointInfoExDto">
+	/* pointInfoMapper.getPointInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PI.POINT_ID
+			,PI.POINT_KIND_CD
+			,PI.POINT_NM
+			,PI.ALWAYS_YN
+			,PI.FIRST_COME_YN
+			,PI.DUPE_PYMT_YN
+			,PI.USE_YN
+			,PI.REG_USER_ID
+			,REG_DTM
+			,PI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_INFO PI
+		<include refid="where-pointInfo" />
+		ORDER BY
+			PI.POINT_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getPointInfo" parameterType="PointInfoExDto" resultType="PointInfoExDto">
+	/* pointInfoMapper.getPointInfo */
+		SELECT
+			PI.POINT_ID
+			,PI.POINT_KIND_CD
+			,PI.POINT_NM
+			,PI.ALWAYS_YN
+			,PI.FIRST_COME_YN
+			,PI.DUPE_PYMT_YN
+			,PI.USE_YN
+			,PI.REG_USER_ID
+			,REG_DTM
+			,PI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_INFO PI
+		WHERE
+			PI.POINT_ID = #{pointId}
+	</select>
+
+	<insert id="insertPointInfo" parameterType="PointInfoExDto">
+	/* pointInfoMapper.insertPointInfo */
+		INSERT INTO CW_POINT_INFO (
+			POINT_ID
+			,POINT_KIND_CD
+			,POINT_NM
+			,ALWAYS_YN
+			,FIRST_COME_YN
+			,DUPE_PYMT_YN
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{pointId}
+			,#{pointKindCd}
+			,#{pointNm}
+			,#{alwaysYn}
+			,#{firstComeYn}
+			,#{dupePymtYn}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updatePointInfo" parameterType="PointInfoExDto">
+	/* pointInfoMapper.updatePointInfo */
+		UPDATE CW_POINT_INFO
+		<set>
+		<if test="pointKindCd != null">
+		POINT_KIND_CD = #{pointKindCd},
+		</if>
+		<if test="pointNm != null">
+		POINT_NM = #{pointNm},
+		</if>
+		<if test="alwaysYn != null">
+		ALWAYS_YN = #{alwaysYn},
+		</if>
+		<if test="firstComeYn != null">
+		FIRST_COME_YN = #{firstComeYn},
+		</if>
+		<if test="dupePymtYn != null">
+		DUPE_PYMT_YN = #{dupePymtYn},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			POINT_ID = #{pointId}
+	</update>
+
+	<delete id="deletePointInfo" parameterType="PointInfoExDto">
+	/* pointInfoMapper.deletePointInfo */
+	DELETE FROM CW_POINT_INFO
+	WHERE
+		POINT_ID = #{pointId}
+	</delete>
+</mapper>

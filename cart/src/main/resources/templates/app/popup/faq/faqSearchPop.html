@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/faq/faqGrid.js"></script>
+<script>
+var gridFaq = null;
+window.onload = function() {
+	gridFaq = setGridFaq("dvGridFaqSearch");
+	gridFaq.setBodyHeight(300);
+	fixedColGrid(gridFaq);
+
+	gridFaq.on("click",function(ev){
+		toggleGrid(gridFaq,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridFaq.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridFaq)==false){
+			dblClickGridFaq();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridFaq(){
+	getResultData();
+}
+
+//page
+var pageClsFaq = new pageCls("dvFaqPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridFaq);
+
+	var params = {};
+	if (isEmpty(getEVal("faqId"))==false) params["faqId"] = getEVal("faqId");
+	if (isEmpty(getEVal("faqTypCd"))==false) params["faqTypCd"] = getEVal("faqTypCd");
+	if (isEmpty(getEVal("faqTitle"))==false) params["faqTitle"] = getEVal("faqTitle");
+	if (isEmpty(getEVal("faqCont"))==false) params["faqCont"] = getEVal("faqCont");
+	if (isEmpty(getEVal("faqViews"))==false) params["faqViews"] = getEVal("faqViews");
+	if (isEmpty(getEVal("prntFaqId"))==false) params["prntFaqId"] = getEVal("prntFaqId");
+	if (isEmpty(getEVal("grpFaqId"))==false) params["grpFaqId"] = getEVal("grpFaqId");
+	if (isEmpty(getEVal("faqFrYmd"))==false) params["faqFrYmd"] = getEVal("faqFrYmd");
+	if (isEmpty(getEVal("faqToYmd"))==false) params["faqToYmd"] = getEVal("faqToYmd");
+	if (isEmpty(getEVal("fileRefId"))==false) params["fileRefId"] = getEVal("fileRefId");
+	if (isEmpty(getEVal("popupYn"))==false) params["popupYn"] = getEVal("popupYn");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsFaq.getPageInfo(params);
+
+	var url = "/app/faq/getFaqPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridFaq,result.payloads);
+		//set total
+		pageClsFaq.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridFaq);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvFaqSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridFaqSearch" class="addr-list" ></div>
+					<div id="dvFaqPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

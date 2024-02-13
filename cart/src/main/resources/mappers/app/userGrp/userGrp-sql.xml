@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="userGrpMapper">
+	<sql id="where-userGrp">
+		WHERE 1=1
+			<if test="userGrpCd != null and userGrpCd != '' ">
+			AND UG.USER_GRP_CD = #{userGrpCd}
+			</if>
+			<if test="userGrpNm != null and userGrpNm != '' ">
+			AND UG.USER_GRP_NM = #{userGrpNm}
+			</if>
+			<if test="userGrpDesc != null and userGrpDesc != '' ">
+			AND UG.USER_GRP_DESC = #{userGrpDesc}
+			</if>
+			<if test="userAuthDivCd != null and userAuthDivCd != '' ">
+			AND UG.USER_AUTH_DIV_CD = #{userAuthDivCd}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND UG.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getUserGrpListCount" parameterType="UserGrpExDto" resultType="Integer">
+	/* userGrpMapper.getUserGrpListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_USER_GRP UG
+		<include refid="where-userGrp" />
+	</select>
+
+	<select id="getUserGrpList" parameterType="UserGrpExDto" resultType="UserGrpExDto">
+	/* userGrpMapper.getUserGrpList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			UG.USER_GRP_CD
+			,UG.USER_GRP_NM
+			,UG.USER_GRP_DESC
+			,UG.USER_AUTH_DIV_CD
+			,UG.USE_YN
+			,UG.REG_USER_ID
+			,REG_DTM
+			,UG.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_GRP UG
+		<include refid="where-userGrp" />
+		ORDER BY
+			UG.USER_GRP_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getUserGrp" parameterType="UserGrpExDto" resultType="UserGrpExDto">
+	/* userGrpMapper.getUserGrp */
+		SELECT
+			UG.USER_GRP_CD
+			,UG.USER_GRP_NM
+			,UG.USER_GRP_DESC
+			,UG.USER_AUTH_DIV_CD
+			,UG.USE_YN
+			,UG.REG_USER_ID
+			,REG_DTM
+			,UG.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_USER_GRP UG
+		WHERE
+			UG.USER_GRP_CD = #{userGrpCd}
+	</select>
+
+	<insert id="insertUserGrp" parameterType="UserGrpExDto">
+	/* userGrpMapper.insertUserGrp */
+		INSERT INTO CW_USER_GRP (
+			USER_GRP_CD
+			,USER_GRP_NM
+			,USER_GRP_DESC
+			,USER_AUTH_DIV_CD
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{userGrpCd}
+			,#{userGrpNm}
+			,#{userGrpDesc}
+			,#{userAuthDivCd}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateUserGrp" parameterType="UserGrpExDto">
+	/* userGrpMapper.updateUserGrp */
+		UPDATE CW_USER_GRP
+		<set>
+		<if test="userGrpNm != null">
+		USER_GRP_NM = #{userGrpNm},
+		</if>
+		<if test="userGrpDesc != null">
+		USER_GRP_DESC = #{userGrpDesc},
+		</if>
+		<if test="userAuthDivCd != null">
+		USER_AUTH_DIV_CD = #{userAuthDivCd},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			USER_GRP_CD = #{userGrpCd}
+	</update>
+
+	<delete id="deleteUserGrp" parameterType="UserGrpExDto">
+	/* userGrpMapper.deleteUserGrp */
+	DELETE FROM CW_USER_GRP
+	WHERE
+		USER_GRP_CD = #{userGrpCd}
+	</delete>
+</mapper>

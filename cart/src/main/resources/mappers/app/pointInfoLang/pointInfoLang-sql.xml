@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pointInfoLangMapper">
+	<sql id="where-pointInfoLang">
+		WHERE 1=1
+			<if test="pointId != null and pointId != '' ">
+			AND PIL.POINT_ID = #{pointId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND PIL.LANG_CD = #{langCd}
+			</if>
+			<if test="pointNm != null and pointNm != '' ">
+			AND PIL.POINT_NM = #{pointNm}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PIL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getPointInfoLangListCount" parameterType="PointInfoLangExDto" resultType="Integer">
+	/* pointInfoLangMapper.getPointInfoLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_POINT_INFO_LANG PIL
+		<include refid="where-pointInfoLang" />
+	</select>
+
+	<select id="getPointInfoLangList" parameterType="PointInfoLangExDto" resultType="PointInfoLangExDto">
+	/* pointInfoLangMapper.getPointInfoLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PIL.POINT_ID
+			,PIL.LANG_CD
+			,PIL.POINT_NM
+			,PIL.USE_YN
+			,PIL.REG_USER_ID
+			,REG_DTM
+			,PIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_INFO_LANG PIL
+		<include refid="where-pointInfoLang" />
+		ORDER BY
+			PIL.POINT_ID
+			,PIL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getPointInfoLang" parameterType="PointInfoLangExDto" resultType="PointInfoLangExDto">
+	/* pointInfoLangMapper.getPointInfoLang */
+		SELECT
+			PIL.POINT_ID
+			,PIL.LANG_CD
+			,PIL.POINT_NM
+			,PIL.USE_YN
+			,PIL.REG_USER_ID
+			,REG_DTM
+			,PIL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_POINT_INFO_LANG PIL
+		WHERE
+			PIL.POINT_ID = #{pointId}
+			AND PIL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertPointInfoLang" parameterType="PointInfoLangExDto">
+	/* pointInfoLangMapper.insertPointInfoLang */
+		INSERT INTO CW_POINT_INFO_LANG (
+			POINT_ID
+			,LANG_CD
+			,POINT_NM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{pointId}
+			,#{langCd}
+			,#{pointNm}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updatePointInfoLang" parameterType="PointInfoLangExDto">
+	/* pointInfoLangMapper.updatePointInfoLang */
+		UPDATE CW_POINT_INFO_LANG
+		<set>
+		<if test="pointNm != null">
+		POINT_NM = #{pointNm},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			POINT_ID = #{pointId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deletePointInfoLang" parameterType="PointInfoLangExDto">
+	/* pointInfoLangMapper.deletePointInfoLang */
+	DELETE FROM CW_POINT_INFO_LANG
+	WHERE
+		POINT_ID = #{pointId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordDtlId"] = '[[${transData.ordDtlId}]]';
+    map["optId"] = '[[${transData.optId}]]';
+	if (isEmpty(map["ordDtlId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderDtlOpt/getOrderDtlOpt.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderDtlOptPop" class="modal shot-pop" title=" 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="ordDtlId" id="ordDtlId">
+				<input type="hidden" name="optId" id="optId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">주문ID</th>
+							<td><span name="ordId" id="ordId"></span></td>
+							<th scope="row">상품ID</th>
+							<td><span name="prodId" id="prodId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">옵션수량</th>
+							<td><span name="optQty" id="optQty"></span></td>
+							<th scope="row">옵션금액</th>
+							<td><span name="optAmt" id="optAmt"></span></td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

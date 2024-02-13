@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodExposureMapper">
+	<sql id="where-prodExposure">
+		WHERE 1=1
+			<if test="prodExpId != null and prodExpId != '' ">
+			AND PE.PROD_EXP_ID = #{prodExpId}
+			</if>
+			<if test="menuId != null and menuId != '' ">
+			AND PE.MENU_ID = #{menuId}
+			</if>
+			<if test="prodId != null and prodId != '' ">
+			AND PE.PROD_ID = #{prodId}
+			</if>
+			<if test="locInfoCd != null and locInfoCd != '' ">
+			AND PE.LOC_INFO_CD = #{locInfoCd}
+			</if>
+			<if test="expFrYmd != null and expFrYmd != '' ">
+			AND PE.EXP_FR_YMD = #{expFrYmd}
+			</if>
+			<if test="expToYmd != null and expToYmd != '' ">
+			AND PE.EXP_TO_YMD = #{expToYmd}
+			</if>
+			<if test="adFee != null and adFee != '' ">
+			AND PE.AD_FEE = #{adFee}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND PE.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdExposureListCount" parameterType="ProdExposureExDto" resultType="Integer">
+	/* prodExposureMapper.getProdExposureListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_EXPOSURE PE
+		<include refid="where-prodExposure" />
+	</select>
+
+	<select id="getProdExposureList" parameterType="ProdExposureExDto" resultType="ProdExposureExDto">
+	/* prodExposureMapper.getProdExposureList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			PE.PROD_EXP_ID
+			,PE.MENU_ID
+			,PE.PROD_ID
+			,PE.LOC_INFO_CD
+			,PE.EXP_FR_YMD
+			,PE.EXP_TO_YMD
+			,PE.AD_FEE
+			,PE.USE_YN
+			,PE.REG_USER_ID
+			,REG_DTM
+			,PE.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_EXPOSURE PE
+		<include refid="where-prodExposure" />
+		ORDER BY
+			PE.PROD_EXP_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdExposure" parameterType="ProdExposureExDto" resultType="ProdExposureExDto">
+	/* prodExposureMapper.getProdExposure */
+		SELECT
+			PE.PROD_EXP_ID
+			,PE.MENU_ID
+			,PE.PROD_ID
+			,PE.LOC_INFO_CD
+			,PE.EXP_FR_YMD
+			,PE.EXP_TO_YMD
+			,PE.AD_FEE
+			,PE.USE_YN
+			,PE.REG_USER_ID
+			,REG_DTM
+			,PE.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_EXPOSURE PE
+		WHERE
+			PE.PROD_EXP_ID = #{prodExpId}
+	</select>
+
+	<insert id="insertProdExposure" parameterType="ProdExposureExDto">
+	/* prodExposureMapper.insertProdExposure */
+		INSERT INTO CW_PROD_EXPOSURE (
+			PROD_EXP_ID
+			,MENU_ID
+			,PROD_ID
+			,LOC_INFO_CD
+			,EXP_FR_YMD
+			,EXP_TO_YMD
+			,AD_FEE
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{prodExpId}
+			,#{menuId}
+			,#{prodId}
+			,#{locInfoCd}
+			,#{expFrYmd}
+			,#{expToYmd}
+			,#{adFee}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdExposure" parameterType="ProdExposureExDto">
+	/* prodExposureMapper.updateProdExposure */
+		UPDATE CW_PROD_EXPOSURE
+		<set>
+		<if test="menuId != null">
+		MENU_ID = #{menuId},
+		</if>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="locInfoCd != null">
+		LOC_INFO_CD = #{locInfoCd},
+		</if>
+		<if test="expFrYmd != null">
+		EXP_FR_YMD = #{expFrYmd},
+		</if>
+		<if test="expToYmd != null">
+		EXP_TO_YMD = #{expToYmd},
+		</if>
+		<if test="adFee != null">
+		AD_FEE = #{adFee},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			PROD_EXP_ID = #{prodExpId}
+	</update>
+
+	<delete id="deleteProdExposure" parameterType="ProdExposureExDto">
+	/* prodExposureMapper.deleteProdExposure */
+	DELETE FROM CW_PROD_EXPOSURE
+	WHERE
+		PROD_EXP_ID = #{prodExpId}
+	</delete>
+</mapper>

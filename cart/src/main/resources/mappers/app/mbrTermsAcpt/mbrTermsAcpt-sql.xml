@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mbrTermsAcptMapper">
+	<sql id="where-mbrTermsAcpt">
+		WHERE 1=1
+			<if test="mbrTermsId != null and mbrTermsId != '' ">
+			AND MTA.MBR_TERMS_ID = #{mbrTermsId}
+			</if>
+			<if test="mbrId != null and mbrId != '' ">
+			AND MTA.MBR_ID = #{mbrId}
+			</if>
+			<if test="termsId != null and termsId != '' ">
+			AND MTA.TERMS_ID = #{termsId}
+			</if>
+			<if test="termsDtlId != null and termsDtlId != '' ">
+			AND MTA.TERMS_DTL_ID = #{termsDtlId}
+			</if>
+			<if test="acptDivCd != null and acptDivCd != '' ">
+			AND MTA.ACPT_DIV_CD = #{acptDivCd}
+			</if>
+			<if test="reqdAcptYn != null and reqdAcptYn != '' ">
+			AND MTA.REQD_ACPT_YN = #{reqdAcptYn}
+			</if>
+			<if test="optAcptYn != null and optAcptYn != '' ">
+			AND MTA.OPT_ACPT_YN = #{optAcptYn}
+			</if>
+	</sql>
+
+	<select id="getMbrTermsAcptListCount" parameterType="MbrTermsAcptExDto" resultType="Integer">
+	/* mbrTermsAcptMapper.getMbrTermsAcptListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_MBR_TERMS_ACPT MTA
+		<include refid="where-mbrTermsAcpt" />
+	</select>
+
+	<select id="getMbrTermsAcptList" parameterType="MbrTermsAcptExDto" resultType="MbrTermsAcptExDto">
+	/* mbrTermsAcptMapper.getMbrTermsAcptList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			MTA.MBR_TERMS_ID
+			,MTA.MBR_ID
+			,MTA.TERMS_ID
+			,MTA.TERMS_DTL_ID
+			,MTA.ACPT_DIV_CD
+			,MTA.REQD_ACPT_YN
+			,MTA.OPT_ACPT_YN
+			,MTA.REG_USER_ID
+			,REG_DTM
+			,MTA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_TERMS_ACPT MTA
+		<include refid="where-mbrTermsAcpt" />
+		ORDER BY
+			MTA.MBR_TERMS_ID
+			,MTA.MBR_ID
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getMbrTermsAcpt" parameterType="MbrTermsAcptExDto" resultType="MbrTermsAcptExDto">
+	/* mbrTermsAcptMapper.getMbrTermsAcpt */
+		SELECT
+			MTA.MBR_TERMS_ID
+			,MTA.MBR_ID
+			,MTA.TERMS_ID
+			,MTA.TERMS_DTL_ID
+			,MTA.ACPT_DIV_CD
+			,MTA.REQD_ACPT_YN
+			,MTA.OPT_ACPT_YN
+			,MTA.REG_USER_ID
+			,REG_DTM
+			,MTA.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_MBR_TERMS_ACPT MTA
+		WHERE
+			MTA.MBR_TERMS_ID = #{mbrTermsId}
+			AND MTA.MBR_ID = #{mbrId}
+	</select>
+
+	<insert id="insertMbrTermsAcpt" parameterType="MbrTermsAcptExDto">
+	/* mbrTermsAcptMapper.insertMbrTermsAcpt */
+		INSERT INTO CW_MBR_TERMS_ACPT (
+			MBR_TERMS_ID
+			,MBR_ID
+			,TERMS_ID
+			,TERMS_DTL_ID
+			,ACPT_DIV_CD
+			,REQD_ACPT_YN
+			,OPT_ACPT_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{mbrTermsId}
+			,#{mbrId}
+			,#{termsId}
+			,#{termsDtlId}
+			,#{acptDivCd}
+			,#{reqdAcptYn}
+			,#{optAcptYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateMbrTermsAcpt" parameterType="MbrTermsAcptExDto">
+	/* mbrTermsAcptMapper.updateMbrTermsAcpt */
+		UPDATE CW_MBR_TERMS_ACPT
+		<set>
+		<if test="termsId != null">
+		TERMS_ID = #{termsId},
+		</if>
+		<if test="termsDtlId != null">
+		TERMS_DTL_ID = #{termsDtlId},
+		</if>
+		<if test="acptDivCd != null">
+		ACPT_DIV_CD = #{acptDivCd},
+		</if>
+		<if test="reqdAcptYn != null">
+		REQD_ACPT_YN = #{reqdAcptYn},
+		</if>
+		<if test="optAcptYn != null">
+		OPT_ACPT_YN = #{optAcptYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			MBR_TERMS_ID = #{mbrTermsId}
+			AND MBR_ID = #{mbrId}
+	</update>
+
+	<delete id="deleteMbrTermsAcpt" parameterType="MbrTermsAcptExDto">
+	/* mbrTermsAcptMapper.deleteMbrTermsAcpt */
+	DELETE FROM CW_MBR_TERMS_ACPT
+	WHERE
+		MBR_TERMS_ID = #{mbrTermsId}
+		AND MBR_ID = #{mbrId}
+	</delete>
+</mapper>

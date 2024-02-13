@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/couponIssue/couponIssueGrid.js"></script>
+<script>
+var gridCouponIssue = null;
+window.onload = function() {
+	gridCouponIssue = setGridCouponIssue("dvGridCouponIssueSearch");
+	gridCouponIssue.setBodyHeight(300);
+	fixedColGrid(gridCouponIssue);
+
+	gridCouponIssue.on("click",function(ev){
+		toggleGrid(gridCouponIssue,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridCouponIssue.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridCouponIssue)==false){
+			dblClickGridCouponIssue();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridCouponIssue(){
+	getResultData();
+}
+
+//page
+var pageClsCouponIssue = new pageCls("dvCouponIssuePageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridCouponIssue);
+
+	var params = {};
+	if (isEmpty(getEVal("cpnIssueId"))==false) params["cpnIssueId"] = getEVal("cpnIssueId");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnCont"))==false) params["cpnCont"] = getEVal("cpnCont");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("cpnApplFrYmd"))==false) params["cpnApplFrYmd"] = getEVal("cpnApplFrYmd");
+	if (isEmpty(getEVal("cpnApplToYmd"))==false) params["cpnApplToYmd"] = getEVal("cpnApplToYmd");
+	if (isEmpty(getEVal("mbrSpecifyYn"))==false) params["mbrSpecifyYn"] = getEVal("mbrSpecifyYn");
+	if (isEmpty(getEVal("cpnIssueQty"))==false) params["cpnIssueQty"] = getEVal("cpnIssueQty");
+	if (isEmpty(getEVal("cpnTotAmt"))==false) params["cpnTotAmt"] = getEVal("cpnTotAmt");
+	if (isEmpty(getEVal("cpnAmt"))==false) params["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("prodMinAmt"))==false) params["prodMinAmt"] = getEVal("prodMinAmt");
+	if (isEmpty(getEVal("ordMinAmt"))==false) params["ordMinAmt"] = getEVal("ordMinAmt");
+	if (isEmpty(getEVal("cpnPaidQty"))==false) params["cpnPaidQty"] = getEVal("cpnPaidQty");
+	if (isEmpty(getEVal("cpnPaidTotAmt"))==false) params["cpnPaidTotAmt"] = getEVal("cpnPaidTotAmt");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsCouponIssue.getPageInfo(params);
+
+	var url = "/app/couponIssue/getCouponIssuePageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridCouponIssue,result.payloads);
+		//set total
+		pageClsCouponIssue.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridCouponIssue);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvCouponIssueSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridCouponIssueSearch" class="addr-list" ></div>
+					<div id="dvCouponIssuePageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

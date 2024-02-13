@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="prodOptLangMapper">
+	<sql id="where-prodOptLang">
+		WHERE 1=1
+			<if test="optId != null and optId != '' ">
+			AND POL.OPT_ID = #{optId}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND POL.LANG_CD = #{langCd}
+			</if>
+			<if test="optNm != null and optNm != '' ">
+			AND POL.OPT_NM = #{optNm}
+			</if>
+			<if test="optCont != null and optCont != '' ">
+			AND POL.OPT_CONT = #{optCont}
+			</if>
+			<if test="mobiOptCont != null and mobiOptCont != '' ">
+			AND POL.MOBI_OPT_CONT = #{mobiOptCont}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND POL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getProdOptLangListCount" parameterType="ProdOptLangExDto" resultType="Integer">
+	/* prodOptLangMapper.getProdOptLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_PROD_OPT_LANG POL
+		<include refid="where-prodOptLang" />
+	</select>
+
+	<select id="getProdOptLangList" parameterType="ProdOptLangExDto" resultType="ProdOptLangExDto">
+	/* prodOptLangMapper.getProdOptLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			POL.OPT_ID
+			,POL.LANG_CD
+			,POL.OPT_NM
+			,POL.OPT_CONT
+			,POL.MOBI_OPT_CONT
+			,POL.USE_YN
+			,POL.REG_USER_ID
+			,REG_DTM
+			,POL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT_LANG POL
+		<include refid="where-prodOptLang" />
+		ORDER BY
+			POL.OPT_ID
+			,POL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getProdOptLang" parameterType="ProdOptLangExDto" resultType="ProdOptLangExDto">
+	/* prodOptLangMapper.getProdOptLang */
+		SELECT
+			POL.OPT_ID
+			,POL.LANG_CD
+			,POL.OPT_NM
+			,POL.OPT_CONT
+			,POL.MOBI_OPT_CONT
+			,POL.USE_YN
+			,POL.REG_USER_ID
+			,REG_DTM
+			,POL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_PROD_OPT_LANG POL
+		WHERE
+			POL.OPT_ID = #{optId}
+			AND POL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertProdOptLang" parameterType="ProdOptLangExDto">
+	/* prodOptLangMapper.insertProdOptLang */
+		INSERT INTO CW_PROD_OPT_LANG (
+			OPT_ID
+			,LANG_CD
+			,OPT_NM
+			,OPT_CONT
+			,MOBI_OPT_CONT
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{optId}
+			,#{langCd}
+			,#{optNm}
+			,#{optCont}
+			,#{mobiOptCont}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateProdOptLang" parameterType="ProdOptLangExDto">
+	/* prodOptLangMapper.updateProdOptLang */
+		UPDATE CW_PROD_OPT_LANG
+		<set>
+		<if test="optNm != null">
+		OPT_NM = #{optNm},
+		</if>
+		<if test="optCont != null">
+		OPT_CONT = #{optCont},
+		</if>
+		<if test="mobiOptCont != null">
+		MOBI_OPT_CONT = #{mobiOptCont},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			OPT_ID = #{optId}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteProdOptLang" parameterType="ProdOptLangExDto">
+	/* prodOptLangMapper.deleteProdOptLang */
+	DELETE FROM CW_PROD_OPT_LANG
+	WHERE
+		OPT_ID = #{optId}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

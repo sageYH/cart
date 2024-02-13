@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script language="javascript" type="text/javascript">
+window.onload = function() {
+	//
+}
+
+//page
+var pageClsCouponIssue = new pageCls("dvCouponIssuePageList",fnGetList,"totalCnt");
+
+function fnGetList(){
+	var params = {};
+	if (isEmpty(getEVal("cpnIssueId"))==false) params["cpnIssueId"] = getEVal("cpnIssueId");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnCont"))==false) params["cpnCont"] = getEVal("cpnCont");
+	if (isEmpty(getEVal("pymtCompId"))==false) params["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("cpnApplFrYmd"))==false) params["cpnApplFrYmd"] = getEVal("cpnApplFrYmd");
+	if (isEmpty(getEVal("cpnApplToYmd"))==false) params["cpnApplToYmd"] = getEVal("cpnApplToYmd");
+	if (isEmpty(getEVal("mbrSpecifyYn"))==false) params["mbrSpecifyYn"] = getEVal("mbrSpecifyYn");
+	if (isEmpty(getEVal("cpnIssueQty"))==false) params["cpnIssueQty"] = getEVal("cpnIssueQty");
+	if (isEmpty(getEVal("cpnTotAmt"))==false) params["cpnTotAmt"] = getEVal("cpnTotAmt");
+	if (isEmpty(getEVal("cpnAmt"))==false) params["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("prodMinAmt"))==false) params["prodMinAmt"] = getEVal("prodMinAmt");
+	if (isEmpty(getEVal("ordMinAmt"))==false) params["ordMinAmt"] = getEVal("ordMinAmt");
+	if (isEmpty(getEVal("cpnPaidQty"))==false) params["cpnPaidQty"] = getEVal("cpnPaidQty");
+	if (isEmpty(getEVal("cpnPaidTotAmt"))==false) params["cpnPaidTotAmt"] = getEVal("cpnPaidTotAmt");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
+	//page set
+	params = pageClsCouponIssue.getPageInfo(params);
+
+	var url = "/app/couponIssue/getCouponIssuePageList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	var ds = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["cpnIssueId","cpnId","cpnCont","pymtCompId","cpnApplFrYmd","cpnApplToYmd","mbrSpecifyYn","cpnIssueQty","cpnTotAmt","cpnAmt","prodMinAmt","ordMinAmt","cpnPaidQty","cpnPaidTotAmt","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,15);
+	pageClsCouponIssue.setTotalRowsReload(rObj["totalRows"]);
+}
+
+function fnXlsCouponIssueDown(){
+	var url = "/app/couponIssue/getCouponIssueExcelDown.do";
+	var paramXls = {};
+	if (isEmpty(getEVal("cpnIssueId"))==false) paramXls["cpnIssueId"] = getEVal("cpnIssueId");
+	if (isEmpty(getEVal("cpnId"))==false) paramXls["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("cpnCont"))==false) paramXls["cpnCont"] = getEVal("cpnCont");
+	if (isEmpty(getEVal("pymtCompId"))==false) paramXls["pymtCompId"] = getEVal("pymtCompId");
+	if (isEmpty(getEVal("cpnApplFrYmd"))==false) paramXls["cpnApplFrYmd"] = getEVal("cpnApplFrYmd");
+	if (isEmpty(getEVal("cpnApplToYmd"))==false) paramXls["cpnApplToYmd"] = getEVal("cpnApplToYmd");
+	if (isEmpty(getEVal("mbrSpecifyYn"))==false) paramXls["mbrSpecifyYn"] = getEVal("mbrSpecifyYn");
+	if (isEmpty(getEVal("cpnIssueQty"))==false) paramXls["cpnIssueQty"] = getEVal("cpnIssueQty");
+	if (isEmpty(getEVal("cpnTotAmt"))==false) paramXls["cpnTotAmt"] = getEVal("cpnTotAmt");
+	if (isEmpty(getEVal("cpnAmt"))==false) paramXls["cpnAmt"] = getEVal("cpnAmt");
+	if (isEmpty(getEVal("prodMinAmt"))==false) paramXls["prodMinAmt"] = getEVal("prodMinAmt");
+	if (isEmpty(getEVal("ordMinAmt"))==false) paramXls["ordMinAmt"] = getEVal("ordMinAmt");
+	if (isEmpty(getEVal("cpnPaidQty"))==false) paramXls["cpnPaidQty"] = getEVal("cpnPaidQty");
+	if (isEmpty(getEVal("cpnPaidTotAmt"))==false) paramXls["cpnPaidTotAmt"] = getEVal("cpnPaidTotAmt");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
+
+	var params = {"xlsName":"쿠폰발급"
+		,"sheetName":"시트"
+		,"columnHeaders":["쿠폰발급ID","쿠폰ID","쿠폰내용","지급업체ID","쿠폰적용시작일","쿠폰적용종료일","회원지정여부","쿠폰발행수량","쿠폰총액","쿠폰금액","상품최소금액","주문최소금액","쿠폰지급수량","쿠폰지급총액","사용여부"]
+		,"columnNames":["cpnIssueId","cpnId","cpnCont","pymtCompId","cpnApplFrYmd","cpnApplToYmd","mbrSpecifyYn","cpnIssueQty","cpnTotAmt","cpnAmt","prodMinAmt","ordMinAmt","cpnPaidQty","cpnPaidTotAmt","useYn"]
+		,"condition": paramXls
+	};
+	var fData = mapToFormdata({"params":JSON.stringify(params)});
+
+	getDownFile(url,fData);
+}
+
+function fnOpenDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cpnIssueId"] = arr[0].trim();
+	}
+	CouponIssuePop.fnOpen(mode, params, fnGetList);
+}
+
+</script>
+
+<body><div class="wrap">
+<th:block th:include="app/common/header" th:remove="tag"></th:block>
+<th:block th:include="app/common/gnb" th:remove="tag"></th:block>
+<main>
+	<div class="sub_wrap">
+		<div class="cont">
+			<div class="cont-item" id="dvCouponIssueSearch">
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="item01">검색1</label>
+						<div class="wrap">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
+						</div>
+					</div>
+					<div class="item">
+						<label for="item02">검색2</label>
+						<div class="wrap">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn">
+					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCouponIssueSearch');">초기화</button>
+				</div>
+			</div>
+			<div class="cont-item h728">
+				<div class="bar-top">
+					<div class="bar-left">
+						<select class="select" onchange="pageClsCouponIssue.setPageRows(getEVal(this));">
+							<option value="10" selected>10건</option>
+							<option value="20">20건</option>
+							<option value="30">30건</option>
+							<option value="50">50건</option>
+						</select>
+						<div class="bar-iblock">
+							<span id="totalCnt" name="totalCnt"></span>
+						</div>
+					</div>
+
+					<div class="bar-right">
+						<div class="pagination-next-btns">
+			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
+							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
+						</div>
+					</div>
+				</div>
+				<table id="tblIdxList" class="gridListTable">
+					<colgroup>
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col">쿠폰발급ID</th>
+							<th scope="col">쿠폰ID</th>
+							<th scope="col">쿠폰내용</th>
+							<th scope="col">지급업체ID</th>
+							<th scope="col">쿠폰적용시작일</th>
+							<th scope="col">쿠폰적용종료일</th>
+							<th scope="col">회원지정여부</th>
+							<th scope="col">쿠폰발행수량</th>
+							<th scope="col">쿠폰총액</th>
+							<th scope="col">쿠폰금액</th>
+							<th scope="col">상품최소금액</th>
+							<th scope="col">주문최소금액</th>
+							<th scope="col">쿠폰지급수량</th>
+							<th scope="col">쿠폰지급총액</th>
+							<th scope="col">사용여부</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<div id="dvTrList" style="display:none;">
+				<!-- <tr key='{{cpnIssueId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{cpnIssueId}}</td>
+						<td>{{cpnId}}</td>
+						<td>{{cpnCont}}</td>
+						<td>{{pymtCompId}}</td>
+						<td>{{cpnApplFrYmd}}</td>
+						<td>{{cpnApplToYmd}}</td>
+						<td>{{mbrSpecifyYn}}</td>
+						<td>{{cpnIssueQty}}</td>
+						<td>{{cpnTotAmt}}</td>
+						<td>{{cpnAmt}}</td>
+						<td>{{prodMinAmt}}</td>
+						<td>{{ordMinAmt}}</td>
+						<td>{{cpnPaidQty}}</td>
+						<td>{{cpnPaidTotAmt}}</td>
+						<td>{{useYn}}</td>
+					 </tr> -->
+				</div>
+
+				<div id="dvCouponIssuePageList" class="pagination"></div>
+			</div>
+		</div>
+	</div>
+
+<th:block th:include="app/couponIssue/couponIssuePop" th:remove="tag"></th:block>
+
+</main>
+<th:block th:include="app/common/footer" th:remove="tag"></th:block>
+</div></body>
+</html>

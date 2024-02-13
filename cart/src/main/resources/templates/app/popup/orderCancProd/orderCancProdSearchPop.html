@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script type="text/javascript" src="/js/app/orderCancProd/orderCancProdGrid.js"></script>
+<script>
+var gridOrderCancProd = null;
+window.onload = function() {
+	gridOrderCancProd = setGridOrderCancProd("dvGridOrderCancProdSearch");
+	gridOrderCancProd.setBodyHeight(300);
+	fixedColGrid(gridOrderCancProd);
+
+	gridOrderCancProd.on("click",function(ev){
+		toggleGrid(gridOrderCancProd,ev.rowKey);
+		/* return ev.stop(); */
+	});
+	gridOrderCancProd.on("dblclick",function(ev){
+		if (isEmpty(dblClickGridOrderCancProd)==false){
+			dblClickGridOrderCancProd();
+		}
+		return ev.stop();
+	});
+}
+function dblClickGridOrderCancProd(){
+	getResultData();
+}
+
+//page
+var pageClsOrderCancProd = new pageCls("dvOrderCancProdPageList",fnGetSearchList);
+
+function fnGetSearchList(){
+	setClearGrid(gridOrderCancProd);
+
+	var params = {};
+	if (isEmpty(getEVal("ordCnclId"))==false) params["ordCnclId"] = getEVal("ordCnclId");
+	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
+	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("prodCnclQty"))==false) params["prodCnclQty"] = getEVal("prodCnclQty");
+	if (isEmpty(getEVal("prodCnclAmt"))==false) params["prodCnclAmt"] = getEVal("prodCnclAmt");
+	if (isEmpty(getEVal("optCnclAmt"))==false) params["optCnclAmt"] = getEVal("optCnclAmt");
+	//page set
+	params = pageClsOrderCancProd.getPageInfo(params);
+
+	var url = "/app/orderCancProd/getOrderCancProdPageList.do";
+	var fData = mapToFormdata(params);
+	//add page
+	
+	getUrlData(url,fData).then((result=>{
+		if (isEmpty(result.payloads)){
+			alert("조회 오류 발생.");
+			return;
+		}
+		setDataGrid(gridOrderCancProd,result.payloads);
+		//set total
+		pageClsOrderCancProd.setTotalRowsReload(result.totalRows);
+	}));
+}
+
+
+function getResultData(){
+	var map = getFocusedRowDataGrid(gridOrderCancProd);
+	if (map == null){
+		alert("전송자료가 존재하지 않습니다.");
+		return;
+	}
+	resultFunc(map);
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvOrderCancProdSearchPop" class="modal shot-pop" title=" 검색">
+		<div class="modal__container">
+			<div class="modal__content">
+				<div class="addr__search">
+					<input type="text" id="scCSchNm" placeholder="조건을 입력 하세요.">
+					<button id="btnSchCSchInd" class="btn btn-primary" onclick="fnGetSearchList();"><img src="/include/img/icon/search_white_24dp.svg" alt="검색 버튼"/></button>
+				</div>
+
+				<div class="addr__content">
+					<p class="search-count">검색결과 <strong></strong>
+						<button type="button" class="btn btn-primary btn-sm btn-enter" style="position:absolute;margin-top:-10px;right:20px;" onclick="javascript:fnGetSearchList();">선택</button>
+					</p>
+					<div id="dvGridOrderCancProdSearch" class="addr-list" ></div>
+					<div id="dvOrderCancProdPageList" class="table-num" style="margin-top: 10px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

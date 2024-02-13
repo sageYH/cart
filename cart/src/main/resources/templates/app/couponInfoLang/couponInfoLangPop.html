@@ -1,0 +1,153 @@
+<div id="divCouponInfoLangPop" class="sub_wrap" style="display:none;width:92%" title="쿠폰정보_언어 정보">
+	<div class="cont">
+		<div class="cont-item cont-item01">
+			<div class="cont-item-row item-title">
+				<h4>쿠폰정보_언어 등록</h4>
+			</div>
+			<div class="cont-item-wrap">
+				<div class="cont-item-row border-top">
+					<div class="item">
+						<label for="cpnId_g1">포인트지급ID</label>
+						<div class="wrap">
+							<input type="text" id="cpnId_g1" name="cpnId_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<label for="langCd_g1">언어코드</label>
+						<div class="wrap">
+							<input type="text" id="langCd_g1" name="langCd_g1" />
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="cpnNm_g1">쿠폰명</label>
+						<div class="wrap">
+							<input type="text" id="cpnNm_g1" name="cpnNm_g1" />
+						</div>
+					</div>
+					<div class="item">
+						<h5>사용여부</h5>
+						<div class="wrap">
+							<label class="rb" for="useYn_Y">사용
+								<input type="radio" name="useYn_g1" id="useYn_Y" value="Y" checked="checked">
+								<span class="checkmark"></span>
+							</label>
+							<label class="rb" for="useYn_N">미사용
+								<input type="radio" name="useYn_g1" id="useYn_N" value="N">
+								<span class="checkmark"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="cont-item-row cont-item-row-btn right">
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CouponInfoLangPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CouponInfoLangPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CouponInfoLangPop.fnClose();"><span>닫기</span></button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var CouponInfoLangPop = new $W.load("divCouponInfoLangPop");
+CouponInfoLangPop.ready(function(){
+	//
+});
+
+CouponInfoLangPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCouponInfoLangPop");
+	CouponInfoLangPop.mode = mode;
+	if (!isEmpty(func)){
+		CouponInfoLangPop.func = func;
+	}
+	setObjVal({"useYn_g1":"Y"});
+
+	//draw popup
+	layerToggle("divCouponInfoLangPop",{"mode":1,"top":130,"scrollYn":"Y"});
+
+	readOnlyTrue(["cpnId_g1","langCd_g1"]);
+	if(mode == "MODIFY") {
+		var url = "/app/couponInfoLang/getCouponInfoLang.do";
+		var map = httpSend(url, params);
+		if (!isEmpty(map)){
+			let chgData = chgMapKey(map,"_g1");
+			setObjVal(chgData);
+		}else{
+			alert("자료가 존재하지 않습니다.");
+		}
+
+		displayTrue(["delBtn"]);
+		getElement("cpnNm_g1").focus();
+	}else{
+		readOnlyFalse(["cpnId_g1","langCd_g1"]);
+		displayFalse(["delBtn"]);
+	}
+};
+
+CouponInfoLangPop.fnSave = function(){
+
+	var valid = 0 || [
+		["cpnId_g1","","자료(포인트지급ID)를 확인하세요."]
+		,["langCd_g1","","자료(언어코드)를 확인하세요."]
+		,["cpnNm_g1","","자료(쿠폰명)를 확인하세요."]
+		,["useYn_g1","","자료(사용여부)를 확인하세요."]
+
+		];
+	if (checkValid( valid )==false) return;
+
+	var ds  = getEleToBDataSet("divCouponInfoLangPop");
+	var url = "/app/couponInfoLang/updateCouponInfoLang.do";
+	if (CouponInfoLangPop.mode=="CREATE"){
+		url = "/app/couponInfoLang/insertCouponInfoLang.do";
+	}
+
+	//data key change
+	var sData = chgBackMapKey(ds.getRow(0),"_g1");
+	var map = httpSend(url, sData);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponInfoLangPop.func)){
+			CouponInfoLangPop.func();
+			CouponInfoLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+
+};
+
+CouponInfoLangPop.fnDelete = function(){
+	if (CouponInfoLangPop.mode != "MODIFY"){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/couponInfoLang/deleteCouponInfoLang.do";
+	var params = {};
+	params["cpnId"] = getElement("cpnId_g1").value;
+	params["langCd"] = getElement("langCd_g1").value;
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(CouponInfoLangPop.func)){
+			CouponInfoLangPop.func();
+			CouponInfoLangPop.fnClose();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+CouponInfoLangPop.fnClose = function(){
+	layerToggle("divCouponInfoLangPop",{"mode":0});
+};
+</script>

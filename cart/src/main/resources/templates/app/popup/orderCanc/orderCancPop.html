@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["ordCnclId"] = '[[${transData.ordCnclId}]]';
+	if (isEmpty(map["ordCnclId"])){
+		mode = "NEW";
+		return;
+	}
+	else{
+		getEleByObj("ordCnclId").setAttribute('readonly', true);
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/orderCanc/getOrderCanc.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+
+function saveData(){
+	var valid = 0 || [
+		["ordCnclId","","자료(주문취소ID)를 확인하세요."]
+		["ordId","","자료(주문ID)를 확인하세요."]
+		["ordCnclDtm","","자료(주문취소일시)를 확인하세요."]
+		["ordCnclDivCd","","자료(주문취소구분[OD04])를 확인하세요."]
+		["ordCnclAmt","","자료(주문취소총액)를 확인하세요."]
+		["pymtCnclPointId","","자료(지급취소포인트ID)를 확인하세요."]
+		["pymtCnclCpnId","","자료(지급취소쿠폰ID)를 확인하세요."]
+		["cnclDelivFee","","자료(취소배송비)를 확인하세요."]
+		["delivFeeTgtCd","","자료(배송비대상코드[OD05])를 확인하세요."]
+		["pymtCompId","","자료(지급사ID)를 확인하세요."]
+	];
+	if (checkValid( valid )==false) return;
+	
+	var url = "/app/orderCanc/updateOrderCanc.do";
+	if (mode=="NEW"){
+		url = "/app/orderCanc/insertOrderCanc.do";
+	}
+	
+	var fData = new FormData(getEleByObj("formOrderCancPop"));
+	getUrlData(url,fData).then((result=>{
+		resultFunc(result);
+	}));
+}
+function resultFunc(data){
+	var vFunc = '[[${callbackFunc}]]';
+	if (isEmpty(vFunc)) return;
+	var func = eval("opener."+vFunc);
+	func(data);
+	window.close();
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+<div id="dvOrderCancPop" class="modal shot-pop" title=" 등록">
+	<div class="modal__container">
+		<div class="modal__content">
+			<form id="formOrderCancPop" name="formOrderCancPop">
+			<table>
+				<colgroup>
+				<col width="15%">
+				<col>
+				<col width="15%">
+				<col>
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row">주문취소ID</th>
+						<td><input type="text" name="ordCnclId" id="ordCnclId" style="width:70%" readonly >
+						</td>
+					<th scope="row">주문ID</th>
+					<td><input type="text" name="ordId" id="ordId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문취소일시</th>
+						<td><input type="text" name="ordCnclDtm" id="ordCnclDtm" style="width:70%" >
+						</td>
+					<th scope="row">주문취소구분[OD04]</th>
+					<td><input type="text" name="ordCnclDivCd" id="ordCnclDivCd" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">주문취소총액</th>
+						<td><input type="text" name="ordCnclAmt" id="ordCnclAmt" style="width:70%" >
+						</td>
+					<th scope="row">지급취소포인트ID</th>
+					<td><input type="text" name="pymtCnclPointId" id="pymtCnclPointId" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">지급취소쿠폰ID</th>
+						<td><input type="text" name="pymtCnclCpnId" id="pymtCnclCpnId" style="width:70%" >
+						</td>
+					<th scope="row">취소배송비</th>
+					<td><input type="text" name="cnclDelivFee" id="cnclDelivFee" >
+					</td>
+				</tr>
+					<tr>
+						<th scope="row">배송비대상코드[OD05]</th>
+						<td><input type="text" name="delivFeeTgtCd" id="delivFeeTgtCd" style="width:70%" >
+						</td>
+					<th scope="row">지급사ID</th>
+					<td><input type="text" name="pymtCompId" id="pymtCompId" >
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			</form>
+		</div>
+		<div class="modal__footer">
+			<button type="button" class="btn btn-primary" data-popup-close="popup-name" onClick="saveData();">등록</button>
+			<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+		</div>
+	</div>
+</div>
+</section>
+</body>
+</html>

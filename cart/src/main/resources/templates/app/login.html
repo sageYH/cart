@@ -1,0 +1,84 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+
+<!-- JS LINK -->
+<script type="text/javascript" src="/js/common/comm.js"></script>
+<script type="text/javascript" src="/js/common/baseInclude.js"></script>
+<script type="text/javascript" src="/js/plugin/jquery/jquery-3.6.0.min.js"></script>
+
+<!-- CSS LINK -->
+<link rel="stylesheet" type="text/css" href="/css/base/login.css" />
+<link rel="stylesheet" type="text/css" href="/css/base/common.css" />
+<link rel="stylesheet" type="text/css" href="/css/base/sub.css" />
+<link rel="stylesheet" type="text/css" href="/css/base/sub_custom.css" />
+	<title></title>
+</head>
+<script>
+window.onload = function() {
+/* 	let userInfo = '${#authentication?.principal.username}';
+	if (userInfo) {
+		$("#userId").val(userInfo);
+		$("#sso").val("Y");
+		$("#frm").submit();
+	}
+ */
+	//엔터키
+	$('#userPwd').on('keyup', function(e) {
+		if (e.which == 13) {
+			loginAction();
+		}
+	});
+}
+function loginAction() {
+	var userId = document.getElementById("userId").value;
+	var userPwd = document.getElementById("userPwd").value;
+	if(userId == null || userId == ''){
+		alert("아이디를 입력해 주세요.");
+		document.getElementById("userId").focus();
+		return;
+	}
+	if(userPwd == null || userPwd == ''){
+		alert("비밀번호를 입력해 주세요.");
+		document.getElementById("userPwd").focus();
+		return;
+	}
+	document.getElementById('frm').submit();
+}
+</script>
+<body>
+	<div class="login login_admin">
+		<div class="login_head">
+			<h1 class="logo"><a href="#none">CART</a></h1>
+		</div>
+		
+		<div class="login_con">
+			<h2>CART 관리자시스템</h2>
+			<div class="login_dl">
+				<dl>
+					<dt>Log in</dt>
+					<dd>
+						<form id="frm" action="lgn.do" method="post">
+						<label for="userId" class="hidden">아이디</label><input type="text" class="input" id="userId" name="userId" placeholder="사번" value="admin"/>
+						<label for="userPwd" class="hidden">비밀번호</label><input type="password" class="input" id="userPwd" name="userPwd" placeholder="비밀번호" value="1"/>
+						<div class="btn_wrap">
+							<input class="btn blue full" type="button" value="로그인" onclick="loginAction();">
+						</div>
+							<input type="hidden" class="input" id="sso" name="sso" value="N" />
+						</form>
+					</dd>
+				</dl>
+			</div>
+			<div class="login_foot">COPYRIGHT©2023 CART All Rights Reserved.</div>
+		</div>
+		
+	</div>
+</body>
+</html>

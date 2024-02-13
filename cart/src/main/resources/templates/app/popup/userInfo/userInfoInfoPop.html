@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:include="app/common/head" th:remove="tag"></th:block>
+<script>
+window.onload = function() {
+	getReqPopData();
+}
+var mode = "";
+function getReqPopData(){
+	var map={};
+    map["userId"] = '[[${transData.userId}]]';
+	if (isEmpty(map["userId"])){
+		alert("조회 할 자료를 선택하세요.");
+		window.close();
+	}
+	getData(map);
+}
+function getData(map){
+	var url = "/app/userInfo/getUserInfo.do";
+	var fData = mapToFormdata(map);
+	
+	getUrlData(url,fData).then((result=>{
+		setObjVal(result);
+	}));
+}
+function fnClose(){
+	window.close();
+}
+</script>
+<body>
+<section class="">
+	<div id="dvUserInfoPop" class="modal shot-pop" title="사용자정보 정보">
+		<div class="modal__container">
+			<div class="modal__content">
+				<input type="hidden" name="userId" id="userId">
+
+				<table>
+					<colgroup>
+					<col width="15%">
+					<col>
+					<col width="15%">
+					<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row">성명</th>
+							<td><span name="userNm" id="userNm"></span></td>
+							<th scope="row">비밀번호</th>
+							<td><span name="userPwd" id="userPwd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">국가코드</th>
+							<td><span name="cntryCd" id="cntryCd"></span></td>
+							<th scope="row">업체ID</th>
+							<td><span name="compId" id="compId"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">부서코드</th>
+							<td><span name="deptCd" id="deptCd"></span></td>
+							<th scope="row">부서명</th>
+							<td><span name="deptNm" id="deptNm"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">전화번호</th>
+							<td><span name="telNo" id="telNo"></span></td>
+							<th scope="row">폰번호</th>
+							<td><span name="phoneNo" id="phoneNo"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">이메일주소</th>
+							<td><span name="email" id="email"></span></td>
+							<th scope="row">비번오류횟수</th>
+							<td><span name="pswdErrCnt" id="pswdErrCnt"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">보안등급[B01]</th>
+							<td><span name="grade" id="grade"></span></td>
+							<th scope="row">비밀번호변경예정일</th>
+							<td><span name="pswdExpectedYmd" id="pswdExpectedYmd"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">초기비밀번호</th>
+							<td><span name="initUserPswd" id="initUserPswd"></span></td>
+							<th scope="row">안내메일수신동의여부</th>
+							<td><span name="mailAgreeYn" id="mailAgreeYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">SMS수신동의여부</th>
+							<td><span name="smsAgreeYn" id="smsAgreeYn"></span></td>
+							<th scope="row">참조1</th>
+							<td><span name="ref1" id="ref1"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">참조2</th>
+							<td><span name="ref2" id="ref2"></span></td>
+							<th scope="row">사용여부</th>
+							<td><span name="useYn" id="useYn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">CID</th>
+							<td><span name="cid" id="cid"></span></td>
+							<th scope="row">인증서DN</th>
+							<td><span name="certDn" id="certDn"></span></td>
+				</tr>
+						<tr>
+							<th scope="row">인증서SIGN</th>
+							<td><span name="certSign" id="certSign"></span></td>
+					<th>&nbsp;</th>
+					<td>
+						&nbsp;
+					</td>
+				</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="modal__footer">
+				<button type="button" class="btn btn-secondary" data-popup-close="popup-name" onClick="fnClose();">닫기</button>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>

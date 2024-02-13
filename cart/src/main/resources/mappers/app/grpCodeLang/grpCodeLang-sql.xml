@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="grpCodeLangMapper">
+	<sql id="where-grpCodeLang">
+		WHERE 1=1
+			<if test="grpCd != null and grpCd != '' ">
+			AND GCL.GRP_CD = #{grpCd}
+			</if>
+			<if test="langCd != null and langCd != '' ">
+			AND GCL.LANG_CD = #{langCd}
+			</if>
+			<if test="grpNm != null and grpNm != '' ">
+			AND GCL.GRP_NM = #{grpNm}
+			</if>
+			<if test="useYn != null and useYn != '' ">
+			AND GCL.USE_YN = #{useYn}
+			</if>
+	</sql>
+
+	<select id="getGrpCodeLangListCount" parameterType="GrpCodeLangExDto" resultType="Integer">
+	/* grpCodeLangMapper.getGrpCodeLangListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_GRP_CODE_LANG GCL
+		<include refid="where-grpCodeLang" />
+	</select>
+
+	<select id="getGrpCodeLangList" parameterType="GrpCodeLangExDto" resultType="GrpCodeLangExDto">
+	/* grpCodeLangMapper.getGrpCodeLangList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			GCL.GRP_CD
+			,GCL.LANG_CD
+			,GCL.GRP_NM
+			,GCL.USE_YN
+			,GCL.REG_USER_ID
+			,REG_DTM
+			,GCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_GRP_CODE_LANG GCL
+		<include refid="where-grpCodeLang" />
+		ORDER BY
+			GCL.GRP_CD
+			,GCL.LANG_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getGrpCodeLang" parameterType="GrpCodeLangExDto" resultType="GrpCodeLangExDto">
+	/* grpCodeLangMapper.getGrpCodeLang */
+		SELECT
+			GCL.GRP_CD
+			,GCL.LANG_CD
+			,GCL.GRP_NM
+			,GCL.USE_YN
+			,GCL.REG_USER_ID
+			,REG_DTM
+			,GCL.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_GRP_CODE_LANG GCL
+		WHERE
+			GCL.GRP_CD = #{grpCd}
+			AND GCL.LANG_CD = #{langCd}
+	</select>
+
+	<insert id="insertGrpCodeLang" parameterType="GrpCodeLangExDto">
+	/* grpCodeLangMapper.insertGrpCodeLang */
+		INSERT INTO CW_GRP_CODE_LANG (
+			GRP_CD
+			,LANG_CD
+			,GRP_NM
+			,USE_YN
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{grpCd}
+			,#{langCd}
+			,#{grpNm}
+			,#{useYn}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateGrpCodeLang" parameterType="GrpCodeLangExDto">
+	/* grpCodeLangMapper.updateGrpCodeLang */
+		UPDATE CW_GRP_CODE_LANG
+		<set>
+		<if test="grpNm != null">
+		GRP_NM = #{grpNm},
+		</if>
+		<if test="useYn != null">
+		USE_YN = #{useYn},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			GRP_CD = #{grpCd}
+			AND LANG_CD = #{langCd}
+	</update>
+
+	<delete id="deleteGrpCodeLang" parameterType="GrpCodeLangExDto">
+	/* grpCodeLangMapper.deleteGrpCodeLang */
+	DELETE FROM CW_GRP_CODE_LANG
+	WHERE
+		GRP_CD = #{grpCd}
+		AND LANG_CD = #{langCd}
+	</delete>
+</mapper>

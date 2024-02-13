@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="countryInfoMapper">
+	<sql id="where-countryInfo">
+		WHERE 1=1
+			<if test="cntryCd != null and cntryCd != '' ">
+			AND CI.CNTRY_CD = #{cntryCd}
+			</if>
+			<if test="cntryAbbrCd != null and cntryAbbrCd != '' ">
+			AND CI.CNTRY_ABBR_CD = #{cntryAbbrCd}
+			</if>
+			<if test="cntryNumCd != null and cntryNumCd != '' ">
+			AND CI.CNTRY_NUM_CD = #{cntryNumCd}
+			</if>
+			<if test="cntryNm != null and cntryNm != '' ">
+			AND CI.CNTRY_NM = #{cntryNm}
+			</if>
+			<if test="cntryAbbrNm != null and cntryAbbrNm != '' ">
+			AND CI.CNTRY_ABBR_NM = #{cntryAbbrNm}
+			</if>
+			<if test="cntryNmLng != null and cntryNmLng != '' ">
+			AND CI.CNTRY_NM_LNG = #{cntryNmLng}
+			</if>
+			<if test="cntryAbbrNmLng != null and cntryAbbrNmLng != '' ">
+			AND CI.CNTRY_ABBR_NM_LNG = #{cntryAbbrNmLng}
+			</if>
+			<if test="stdTime != null and stdTime != '' ">
+			AND CI.STD_TIME = #{stdTime}
+			</if>
+	</sql>
+
+	<select id="getCountryInfoListCount" parameterType="CountryInfoExDto" resultType="Integer">
+	/* countryInfoMapper.getCountryInfoListCount */
+		SELECT COUNT(1) AS CNT
+		FROM CW_COUNTRY_INFO CI
+		<include refid="where-countryInfo" />
+	</select>
+
+	<select id="getCountryInfoList" parameterType="CountryInfoExDto" resultType="CountryInfoExDto">
+	/* countryInfoMapper.getCountryInfoList */
+		<include refid="commonMapper.pagingPrefix"/>
+		SELECT
+			CI.CNTRY_CD
+			,CI.CNTRY_ABBR_CD
+			,CI.CNTRY_NUM_CD
+			,CI.CNTRY_NM
+			,CI.CNTRY_ABBR_NM
+			,CI.CNTRY_NM_LNG
+			,CI.CNTRY_ABBR_NM_LNG
+			,CI.STD_TIME
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUNTRY_INFO CI
+		<include refid="where-countryInfo" />
+		ORDER BY
+			CI.CNTRY_CD
+		<include refid="commonMapper.pagingPostfix"/>
+	</select>
+
+	<select id="getCountryInfo" parameterType="CountryInfoExDto" resultType="CountryInfoExDto">
+	/* countryInfoMapper.getCountryInfo */
+		SELECT
+			CI.CNTRY_CD
+			,CI.CNTRY_ABBR_CD
+			,CI.CNTRY_NUM_CD
+			,CI.CNTRY_NM
+			,CI.CNTRY_ABBR_NM
+			,CI.CNTRY_NM_LNG
+			,CI.CNTRY_ABBR_NM_LNG
+			,CI.STD_TIME
+			,CI.REG_USER_ID
+			,REG_DTM
+			,CI.UPD_USER_ID
+			,UPD_DTM
+		FROM CW_COUNTRY_INFO CI
+		WHERE
+			CI.CNTRY_CD = #{cntryCd}
+	</select>
+
+	<insert id="insertCountryInfo" parameterType="CountryInfoExDto">
+	/* countryInfoMapper.insertCountryInfo */
+		INSERT INTO CW_COUNTRY_INFO (
+			CNTRY_CD
+			,CNTRY_ABBR_CD
+			,CNTRY_NUM_CD
+			,CNTRY_NM
+			,CNTRY_ABBR_NM
+			,CNTRY_NM_LNG
+			,CNTRY_ABBR_NM_LNG
+			,STD_TIME
+			,REG_USER_ID
+			,REG_DTM
+			,UPD_USER_ID
+			,UPD_DTM
+		) VALUES (
+			#{cntryCd}
+			,#{cntryAbbrCd}
+			,#{cntryNumCd}
+			,#{cntryNm}
+			,#{cntryAbbrNm}
+			,#{cntryNmLng}
+			,#{cntryAbbrNmLng}
+			,#{stdTime}
+			,#{regUserId}
+			,NOW()
+			,#{updUserId}
+			,NOW()
+		)
+	</insert>
+
+	<update id="updateCountryInfo" parameterType="CountryInfoExDto">
+	/* countryInfoMapper.updateCountryInfo */
+		UPDATE CW_COUNTRY_INFO
+		<set>
+		<if test="cntryAbbrCd != null">
+		CNTRY_ABBR_CD = #{cntryAbbrCd},
+		</if>
+		<if test="cntryNumCd != null">
+		CNTRY_NUM_CD = #{cntryNumCd},
+		</if>
+		<if test="cntryNm != null">
+		CNTRY_NM = #{cntryNm},
+		</if>
+		<if test="cntryAbbrNm != null">
+		CNTRY_ABBR_NM = #{cntryAbbrNm},
+		</if>
+		<if test="cntryNmLng != null">
+		CNTRY_NM_LNG = #{cntryNmLng},
+		</if>
+		<if test="cntryAbbrNmLng != null">
+		CNTRY_ABBR_NM_LNG = #{cntryAbbrNmLng},
+		</if>
+		<if test="stdTime != null">
+		STD_TIME = #{stdTime},
+		</if>
+		<if test="updUserId != null">
+		UPD_USER_ID = #{updUserId},
+		</if>
+		<if test="updDtm != null">
+		UPD_DTM = NOW(),
+		</if>
+		</set>
+		WHERE
+			CNTRY_CD = #{cntryCd}
+	</update>
+
+	<delete id="deleteCountryInfo" parameterType="CountryInfoExDto">
+	/* countryInfoMapper.deleteCountryInfo */
+	DELETE FROM CW_COUNTRY_INFO
+	WHERE
+		CNTRY_CD = #{cntryCd}
+	</delete>
+</mapper>
