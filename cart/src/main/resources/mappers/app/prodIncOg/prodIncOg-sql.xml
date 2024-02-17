@@ -4,8 +4,14 @@
 <mapper namespace="prodIncOgMapper">
 	<sql id="where-prodIncOg">
 		WHERE 1=1
+			<if test="prodIncOgId != null and prodIncOgId != '' ">
+			AND PIO.PROD_INC_OG_ID = #{prodIncOgId}
+			</if>
 			<if test="prodId != null and prodId != '' ">
 			AND PIO.PROD_ID = #{prodId}
+			</if>
+			<if test="compId != null and compId != '' ">
+			AND PIO.COMP_ID = #{compId}
 			</if>
 			<if test="prodIncOgDtm != null and prodIncOgDtm != '' ">
 			AND PIO.PROD_INC_OG_DTM = STR_TO_DATE(#{prodIncOgDtm}, '%Y%m%d %h%i%s')
@@ -32,7 +38,9 @@
 	/* prodIncOgMapper.getProdIncOgList */
 		<include refid="commonMapper.pagingPrefix"/>
 		SELECT
-			PIO.PROD_ID
+			PIO.PROD_INC_OG_ID
+			,PIO.PROD_ID
+			,PIO.COMP_ID
 			,PROD_INC_OG_DTM
 			,PIO.INC_OG_DIV_CD
 			,PIO.PROD_INC_QTY
@@ -44,15 +52,16 @@
 		FROM CW_PROD_INC_OG PIO
 		<include refid="where-prodIncOg" />
 		ORDER BY
-			PIO.PROD_ID
-			,PIO.PROD_INC_OG_DTM
+			PIO.PROD_INC_OG_ID
 		<include refid="commonMapper.pagingPostfix"/>
 	</select>
 
 	<select id="getProdIncOg" parameterType="ProdIncOgExDto" resultType="ProdIncOgExDto">
 	/* prodIncOgMapper.getProdIncOg */
 		SELECT
-			PIO.PROD_ID
+			PIO.PROD_INC_OG_ID
+			,PIO.PROD_ID
+			,PIO.COMP_ID
 			,PROD_INC_OG_DTM
 			,PIO.INC_OG_DIV_CD
 			,PIO.PROD_INC_QTY
@@ -63,14 +72,15 @@
 			,UPD_DTM
 		FROM CW_PROD_INC_OG PIO
 		WHERE
-			PIO.PROD_ID = #{prodId}
-			AND PIO.PROD_INC_OG_DTM = #{prodIncOgDtm}
+			PIO.PROD_INC_OG_ID = #{prodIncOgId}
 	</select>
 
 	<insert id="insertProdIncOg" parameterType="ProdIncOgExDto">
 	/* prodIncOgMapper.insertProdIncOg */
 		INSERT INTO CW_PROD_INC_OG (
-			PROD_ID
+			PROD_INC_OG_ID
+			,PROD_ID
+			,COMP_ID
 			,PROD_INC_OG_DTM
 			,INC_OG_DIV_CD
 			,PROD_INC_QTY
@@ -80,7 +90,9 @@
 			,UPD_USER_ID
 			,UPD_DTM
 		) VALUES (
-			#{prodId}
+			#{prodIncOgId}
+			,#{prodId}
+			,#{compId}
 			,STR_TO_DATE(#{prodIncOgDtm}, '%Y%m%d %h%i%s')
 			,#{incOgDivCd}
 			,#{prodIncQty}
@@ -96,6 +108,15 @@
 	/* prodIncOgMapper.updateProdIncOg */
 		UPDATE CW_PROD_INC_OG
 		<set>
+		<if test="prodId != null">
+		PROD_ID = #{prodId},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
+		</if>
+		<if test="prodIncOgDtm != null">
+		PROD_INC_OG_DTM = STR_TO_DATE(#{prodIncOgDtm}, '%Y%m%d %h%i%s'),
+		</if>
 		<if test="incOgDivCd != null">
 		INC_OG_DIV_CD = #{incOgDivCd},
 		</if>
@@ -113,15 +134,13 @@
 		</if>
 		</set>
 		WHERE
-			PROD_ID = #{prodId}
-			AND PROD_INC_OG_DTM = #{prodIncOgDtm}
+			PROD_INC_OG_ID = #{prodIncOgId}
 	</update>
 
 	<delete id="deleteProdIncOg" parameterType="ProdIncOgExDto">
 	/* prodIncOgMapper.deleteProdIncOg */
 	DELETE FROM CW_PROD_INC_OG
 	WHERE
-		PROD_ID = #{prodId}
-		AND PROD_INC_OG_DTM = #{prodIncOgDtm}
+		PROD_INC_OG_ID = #{prodIncOgId}
 	</delete>
 </mapper>

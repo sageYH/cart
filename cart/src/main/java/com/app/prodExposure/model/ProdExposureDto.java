@@ -28,6 +28,8 @@ public class ProdExposureDto extends BaseDto {
 	private String menuId;
 	// 상품ID
 	private String prodId;
+	// 업체ID
+	private String compId;
 	// 위치정보코드[PD07]
 	private String locInfoCd;
 	// 노출시작일

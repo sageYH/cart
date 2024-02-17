@@ -12,7 +12,9 @@ var pageClsProdIncOg = new pageCls("dvProdIncOgPageList",fnGetList,"totalCnt");
 
 function fnGetList(){
 	var params = {};
+	if (isEmpty(getEVal("prodIncOgId"))==false) params["prodIncOgId"] = getEVal("prodIncOgId");
 	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("prodIncOgDtm"))==false) params["prodIncOgDtm"] = getEVal("prodIncOgDtm");
 	if (isEmpty(getEVal("incOgDivCd"))==false) params["incOgDivCd"] = getEVal("incOgDivCd");
 	if (isEmpty(getEVal("prodIncQty"))==false) params["prodIncQty"] = getEVal("prodIncQty");
@@ -25,15 +27,17 @@ function fnGetList(){
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["prodId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,5);
+	var vArr = ["prodIncOgId","prodId","compId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,7);
 	pageClsProdIncOg.setTotalRowsReload(rObj["totalRows"]);
 }
 
 function fnXlsProdIncOgDown(){
 	var url = "/app/prodIncOg/getProdIncOgExcelDown.do";
 	var paramXls = {};
+	if (isEmpty(getEVal("prodIncOgId"))==false) paramXls["prodIncOgId"] = getEVal("prodIncOgId");
 	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("prodIncOgDtm"))==false) paramXls["prodIncOgDtm"] = getEVal("prodIncOgDtm");
 	if (isEmpty(getEVal("incOgDivCd"))==false) paramXls["incOgDivCd"] = getEVal("incOgDivCd");
 	if (isEmpty(getEVal("prodIncQty"))==false) paramXls["prodIncQty"] = getEVal("prodIncQty");
@@ -41,8 +45,8 @@ function fnXlsProdIncOgDown(){
 
 	var params = {"xlsName":"상품입출고"
 		,"sheetName":"시트"
-		,"columnHeaders":["상품ID","상품입출고일시","입출고구분코드[PD05]","상품입고량","상품출고량"]
-		,"columnNames":["prodId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"]
+		,"columnHeaders":["상품입출고ID","상품ID","업체ID","상품입출고일시","입출고구분코드[PD05]","상품입고량","상품출고량"]
+		,"columnNames":["prodIncOgId","prodId","compId","prodIncOgDtm","incOgDivCd","prodIncQty","prodOgQty"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -62,8 +66,7 @@ function fnOpenDialog(mode){
 	var params = {};
 	if (!isEmpty(key)){
 		var arr = key.split(",");
-		params["prodId"] = arr[0].trim();
-		params["prodIncOgDtm"] = arr[1].trim();
+		params["prodIncOgId"] = arr[0].trim();
 	}
 	ProdIncOgPop.fnOpen(mode, params, fnGetList);
 }
@@ -124,10 +127,14 @@ function fnOpenDialog(mode){
 						<col style="width:10%;" />
 						<col style="width:10%;" />
 						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
+							<th scope="col">상품입출고ID</th>
 							<th scope="col">상품ID</th>
+							<th scope="col">업체ID</th>
 							<th scope="col">상품입출고일시</th>
 							<th scope="col">입출고구분코드[PD05]</th>
 							<th scope="col">상품입고량</th>
@@ -137,8 +144,10 @@ function fnOpenDialog(mode){
 					<tbody></tbody>
 				</table>
 				<div id="dvTrList" style="display:none;">
-				<!-- <tr key='{{prodId}},{{prodIncOgDtm}}' ondblclick='fnOpenDialog("MODIFY");'>
+				<!-- <tr key='{{prodIncOgId}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{prodIncOgId}}</td>
 						<td>{{prodId}}</td>
+						<td>{{compId}}</td>
 						<td>{{prodIncOgDtm}}</td>
 						<td>{{incOgDivCd}}</td>
 						<td>{{prodIncQty}}</td>

@@ -18,6 +18,27 @@ function fnGetList(){
 	if (isEmpty(getEVal("prodTypCd"))==false) params["prodTypCd"] = getEVal("prodTypCd");
 	if (isEmpty(getEVal("applFrYmd"))==false) params["applFrYmd"] = getEVal("applFrYmd");
 	if (isEmpty(getEVal("applToYmd"))==false) params["applToYmd"] = getEVal("applToYmd");
+	if (isEmpty(getEVal("prodAmt"))==false) params["prodAmt"] = getEVal("prodAmt");
+	if (isEmpty(getEVal("prodInvQty"))==false) params["prodInvQty"] = getEVal("prodInvQty");
+	if (isEmpty(getEVal("prodUseQty"))==false) params["prodUseQty"] = getEVal("prodUseQty");
+	if (isEmpty(getEVal("prodInQty"))==false) params["prodInQty"] = getEVal("prodInQty");
+	if (isEmpty(getEVal("soldOutYn"))==false) params["soldOutYn"] = getEVal("soldOutYn");
+	if (isEmpty(getEVal("pointId"))==false) params["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("cpnId"))==false) params["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("delivFeeTypCd"))==false) params["delivFeeTypCd"] = getEVal("delivFeeTypCd");
+	if (isEmpty(getEVal("baseDelivFee"))==false) params["baseDelivFee"] = getEVal("baseDelivFee");
+	if (isEmpty(getEVal("delivFreeMinAmt"))==false) params["delivFreeMinAmt"] = getEVal("delivFreeMinAmt");
+	if (isEmpty(getEVal("delivBaseWeight"))==false) params["delivBaseWeight"] = getEVal("delivBaseWeight");
+	if (isEmpty(getEVal("delivBaseQty"))==false) params["delivBaseQty"] = getEVal("delivBaseQty");
+	if (isEmpty(getEVal("prodViews"))==false) params["prodViews"] = getEVal("prodViews");
+	if (isEmpty(getEVal("prodRegDtm"))==false) params["prodRegDtm"] = getEVal("prodRegDtm");
+	if (isEmpty(getEVal("prodUpdDtm"))==false) params["prodUpdDtm"] = getEVal("prodUpdDtm");
+	if (isEmpty(getEVal("regIp"))==false) params["regIp"] = getEVal("regIp");
+	if (isEmpty(getEVal("sortSeq"))==false) params["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("salesQty"))==false) params["salesQty"] = getEVal("salesQty");
+	if (isEmpty(getEVal("incSmsNotifYn"))==false) params["incSmsNotifYn"] = getEVal("incSmsNotifYn");
+	if (isEmpty(getEVal("reviewNum"))==false) params["reviewNum"] = getEVal("reviewNum");
+	if (isEmpty(getEVal("reviewRtgAvg"))==false) params["reviewRtgAvg"] = getEVal("reviewRtgAvg");
 	if (isEmpty(getEVal("adFee"))==false) params["adFee"] = getEVal("adFee");
 	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
 	//page set
@@ -28,8 +49,8 @@ function fnGetList(){
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["compProdId","compId","prodId","prodTypCd","applFrYmd","applToYmd","adFee","useYn"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,8);
+	var vArr = ["compProdId","compId","prodId","prodTypCd","applFrYmd","applToYmd","prodAmt","prodInvQty","prodUseQty","prodInQty","soldOutYn","pointId","cpnId","delivFeeTypCd","baseDelivFee","delivFreeMinAmt","delivBaseWeight","delivBaseQty","prodViews","prodRegDtm","prodUpdDtm","regIp","sortSeq","salesQty","incSmsNotifYn","reviewNum","reviewRtgAvg","adFee","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,29);
 	pageClsCompProd.setTotalRowsReload(rObj["totalRows"]);
 }
 
@@ -42,13 +63,34 @@ function fnXlsCompProdDown(){
 	if (isEmpty(getEVal("prodTypCd"))==false) paramXls["prodTypCd"] = getEVal("prodTypCd");
 	if (isEmpty(getEVal("applFrYmd"))==false) paramXls["applFrYmd"] = getEVal("applFrYmd");
 	if (isEmpty(getEVal("applToYmd"))==false) paramXls["applToYmd"] = getEVal("applToYmd");
+	if (isEmpty(getEVal("prodAmt"))==false) paramXls["prodAmt"] = getEVal("prodAmt");
+	if (isEmpty(getEVal("prodInvQty"))==false) paramXls["prodInvQty"] = getEVal("prodInvQty");
+	if (isEmpty(getEVal("prodUseQty"))==false) paramXls["prodUseQty"] = getEVal("prodUseQty");
+	if (isEmpty(getEVal("prodInQty"))==false) paramXls["prodInQty"] = getEVal("prodInQty");
+	if (isEmpty(getEVal("soldOutYn"))==false) paramXls["soldOutYn"] = getEVal("soldOutYn");
+	if (isEmpty(getEVal("pointId"))==false) paramXls["pointId"] = getEVal("pointId");
+	if (isEmpty(getEVal("cpnId"))==false) paramXls["cpnId"] = getEVal("cpnId");
+	if (isEmpty(getEVal("delivFeeTypCd"))==false) paramXls["delivFeeTypCd"] = getEVal("delivFeeTypCd");
+	if (isEmpty(getEVal("baseDelivFee"))==false) paramXls["baseDelivFee"] = getEVal("baseDelivFee");
+	if (isEmpty(getEVal("delivFreeMinAmt"))==false) paramXls["delivFreeMinAmt"] = getEVal("delivFreeMinAmt");
+	if (isEmpty(getEVal("delivBaseWeight"))==false) paramXls["delivBaseWeight"] = getEVal("delivBaseWeight");
+	if (isEmpty(getEVal("delivBaseQty"))==false) paramXls["delivBaseQty"] = getEVal("delivBaseQty");
+	if (isEmpty(getEVal("prodViews"))==false) paramXls["prodViews"] = getEVal("prodViews");
+	if (isEmpty(getEVal("prodRegDtm"))==false) paramXls["prodRegDtm"] = getEVal("prodRegDtm");
+	if (isEmpty(getEVal("prodUpdDtm"))==false) paramXls["prodUpdDtm"] = getEVal("prodUpdDtm");
+	if (isEmpty(getEVal("regIp"))==false) paramXls["regIp"] = getEVal("regIp");
+	if (isEmpty(getEVal("sortSeq"))==false) paramXls["sortSeq"] = getEVal("sortSeq");
+	if (isEmpty(getEVal("salesQty"))==false) paramXls["salesQty"] = getEVal("salesQty");
+	if (isEmpty(getEVal("incSmsNotifYn"))==false) paramXls["incSmsNotifYn"] = getEVal("incSmsNotifYn");
+	if (isEmpty(getEVal("reviewNum"))==false) paramXls["reviewNum"] = getEVal("reviewNum");
+	if (isEmpty(getEVal("reviewRtgAvg"))==false) paramXls["reviewRtgAvg"] = getEVal("reviewRtgAvg");
 	if (isEmpty(getEVal("adFee"))==false) paramXls["adFee"] = getEVal("adFee");
 	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
 
 	var params = {"xlsName":"업체상품"
 		,"sheetName":"시트"
-		,"columnHeaders":["","업체ID","상품ID","상품유형코드[PD06]","적용시작일","적용종료일","광고료","사용여부"]
-		,"columnNames":["compProdId","compId","prodId","prodTypCd","applFrYmd","applToYmd","adFee","useYn"]
+		,"columnHeaders":["업체상품ID","업체ID","상품ID","상품유형코드[PD06]","적용시작일","적용종료일","상품금액","상품재고수량","상품사용수량","상품입고수량","품절여부","포인트ID","쿠폰ID","배송비유형코드[DV01]","기본배송비","배송무료최소금액","배송기준무게","배송기준수량","상품조회수","상품등록일시","상품변경일시","등록 IP","정렬순서","판매수량","재입고SMS알림 여부","사용후기 수","사용후기 별점 평균","광고료","사용여부"]
+		,"columnNames":["compProdId","compId","prodId","prodTypCd","applFrYmd","applToYmd","prodAmt","prodInvQty","prodUseQty","prodInQty","soldOutYn","pointId","cpnId","delivFeeTypCd","baseDelivFee","delivFreeMinAmt","delivBaseWeight","delivBaseQty","prodViews","prodRegDtm","prodUpdDtm","regIp","sortSeq","salesQty","incSmsNotifYn","reviewNum","reviewRtgAvg","adFee","useYn"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -132,15 +174,57 @@ function fnOpenDialog(mode){
 						<col style="width:10%;" />
 						<col style="width:10%;" />
 						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
-							<th scope="col"></th>
+							<th scope="col">업체상품ID</th>
 							<th scope="col">업체ID</th>
 							<th scope="col">상품ID</th>
 							<th scope="col">상품유형코드[PD06]</th>
 							<th scope="col">적용시작일</th>
 							<th scope="col">적용종료일</th>
+							<th scope="col">상품금액</th>
+							<th scope="col">상품재고수량</th>
+							<th scope="col">상품사용수량</th>
+							<th scope="col">상품입고수량</th>
+							<th scope="col">품절여부</th>
+							<th scope="col">포인트ID</th>
+							<th scope="col">쿠폰ID</th>
+							<th scope="col">배송비유형코드[DV01]</th>
+							<th scope="col">기본배송비</th>
+							<th scope="col">배송무료최소금액</th>
+							<th scope="col">배송기준무게</th>
+							<th scope="col">배송기준수량</th>
+							<th scope="col">상품조회수</th>
+							<th scope="col">상품등록일시</th>
+							<th scope="col">상품변경일시</th>
+							<th scope="col">등록 IP</th>
+							<th scope="col">정렬순서</th>
+							<th scope="col">판매수량</th>
+							<th scope="col">재입고SMS알림 여부</th>
+							<th scope="col">사용후기 수</th>
+							<th scope="col">사용후기 별점 평균</th>
 							<th scope="col">광고료</th>
 							<th scope="col">사용여부</th>
 						</tr>
@@ -155,6 +239,27 @@ function fnOpenDialog(mode){
 						<td>{{prodTypCd}}</td>
 						<td>{{applFrYmd}}</td>
 						<td>{{applToYmd}}</td>
+						<td>{{prodAmt}}</td>
+						<td>{{prodInvQty}}</td>
+						<td>{{prodUseQty}}</td>
+						<td>{{prodInQty}}</td>
+						<td>{{soldOutYn}}</td>
+						<td>{{pointId}}</td>
+						<td>{{cpnId}}</td>
+						<td>{{delivFeeTypCd}}</td>
+						<td>{{baseDelivFee}}</td>
+						<td>{{delivFreeMinAmt}}</td>
+						<td>{{delivBaseWeight}}</td>
+						<td>{{delivBaseQty}}</td>
+						<td>{{prodViews}}</td>
+						<td>{{prodRegDtm}}</td>
+						<td>{{prodUpdDtm}}</td>
+						<td>{{regIp}}</td>
+						<td>{{sortSeq}}</td>
+						<td>{{salesQty}}</td>
+						<td>{{incSmsNotifYn}}</td>
+						<td>{{reviewNum}}</td>
+						<td>{{reviewRtgAvg}}</td>
 						<td>{{adFee}}</td>
 						<td>{{useYn}}</td>
 					 </tr> -->

@@ -28,6 +28,8 @@ public class OrderDtlDto extends BaseDto {
 	private String ordId;
 	// 상품ID
 	private String prodId;
+	// 업체ID
+	private String compId;
 	// 장바구니ID
 	private String cartId;
 	// 주문상품수량

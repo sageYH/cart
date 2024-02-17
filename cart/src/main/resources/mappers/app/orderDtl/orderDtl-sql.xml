@@ -13,6 +13,9 @@
 			<if test="prodId != null and prodId != '' ">
 			AND OD.PROD_ID = #{prodId}
 			</if>
+			<if test="compId != null and compId != '' ">
+			AND OD.COMP_ID = #{compId}
+			</if>
 			<if test="cartId != null and cartId != '' ">
 			AND OD.CART_ID = #{cartId}
 			</if>
@@ -50,6 +53,7 @@
 			OD.ORD_DTL_ID
 			,OD.ORD_ID
 			,OD.PROD_ID
+			,OD.COMP_ID
 			,OD.CART_ID
 			,OD.ORD_PROD_QTY
 			,OD.ORD_PROD_AMT
@@ -74,6 +78,7 @@
 			OD.ORD_DTL_ID
 			,OD.ORD_ID
 			,OD.PROD_ID
+			,OD.COMP_ID
 			,OD.CART_ID
 			,OD.ORD_PROD_QTY
 			,OD.ORD_PROD_AMT
@@ -96,6 +101,7 @@
 			ORD_DTL_ID
 			,ORD_ID
 			,PROD_ID
+			,COMP_ID
 			,CART_ID
 			,ORD_PROD_QTY
 			,ORD_PROD_AMT
@@ -111,6 +117,7 @@
 			#{ordDtlId}
 			,#{ordId}
 			,#{prodId}
+			,#{compId}
 			,#{cartId}
 			,#{ordProdQty}
 			,#{ordProdAmt}
@@ -134,6 +141,9 @@
 		</if>
 		<if test="prodId != null">
 		PROD_ID = #{prodId},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
 		</if>
 		<if test="cartId != null">
 		CART_ID = #{cartId},

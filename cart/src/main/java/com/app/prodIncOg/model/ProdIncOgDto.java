@@ -22,8 +22,12 @@ public class ProdIncOgDto extends BaseDto {
 
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 2665419922181909329L;
+	// 상품입출고ID
+	private String prodIncOgId;
 	// 상품ID
 	private String prodId;
+	// 업체ID
+	private String compId;
 	// 상품입출고일시
 	private String prodIncOgDtm;
 	// 입출고구분코드[PD05]

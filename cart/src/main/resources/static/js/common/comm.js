@@ -80,6 +80,18 @@ function setAttrs(id,o1){
 		$(obj).attr(key,o1[key]);
 	}
 }
+function deepCopyObj(inObj) {
+	var outObj, value, key
+	if(typeof inObj !== "object" || inObj === null) {
+		return inObj
+	}
+	outObj = Array.isArray(inObj) ? [] : {}
+	for (key in inObj) {
+		value = inObj[key]
+		outObj[key] = (typeof value === "object" && value !== null) ? deepCopyObj(value) : value
+	}
+	return outObj
+}
 //id -> object
 function getElement(id){
 	return document.getElementById(id);
@@ -2113,6 +2125,14 @@ function BDataSet(obj){
 		}
 		this.data[row][col] = val;
 	};
+	this.addMap = function(val){
+		if(!(this.data instanceof Array)){
+			this.data = new Array();
+		}
+		let cnt = this.data.length;
+		if (cnt < 0) cnt = 0;
+		this.data[cnt] = val;
+	};
 	this.deleteRow = function(row){
 		this.data.splice(row,1);
 		if ((this.data.length - 1) < row){
@@ -2149,6 +2169,53 @@ function BDataSet(obj){
 			if (v1.indexOf(val1)>-1) return i;
 		}
 		return -1;
+	};
+	this.copyRow = function(row,dest){
+		//row : this.row, dest : destination dataset
+		if (row==null || dest==null) return;
+		if(!(dest.data instanceof Array)){
+			dest.data = new Array();
+		}
+		dest.addMap(this.getRow(row));
+	};
+	this.setSort = function(key,type,ord){
+		//key : filed name, type:number,string, ord : asc, desc
+		var cnt = this.getRowCount();
+		if (cnt < 1) return;
+		var arr = new Array();
+		for(var i=0;i<cnt;i++){
+			var vo = {"idx":i};
+			if (type=="number"){
+				var v1 = this.getValue(key,i)+"";
+				v1 = v1.replaceAll(",", "");
+				vo["val"] = parseFloat(v1);
+			}
+			else{
+				vo["val"] = this.getValue(key,i);
+			}
+			arr.push(vo);
+		}
+		if (ord=="asc"){
+			if (type=="number"){
+				arr.sort(function(a,b){return a.val - b.val;});
+			}
+			else{
+				arr.sort(function(a,b){if(a.val < b.val){return -1;}else{return 1;}});
+			}
+		}
+		else{
+			if (type=="number"){
+				arr.sort(function(a,b){return b.val - a.val;});
+			}
+			else{
+				arr.sort(function(a,b){if(a.val < b.val){return 1;}else{return -1;}});
+			}
+		}
+		var ds1 = new TDataSet();
+		for(var i=0;i<cnt;i++){
+			this.copyRow(arr[i]["idx"],ds1);
+		}
+		this.setData(ds1.getData());
 	};
 	this.getRowCount = function(){
 		if(!(this.data instanceof Array)){

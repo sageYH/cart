@@ -15,6 +15,7 @@ function fnGetList(){
 	if (isEmpty(getEVal("ordDtlId"))==false) params["ordDtlId"] = getEVal("ordDtlId");
 	if (isEmpty(getEVal("ordId"))==false) params["ordId"] = getEVal("ordId");
 	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("cartId"))==false) params["cartId"] = getEVal("cartId");
 	if (isEmpty(getEVal("ordProdQty"))==false) params["ordProdQty"] = getEVal("ordProdQty");
 	if (isEmpty(getEVal("ordProdAmt"))==false) params["ordProdAmt"] = getEVal("ordProdAmt");
@@ -30,8 +31,8 @@ function fnGetList(){
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["ordDtlId","ordId","prodId","cartId","ordProdQty","ordProdAmt","ordOptAmt","optDtlCont","cartDtm","prodPathCd"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,10);
+	var vArr = ["ordDtlId","ordId","prodId","compId","cartId","ordProdQty","ordProdAmt","ordOptAmt","optDtlCont","cartDtm","prodPathCd"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,11);
 	pageClsOrderDtl.setTotalRowsReload(rObj["totalRows"]);
 }
 
@@ -41,6 +42,7 @@ function fnXlsOrderDtlDown(){
 	if (isEmpty(getEVal("ordDtlId"))==false) paramXls["ordDtlId"] = getEVal("ordDtlId");
 	if (isEmpty(getEVal("ordId"))==false) paramXls["ordId"] = getEVal("ordId");
 	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("cartId"))==false) paramXls["cartId"] = getEVal("cartId");
 	if (isEmpty(getEVal("ordProdQty"))==false) paramXls["ordProdQty"] = getEVal("ordProdQty");
 	if (isEmpty(getEVal("ordProdAmt"))==false) paramXls["ordProdAmt"] = getEVal("ordProdAmt");
@@ -51,8 +53,8 @@ function fnXlsOrderDtlDown(){
 
 	var params = {"xlsName":"주문상세"
 		,"sheetName":"시트"
-		,"columnHeaders":["주문상세ID","주문ID","상품ID","장바구니ID","주문상품수량","주문상품금액","주문옵션금액","옵션상세내용","장바구니일시","상품경로코드[PD08]"]
-		,"columnNames":["ordDtlId","ordId","prodId","cartId","ordProdQty","ordProdAmt","ordOptAmt","optDtlCont","cartDtm","prodPathCd"]
+		,"columnHeaders":["주문상세ID","주문ID","상품ID","업체ID","장바구니ID","주문상품수량","주문상품금액","주문옵션금액","옵션상세내용","장바구니일시","상품경로코드[PD08]"]
+		,"columnNames":["ordDtlId","ordId","prodId","compId","cartId","ordProdQty","ordProdAmt","ordOptAmt","optDtlCont","cartDtm","prodPathCd"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -138,12 +140,14 @@ function fnOpenDialog(mode){
 						<col style="width:10%;" />
 						<col style="width:10%;" />
 						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
 							<th scope="col">주문상세ID</th>
 							<th scope="col">주문ID</th>
 							<th scope="col">상품ID</th>
+							<th scope="col">업체ID</th>
 							<th scope="col">장바구니ID</th>
 							<th scope="col">주문상품수량</th>
 							<th scope="col">주문상품금액</th>
@@ -160,6 +164,7 @@ function fnOpenDialog(mode){
 						<td>{{ordDtlId}}</td>
 						<td>{{ordId}}</td>
 						<td>{{prodId}}</td>
+						<td>{{compId}}</td>
 						<td>{{cartId}}</td>
 						<td>{{ordProdQty}}</td>
 						<td>{{ordProdAmt}}</td>

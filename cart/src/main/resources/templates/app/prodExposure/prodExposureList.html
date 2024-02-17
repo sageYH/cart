@@ -15,6 +15,7 @@ function fnGetList(){
 	if (isEmpty(getEVal("prodExpId"))==false) params["prodExpId"] = getEVal("prodExpId");
 	if (isEmpty(getEVal("menuId"))==false) params["menuId"] = getEVal("menuId");
 	if (isEmpty(getEVal("prodId"))==false) params["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) params["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("locInfoCd"))==false) params["locInfoCd"] = getEVal("locInfoCd");
 	if (isEmpty(getEVal("expFrYmd"))==false) params["expFrYmd"] = getEVal("expFrYmd");
 	if (isEmpty(getEVal("expToYmd"))==false) params["expToYmd"] = getEVal("expToYmd");
@@ -28,8 +29,8 @@ function fnGetList(){
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["prodExpId","menuId","prodId","locInfoCd","expFrYmd","expToYmd","adFee","useYn"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,8);
+	var vArr = ["prodExpId","menuId","prodId","compId","locInfoCd","expFrYmd","expToYmd","adFee","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,9);
 	pageClsProdExposure.setTotalRowsReload(rObj["totalRows"]);
 }
 
@@ -39,6 +40,7 @@ function fnXlsProdExposureDown(){
 	if (isEmpty(getEVal("prodExpId"))==false) paramXls["prodExpId"] = getEVal("prodExpId");
 	if (isEmpty(getEVal("menuId"))==false) paramXls["menuId"] = getEVal("menuId");
 	if (isEmpty(getEVal("prodId"))==false) paramXls["prodId"] = getEVal("prodId");
+	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("locInfoCd"))==false) paramXls["locInfoCd"] = getEVal("locInfoCd");
 	if (isEmpty(getEVal("expFrYmd"))==false) paramXls["expFrYmd"] = getEVal("expFrYmd");
 	if (isEmpty(getEVal("expToYmd"))==false) paramXls["expToYmd"] = getEVal("expToYmd");
@@ -47,8 +49,8 @@ function fnXlsProdExposureDown(){
 
 	var params = {"xlsName":"상품노출"
 		,"sheetName":"시트"
-		,"columnHeaders":["상품노출ID","메뉴ID","상품ID","위치정보코드[PD07]","노출시작일","노출종료일","광고료","사용여부"]
-		,"columnNames":["prodExpId","menuId","prodId","locInfoCd","expFrYmd","expToYmd","adFee","useYn"]
+		,"columnHeaders":["상품노출ID","메뉴ID","상품ID","업체ID","위치정보코드[PD07]","노출시작일","노출종료일","광고료","사용여부"]
+		,"columnNames":["prodExpId","menuId","prodId","compId","locInfoCd","expFrYmd","expToYmd","adFee","useYn"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -132,12 +134,14 @@ function fnOpenDialog(mode){
 						<col style="width:10%;" />
 						<col style="width:10%;" />
 						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
 							<th scope="col">상품노출ID</th>
 							<th scope="col">메뉴ID</th>
 							<th scope="col">상품ID</th>
+							<th scope="col">업체ID</th>
 							<th scope="col">위치정보코드[PD07]</th>
 							<th scope="col">노출시작일</th>
 							<th scope="col">노출종료일</th>
@@ -152,6 +156,7 @@ function fnOpenDialog(mode){
 						<td>{{prodExpId}}</td>
 						<td>{{menuId}}</td>
 						<td>{{prodId}}</td>
+						<td>{{compId}}</td>
 						<td>{{locInfoCd}}</td>
 						<td>{{expFrYmd}}</td>
 						<td>{{expToYmd}}</td>

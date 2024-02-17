@@ -13,6 +13,9 @@
 			<if test="prodId != null and prodId != '' ">
 			AND PE.PROD_ID = #{prodId}
 			</if>
+			<if test="compId != null and compId != '' ">
+			AND PE.COMP_ID = #{compId}
+			</if>
 			<if test="locInfoCd != null and locInfoCd != '' ">
 			AND PE.LOC_INFO_CD = #{locInfoCd}
 			</if>
@@ -44,6 +47,7 @@
 			PE.PROD_EXP_ID
 			,PE.MENU_ID
 			,PE.PROD_ID
+			,PE.COMP_ID
 			,PE.LOC_INFO_CD
 			,PE.EXP_FR_YMD
 			,PE.EXP_TO_YMD
@@ -66,6 +70,7 @@
 			PE.PROD_EXP_ID
 			,PE.MENU_ID
 			,PE.PROD_ID
+			,PE.COMP_ID
 			,PE.LOC_INFO_CD
 			,PE.EXP_FR_YMD
 			,PE.EXP_TO_YMD
@@ -86,6 +91,7 @@
 			PROD_EXP_ID
 			,MENU_ID
 			,PROD_ID
+			,COMP_ID
 			,LOC_INFO_CD
 			,EXP_FR_YMD
 			,EXP_TO_YMD
@@ -99,6 +105,7 @@
 			#{prodExpId}
 			,#{menuId}
 			,#{prodId}
+			,#{compId}
 			,#{locInfoCd}
 			,#{expFrYmd}
 			,#{expToYmd}
@@ -120,6 +127,9 @@
 		</if>
 		<if test="prodId != null">
 		PROD_ID = #{prodId},
+		</if>
+		<if test="compId != null">
+		COMP_ID = #{compId},
 		</if>
 		<if test="locInfoCd != null">
 		LOC_INFO_CD = #{locInfoCd},

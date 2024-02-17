@@ -22,8 +22,12 @@ public class ProdOptIncOgDto extends BaseDto {
 
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 2665419922181909329L;
+	// 
+	private String optIncOgId;
 	// 옵션ID
 	private String optId;
+	// 업체ID
+	private String compId;
 	// 옵션입출고일시
 	private String optIncOgDtm;
 	// 입출고구분코드[PD05]

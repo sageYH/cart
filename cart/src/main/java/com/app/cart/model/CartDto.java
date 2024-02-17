@@ -28,6 +28,8 @@ public class CartDto extends BaseDto {
 	private String mbrId;
 	// 상품ID
 	private String prodId;
+	// 업체ID
+	private String compId;
 	// 상품수량
 	private Long prodQty;
 	// 상품금액

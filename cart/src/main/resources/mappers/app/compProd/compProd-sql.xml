@@ -22,6 +22,69 @@
 			<if test="applToYmd != null and applToYmd != '' ">
 			AND CP.APPL_TO_YMD = #{applToYmd}
 			</if>
+			<if test="prodAmt != null and prodAmt != '' ">
+			AND CP.PROD_AMT = #{prodAmt}
+			</if>
+			<if test="prodInvQty != null and prodInvQty != '' ">
+			AND CP.PROD_INV_QTY = #{prodInvQty}
+			</if>
+			<if test="prodUseQty != null and prodUseQty != '' ">
+			AND CP.PROD_USE_QTY = #{prodUseQty}
+			</if>
+			<if test="prodInQty != null and prodInQty != '' ">
+			AND CP.PROD_IN_QTY = #{prodInQty}
+			</if>
+			<if test="soldOutYn != null and soldOutYn != '' ">
+			AND CP.SOLD_OUT_YN = #{soldOutYn}
+			</if>
+			<if test="pointId != null and pointId != '' ">
+			AND CP.POINT_ID = #{pointId}
+			</if>
+			<if test="cpnId != null and cpnId != '' ">
+			AND CP.CPN_ID = #{cpnId}
+			</if>
+			<if test="delivFeeTypCd != null and delivFeeTypCd != '' ">
+			AND CP.DELIV_FEE_TYP_CD = #{delivFeeTypCd}
+			</if>
+			<if test="baseDelivFee != null and baseDelivFee != '' ">
+			AND CP.BASE_DELIV_FEE = #{baseDelivFee}
+			</if>
+			<if test="delivFreeMinAmt != null and delivFreeMinAmt != '' ">
+			AND CP.DELIV_FREE_MIN_AMT = #{delivFreeMinAmt}
+			</if>
+			<if test="delivBaseWeight != null and delivBaseWeight != '' ">
+			AND CP.DELIV_BASE_WEIGHT = #{delivBaseWeight}
+			</if>
+			<if test="delivBaseQty != null and delivBaseQty != '' ">
+			AND CP.DELIV_BASE_QTY = #{delivBaseQty}
+			</if>
+			<if test="prodViews != null and prodViews != '' ">
+			AND CP.PROD_VIEWS = #{prodViews}
+			</if>
+			<if test="prodRegDtm != null and prodRegDtm != '' ">
+			AND CP.PROD_REG_DTM = STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="prodUpdDtm != null and prodUpdDtm != '' ">
+			AND CP.PROD_UPD_DTM = STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s')
+			</if>
+			<if test="regIp != null and regIp != '' ">
+			AND CP.REG_IP = #{regIp}
+			</if>
+			<if test="sortSeq != null and sortSeq != '' ">
+			AND CP.SORT_SEQ = #{sortSeq}
+			</if>
+			<if test="salesQty != null and salesQty != '' ">
+			AND CP.SALES_QTY = #{salesQty}
+			</if>
+			<if test="incSmsNotifYn != null and incSmsNotifYn != '' ">
+			AND CP.INC_SMS_NOTIF_YN = #{incSmsNotifYn}
+			</if>
+			<if test="reviewNum != null and reviewNum != '' ">
+			AND CP.REVIEW_NUM = #{reviewNum}
+			</if>
+			<if test="reviewRtgAvg != null and reviewRtgAvg != '' ">
+			AND CP.REVIEW_RTG_AVG = #{reviewRtgAvg}
+			</if>
 			<if test="adFee != null and adFee != '' ">
 			AND CP.AD_FEE = #{adFee}
 			</if>
@@ -47,6 +110,27 @@
 			,CP.PROD_TYP_CD
 			,CP.APPL_FR_YMD
 			,CP.APPL_TO_YMD
+			,CP.PROD_AMT
+			,CP.PROD_INV_QTY
+			,CP.PROD_USE_QTY
+			,CP.PROD_IN_QTY
+			,CP.SOLD_OUT_YN
+			,CP.POINT_ID
+			,CP.CPN_ID
+			,CP.DELIV_FEE_TYP_CD
+			,CP.BASE_DELIV_FEE
+			,CP.DELIV_FREE_MIN_AMT
+			,CP.DELIV_BASE_WEIGHT
+			,CP.DELIV_BASE_QTY
+			,CP.PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,CP.REG_IP
+			,CP.SORT_SEQ
+			,CP.SALES_QTY
+			,CP.INC_SMS_NOTIF_YN
+			,CP.REVIEW_NUM
+			,CP.REVIEW_RTG_AVG
 			,CP.AD_FEE
 			,CP.USE_YN
 			,CP.REG_USER_ID
@@ -69,6 +153,27 @@
 			,CP.PROD_TYP_CD
 			,CP.APPL_FR_YMD
 			,CP.APPL_TO_YMD
+			,CP.PROD_AMT
+			,CP.PROD_INV_QTY
+			,CP.PROD_USE_QTY
+			,CP.PROD_IN_QTY
+			,CP.SOLD_OUT_YN
+			,CP.POINT_ID
+			,CP.CPN_ID
+			,CP.DELIV_FEE_TYP_CD
+			,CP.BASE_DELIV_FEE
+			,CP.DELIV_FREE_MIN_AMT
+			,CP.DELIV_BASE_WEIGHT
+			,CP.DELIV_BASE_QTY
+			,CP.PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,CP.REG_IP
+			,CP.SORT_SEQ
+			,CP.SALES_QTY
+			,CP.INC_SMS_NOTIF_YN
+			,CP.REVIEW_NUM
+			,CP.REVIEW_RTG_AVG
 			,CP.AD_FEE
 			,CP.USE_YN
 			,CP.REG_USER_ID
@@ -89,6 +194,27 @@
 			,PROD_TYP_CD
 			,APPL_FR_YMD
 			,APPL_TO_YMD
+			,PROD_AMT
+			,PROD_INV_QTY
+			,PROD_USE_QTY
+			,PROD_IN_QTY
+			,SOLD_OUT_YN
+			,POINT_ID
+			,CPN_ID
+			,DELIV_FEE_TYP_CD
+			,BASE_DELIV_FEE
+			,DELIV_FREE_MIN_AMT
+			,DELIV_BASE_WEIGHT
+			,DELIV_BASE_QTY
+			,PROD_VIEWS
+			,PROD_REG_DTM
+			,PROD_UPD_DTM
+			,REG_IP
+			,SORT_SEQ
+			,SALES_QTY
+			,INC_SMS_NOTIF_YN
+			,REVIEW_NUM
+			,REVIEW_RTG_AVG
 			,AD_FEE
 			,USE_YN
 			,REG_USER_ID
@@ -102,6 +228,27 @@
 			,#{prodTypCd}
 			,#{applFrYmd}
 			,#{applToYmd}
+			,#{prodAmt}
+			,#{prodInvQty}
+			,#{prodUseQty}
+			,#{prodInQty}
+			,#{soldOutYn}
+			,#{pointId}
+			,#{cpnId}
+			,#{delivFeeTypCd}
+			,#{baseDelivFee}
+			,#{delivFreeMinAmt}
+			,#{delivBaseWeight}
+			,#{delivBaseQty}
+			,#{prodViews}
+			,STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s')
+			,STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s')
+			,#{regIp}
+			,#{sortSeq}
+			,#{salesQty}
+			,#{incSmsNotifYn}
+			,#{reviewNum}
+			,#{reviewRtgAvg}
 			,#{adFee}
 			,#{useYn}
 			,#{regUserId}
@@ -129,6 +276,69 @@
 		</if>
 		<if test="applToYmd != null">
 		APPL_TO_YMD = #{applToYmd},
+		</if>
+		<if test="prodAmt != null">
+		PROD_AMT = #{prodAmt},
+		</if>
+		<if test="prodInvQty != null">
+		PROD_INV_QTY = #{prodInvQty},
+		</if>
+		<if test="prodUseQty != null">
+		PROD_USE_QTY = #{prodUseQty},
+		</if>
+		<if test="prodInQty != null">
+		PROD_IN_QTY = #{prodInQty},
+		</if>
+		<if test="soldOutYn != null">
+		SOLD_OUT_YN = #{soldOutYn},
+		</if>
+		<if test="pointId != null">
+		POINT_ID = #{pointId},
+		</if>
+		<if test="cpnId != null">
+		CPN_ID = #{cpnId},
+		</if>
+		<if test="delivFeeTypCd != null">
+		DELIV_FEE_TYP_CD = #{delivFeeTypCd},
+		</if>
+		<if test="baseDelivFee != null">
+		BASE_DELIV_FEE = #{baseDelivFee},
+		</if>
+		<if test="delivFreeMinAmt != null">
+		DELIV_FREE_MIN_AMT = #{delivFreeMinAmt},
+		</if>
+		<if test="delivBaseWeight != null">
+		DELIV_BASE_WEIGHT = #{delivBaseWeight},
+		</if>
+		<if test="delivBaseQty != null">
+		DELIV_BASE_QTY = #{delivBaseQty},
+		</if>
+		<if test="prodViews != null">
+		PROD_VIEWS = #{prodViews},
+		</if>
+		<if test="prodRegDtm != null">
+		PROD_REG_DTM = STR_TO_DATE(#{prodRegDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="prodUpdDtm != null">
+		PROD_UPD_DTM = STR_TO_DATE(#{prodUpdDtm}, '%Y%m%d %h%i%s'),
+		</if>
+		<if test="regIp != null">
+		REG_IP = #{regIp},
+		</if>
+		<if test="sortSeq != null">
+		SORT_SEQ = #{sortSeq},
+		</if>
+		<if test="salesQty != null">
+		SALES_QTY = #{salesQty},
+		</if>
+		<if test="incSmsNotifYn != null">
+		INC_SMS_NOTIF_YN = #{incSmsNotifYn},
+		</if>
+		<if test="reviewNum != null">
+		REVIEW_NUM = #{reviewNum},
+		</if>
+		<if test="reviewRtgAvg != null">
+		REVIEW_RTG_AVG = #{reviewRtgAvg},
 		</if>
 		<if test="adFee != null">
 		AD_FEE = #{adFee},
