@@ -7,25 +7,40 @@ window.onload = function() {
 	//
 }
 
-//page
-var pageClsGrpCode = new pageCls("dvGrpCodePageList",fnGetList,"totalCnt");
-
+var DSGRP = new BDataSet();
 function fnGetList(){
 	var params = {};
 	if (isEmpty(getEVal("grpCd"))==false) params["grpCd"] = getEVal("grpCd");
 	if (isEmpty(getEVal("grpNm"))==false) params["grpNm"] = getEVal("grpNm");
 	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
-	//page set
-	params = pageClsGrpCode.getPageInfo(params);
 
-	var url = "/app/grpCode/getGrpCodePageList.do";
+	var url = "/app/grpCode/getGrpCodeList.do";
+	//add page
+	var rObj = httpSend(url,params);
+	DSGRP = new BDataSet(rObj["payloads"]);
+	
+	var vArr = ["grpCd","grpNm","useYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,DSGRP,3);
+}
+function fnGetCodeList(grpCd){
+	var params = {"grpCd":grpCd};
+
+	//group info
+	let idx = DSGRP.find("grpCd",grpCd);
+	getElement("grpCd").value = "";
+	getElement("grpNm").value = "";
+	if (idx >= 0){
+		getElement("grpCd").value = DSGRP.getValue("grpCd",idx);
+		getElement("grpNm").value = DSGRP.getValue("grpNm",idx);
+	}
+
+	var url = "/app/cmnCode/getCmnCodeList.do";
 	//add page
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["grpCd","grpNm","useYn"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,3);
-	pageClsGrpCode.setTotalRowsReload(rObj["totalRows"]);
+	var vArr = ["cmnCd","cmnCdNm","grpCd"];
+	setDrawTbl("tblIdxDtlList","dvTrDtlList",vArr,ds,3);
 }
 
 function fnXlsGrpCodeDown(){
@@ -63,6 +78,78 @@ function fnOpenDialog(mode){
 	GrpCodePop.fnOpen(mode, params, fnGetList);
 }
 
+function fnOpenDtlDialog(mode){
+	var key = "";
+	if (mode == "MODIFY"){
+		key = getTrKey("tblIdxDtlList");
+		if (isEmpty(key)){
+			alert("수정 할 자료가 존재하지 않습니다.");
+			return false;
+		}
+	}
+	var params = {};
+	if (!isEmpty(key)){
+		var arr = key.split(",");
+		params["cmnCd"] = arr[0].trim();
+		params["grpCd"] = arr[1].trim();
+	}
+	CodePop.fnOpen(mode, params, fnGetList);
+}
+function fnDelete(){
+	var key = getTrKey("tblIdxList");
+	var arr = key.split(",");
+	params["grpCd"] = arr[0].trim();
+
+	if (isEmpty(params["grpCd"])){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/grpCode/deleteGrpCode.do";
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(GrpCodePop.func)){
+			fnGetList();
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
+function fnDtlDelete(){
+	var key = getTrKey("tblIdxDtlList");
+	var arr = key.split(",");
+	params["cmnCd"] = arr[0].trim();
+	params["grpCd"] = arr[1].trim();
+
+	if (isEmpty(params["grpCd"]) || isEmpty(params["cmnCd"])){
+		alert("조회후 삭제하세요.");
+		return false;
+	}
+	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
+
+	var url = "/app/cmnCode/deleteCmnCode.do";
+
+	var map = httpSend(url, params);
+	if (!isEmpty(map) && !isEmpty(map["resultCd"])){
+		if (map["resultCd"] != "Y"){
+			alert(map["resultMsg"]);
+			return false;
+		}
+		if (!isEmpty(GrpCodePop.func)){
+			fnGetCodeList(params["grpCd"]);
+		}
+	}else{
+		alert("작업중 오류가 발생했습니다.");
+	}
+};
+
 </script>
 
 <body><div class="wrap">
@@ -71,72 +158,85 @@ function fnOpenDialog(mode){
 <main>
 	<div class="sub_wrap">
 		<div class="cont">
-			<div class="cont-item" id="dvGrpCodeSearch">
-				<div class="cont-item-row">
-					<div class="item">
-						<label for="item01">검색1</label>
-						<div class="wrap">
-							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
-						</div>
+		    <div class="cont-item-wrapper nowrap" style="height:80%;">
+	            <div class="item-wrapper half" style="padding-right:10px;">
+		            <div class="title dark-gray">
+		              <h4><span name="h4GroupNm">그룹</span></h4>
+                        <button type="button" class="btn icon add-folder" onclick='fnOpenDialog("CREATE");'>추가</button>
+                        <button type="button" class="btn icon delete-folder" onclick='fnDelete();'>삭제</button>
+		            </div>
+		            <div class="item-search">
+		              <input type="text" id="schGrpNm" name="schGrpNm" placeholder="그룹명을 입력하세요."/>
+		              <button type="submit">검색</button>
+		            </div>
+					<table id="tblIdxList" class="gridListTable">
+						<colgroup>
+							<col style="width:10%;" />
+							<col style="width:10%;" />
+							<col style="width:10%;" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">그룹코드</th>
+								<th scope="col">그룹명</th>
+								<th scope="col">사용여부</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div id="dvTrList" style="display:none;">
+					<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+							<td>{{grpCd}}</td>
+							<td>{{grpNm}}</td>
+							<td>{{useYn}}</td>
+						 </tr> -->
 					</div>
-					<div class="item">
-						<label for="item02">검색2</label>
-						<div class="wrap">
-							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
-						</div>
+	            </div>
+	            <div class="item-wrapper flex-auto">
+		            <div class="title dark-gray">
+		              <h4><span name="h4GroupNm">코드</span></h4>
+                        <button type="button" class="btn icon add-folder" onclick="fnOpenDtlDialog('CREATE');">추가</button>
+                        <button type="button" class="btn icon delete-folder" onclick='fnDtlDelete();'>삭제</button>
+		            </div>
+		            <div class="cont-item-row border-top">
+		              <div class="item">
+		                <label  for="groupId">그룹ID</label>
+		                <div class="wrap">
+		                <input type="text" id="groupId" name="groupId" />
+		                </div>
+		              </div>
+		              <div class="item">
+		                <label for="grpNm">그룹명</label>
+		                <div class="wrap">
+		                  <input type="text" id="grpNm" name="grpNm" />
+		                </div>
+		              </div>
+		            </div>
+					<table id="tblIdxDtlList" class="gridListTable">
+						<colgroup>
+							<col style="width:15%;" />
+							<col style="width:auto;" />
+							<col style="width:25%;" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">코드ID</th>
+								<th scope="col">코드명</th>
+								<th scope="col">그룹코드ID</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div id="dvTrDtlList" style="display:none;">
+					<!-- <tr key='{{cmnCd}},{{grpCd}}' ondblclick='fnOpenDtlDialog("MODIFY");'>
+							<td>{{cmnCd}}</td>
+							<td>{{cmnCdNm}}</td>
+							<td>{{grpCd}}</td>
+						 </tr> -->
 					</div>
-				</div>
-				<div class="cont-item-row cont-item-row-btn">
-					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
-					<button type="button" class="btn white default reset" onclick="clearObjects('dvGrpCodeSearch');">초기화</button>
-				</div>
-			</div>
-			<div class="cont-item h728">
-				<div class="bar-top">
-					<div class="bar-left">
-						<select class="select" onchange="pageClsGrpCode.setPageRows(getEVal(this));">
-							<option value="10" selected>10건</option>
-							<option value="20">20건</option>
-							<option value="30">30건</option>
-							<option value="50">50건</option>
-						</select>
-						<div class="bar-iblock">
-							<span id="totalCnt" name="totalCnt"></span>
-						</div>
-					</div>
-
-					<div class="bar-right">
-						<div class="pagination-next-btns">
-			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
-							<button type="button" class="btn primary default" onclick="fnOpenDialog('MODIFY');">수정</button>
-						</div>
-					</div>
-				</div>
-				<table id="tblIdxList" class="gridListTable">
-					<colgroup>
-						<col style="width:10%;" />
-						<col style="width:10%;" />
-						<col style="width:10%;" />
-					</colgroup>
-					<thead>
-						<tr>
-							<th scope="col">그룹코드</th>
-							<th scope="col">그룹명</th>
-							<th scope="col">사용여부</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-				<div id="dvTrList" style="display:none;">
-				<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");'>
-						<td>{{grpCd}}</td>
-						<td>{{grpNm}}</td>
-						<td>{{useYn}}</td>
-					 </tr> -->
-				</div>
-
-				<div id="dvGrpCodePageList" class="pagination"></div>
-			</div>
+	            </div>
+	        </div>
+		
 		</div>
 	</div>
 

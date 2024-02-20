@@ -1,6 +1,7 @@
 package com.app.menu.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -47,4 +48,7 @@ public class MenuMapper  extends DaoBaseMapper {
 		delete("menuMapper.deleteMenu", menuExDto);
 	}
 
+	public List<Map> getGnbMenu( Map map ) throws Exception {
+		return (List<Map>)list("menuMapper.getGnbMenu", map);
+	}
 }

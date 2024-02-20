@@ -1,6 +1,7 @@
 package com.app.menu.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -44,5 +45,9 @@ public class MenuService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, readOnly = false)
 	public void deleteMenu(MenuExDto menuExDto) throws Exception {
 		menuMapper.deleteMenu(menuExDto);
+	}
+
+	public List<Map> getGnbMenu(Map map) throws Exception {
+		return menuMapper.getGnbMenu(map);
 	}
 }

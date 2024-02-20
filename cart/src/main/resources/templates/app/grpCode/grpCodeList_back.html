@@ -8,35 +8,37 @@ window.onload = function() {
 }
 
 //page
-var pageClsCode = new pageCls("dvCodePageList",fnGetList,"totalCnt");
+var pageClsGrpCode = new pageCls("dvGrpCodePageList",fnGetList,"totalCnt");
 
 function fnGetList(){
 	var params = {};
-	if (isEmpty(getEVal("cdId"))==false) params["cdId"] = getEVal("cdId");
-	if (isEmpty(getEVal("cdNm"))==false) params["cdNm"] = getEVal("cdNm");
+	if (isEmpty(getEVal("grpCd"))==false) params["grpCd"] = getEVal("grpCd");
+	if (isEmpty(getEVal("grpNm"))==false) params["grpNm"] = getEVal("grpNm");
+	if (isEmpty(getEVal("useYn"))==false) params["useYn"] = getEVal("useYn");
 	//page set
-	params = pageClsCode.getPageInfo(params);
+	params = pageClsGrpCode.getPageInfo(params);
 
-	var url = "/app/code/getCodePageList.do";
+	var url = "/app/grpCode/getGrpCodePageList.do";
 	//add page
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["cdId","cdNm","grpId"];
+	var vArr = ["grpCd","grpNm","useYn"];
 	setDrawTbl("tblIdxList","dvTrList",vArr,ds,3);
-	pageClsCode.setTotalRowsReload(rObj["totalRows"]);
+	pageClsGrpCode.setTotalRowsReload(rObj["totalRows"]);
 }
 
-function fnXlsCodeDown(){
-	var url = "/app/code/getCodeExcelDown.do";
+function fnXlsGrpCodeDown(){
+	var url = "/app/grpCode/getGrpCodeExcelDown.do";
 	var paramXls = {};
-	if (isEmpty(getEVal("cdId"))==false) paramXls["cdId"] = getEVal("cdId");
-	if (isEmpty(getEVal("cdNm"))==false) paramXls["cdNm"] = getEVal("cdNm");
+	if (isEmpty(getEVal("grpCd"))==false) paramXls["grpCd"] = getEVal("grpCd");
+	if (isEmpty(getEVal("grpNm"))==false) paramXls["grpNm"] = getEVal("grpNm");
+	if (isEmpty(getEVal("useYn"))==false) paramXls["useYn"] = getEVal("useYn");
 
-	var params = {"xlsName":"코드"
+	var params = {"xlsName":"그룹코드"
 		,"sheetName":"시트"
-		,"columnHeaders":["코드ID","코드명","그룹코드ID"]
-		,"columnNames":["cdId","cdNm","grpId"]
+		,"columnHeaders":["그룹코드","그룹명","사용여부"]
+		,"columnNames":["grpCd","grpNm","useYn"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -56,43 +58,43 @@ function fnOpenDialog(mode){
 	var params = {};
 	if (!isEmpty(key)){
 		var arr = key.split(",");
-		params["cdId"] = arr[0];
-		params["grpId"] = arr[1];
+		params["grpCd"] = arr[0].trim();
 	}
-	CodePop.fnOpen(mode, params, fnGetList);
+	GrpCodePop.fnOpen(mode, params, fnGetList);
 }
 
 </script>
+
 <body><div class="wrap">
 <th:block th:include="app/common/header" th:remove="tag"></th:block>
 <th:block th:include="app/common/gnb" th:remove="tag"></th:block>
 <main>
 	<div class="sub_wrap">
 		<div class="cont">
-			<div class="cont-item" id="dvCodeSearch">
+			<div class="cont-item" id="dvGrpCodeSearch">
 				<div class="cont-item-row">
 					<div class="item">
-						<label for="item01">코드</label>
+						<label for="item01">검색1</label>
 						<div class="wrap">
-							<input type="text" name="cdId" id="cdId" placeholder="코드" style="width:80%" title="코드">
+							<input type="text" name="search1" id="search1" placeholder="검색1" style="width:80%" title="검색1">
 						</div>
 					</div>
 					<div class="item">
-						<label for="item02">코드명</label>
+						<label for="item02">검색2</label>
 						<div class="wrap">
-							<input type="text" name="cdNm" id="cdNm" placeholder="코드명" style="width:80%" title="코드명">
+							<input type="text" name="search2" id="search2" placeholder="검색2" style="width:80%" title="검색2">
 						</div>
 					</div>
 				</div>
 				<div class="cont-item-row cont-item-row-btn">
 					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
-					<button type="button" class="btn white default reset" onclick="clearObjects('dvCodeSearch');">초기화</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvGrpCodeSearch');">초기화</button>
 				</div>
 			</div>
 			<div class="cont-item h728">
 				<div class="bar-top">
 					<div class="bar-left">
-						<select class="select" onchange="pageClsCode.setPageRows(getEVal(this));">
+						<select class="select" onchange="pageClsGrpCode.setPageRows(getEVal(this));">
 							<option value="10" selected>10건</option>
 							<option value="20">20건</option>
 							<option value="30">30건</option>
@@ -102,7 +104,7 @@ function fnOpenDialog(mode){
 							<span id="totalCnt" name="totalCnt"></span>
 						</div>
 					</div>
-					
+
 					<div class="bar-right">
 						<div class="pagination-next-btns">
 			                <button type="button" class="btn white default" onclick="fnOpenDialog('CREATE');">신규</button>
@@ -112,33 +114,33 @@ function fnOpenDialog(mode){
 				</div>
 				<table id="tblIdxList" class="gridListTable">
 					<colgroup>
-						<col style="width:15%;" />
-						<col style="width:auto;" />
-						<col style="width:25%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
-							<th scope="col">코드ID</th>
-							<th scope="col">코드명</th>
-							<th scope="col">그룹코드ID</th>
+							<th scope="col">그룹코드</th>
+							<th scope="col">그룹명</th>
+							<th scope="col">사용여부</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
 				</table>
 				<div id="dvTrList" style="display:none;">
-				<!-- <tr key='{{cdId}},{{grpId}}' ondblclick='fnOpenDialog("MODIFY");'>
-						<td>{{cdId}}</td>
-					 	<td>{{cdNm}}</td>
-					 	<td>{{grpId}}</td>
+				<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+						<td>{{grpCd}}</td>
+						<td>{{grpNm}}</td>
+						<td>{{useYn}}</td>
 					 </tr> -->
 				</div>
-				
-				<div id="dvCodePageList" class="pagination"></div>
+
+				<div id="dvGrpCodePageList" class="pagination"></div>
 			</div>
 		</div>
 	</div>
 
-<th:block th:include="app/code/codePop" th:remove="tag"></th:block>
+<th:block th:include="app/grpCode/grpCodePop" th:remove="tag"></th:block>
 
 </main>
 <th:block th:include="app/common/footer" th:remove="tag"></th:block>

@@ -212,4 +212,12 @@ public class MenuController {
 		
 		return responseMap.getResultMap();
 	}
+
+	@RequestMapping(value = "app/menu/getGnbMenu.do", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public List<Map> getGnbMenu(@Valid final Map params) throws Exception {
+		final List<Map> listData = this.menuService.getGnbMenu(params);
+		
+		return listData;
+	}
 }
