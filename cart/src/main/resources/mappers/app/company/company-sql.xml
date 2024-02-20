@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="comapnyMapper">
-	<sql id="where-comapny">
+<mapper namespace="companyMapper">
+	<sql id="where-company">
 		WHERE 1=1
 			<if test="compId != null and compId != '' ">
 			AND C.COMP_ID = #{compId}
@@ -66,15 +66,15 @@
 			</if>
 	</sql>
 
-	<select id="getComapnyListCount" parameterType="ComapnyExDto" resultType="Integer">
-	/* comapnyMapper.getComapnyListCount */
+	<select id="getCompanyListCount" parameterType="CompanyExDto" resultType="Integer">
+	/* companyMapper.getCompanyListCount */
 		SELECT COUNT(1) AS CNT
-		FROM CW_COMAPNY C
-		<include refid="where-comapny" />
+		FROM CW_COMPANY C
+		<include refid="where-company" />
 	</select>
 
-	<select id="getComapnyList" parameterType="ComapnyExDto" resultType="ComapnyExDto">
-	/* comapnyMapper.getComapnyList */
+	<select id="getCompanyList" parameterType="CompanyExDto" resultType="CompanyExDto">
+	/* companyMapper.getCompanyList */
 		<include refid="commonMapper.pagingPrefix"/>
 		SELECT
 			C.COMP_ID
@@ -101,15 +101,15 @@
 			,REG_DTM
 			,C.UPD_USER_ID
 			,UPD_DTM
-		FROM CW_COMAPNY C
-		<include refid="where-comapny" />
+		FROM CW_COMPANY C
+		<include refid="where-company" />
 		ORDER BY
 			C.COMP_ID
 		<include refid="commonMapper.pagingPostfix"/>
 	</select>
 
-	<select id="getComapny" parameterType="ComapnyExDto" resultType="ComapnyExDto">
-	/* comapnyMapper.getComapny */
+	<select id="getCompany" parameterType="CompanyExDto" resultType="CompanyExDto">
+	/* companyMapper.getCompany */
 		SELECT
 			C.COMP_ID
 			,C.COMP_NM
@@ -135,14 +135,14 @@
 			,REG_DTM
 			,C.UPD_USER_ID
 			,UPD_DTM
-		FROM CW_COMAPNY C
+		FROM CW_COMPANY C
 		WHERE
 			C.COMP_ID = #{compId}
 	</select>
 
-	<insert id="insertComapny" parameterType="ComapnyExDto">
-	/* comapnyMapper.insertComapny */
-		INSERT INTO CW_COMAPNY (
+	<insert id="insertCompany" parameterType="CompanyExDto">
+	/* companyMapper.insertCompany */
+		INSERT INTO CW_COMPANY (
 			COMP_ID
 			,COMP_NM
 			,CNTRY_CD
@@ -195,9 +195,9 @@
 		)
 	</insert>
 
-	<update id="updateComapny" parameterType="ComapnyExDto">
-	/* comapnyMapper.updateComapny */
-		UPDATE CW_COMAPNY
+	<update id="updateCompany" parameterType="CompanyExDto">
+	/* companyMapper.updateCompany */
+		UPDATE CW_COMPANY
 		<set>
 		<if test="compNm != null">
 		COMP_NM = #{compNm},
@@ -267,9 +267,9 @@
 			COMP_ID = #{compId}
 	</update>
 
-	<delete id="deleteComapny" parameterType="ComapnyExDto">
-	/* comapnyMapper.deleteComapny */
-	DELETE FROM CW_COMAPNY
+	<delete id="deleteCompany" parameterType="CompanyExDto">
+	/* companyMapper.deleteCompany */
+	DELETE FROM CW_COMPANY
 	WHERE
 		COMP_ID = #{compId}
 	</delete>

@@ -1,4 +1,4 @@
-<div id="divComapnyPop" class="sub_wrap" style="display:none;width:92%" title="업체정보 정보">
+<div id="divCompanyPop" class="sub_wrap" style="display:none;width:92%" title="업체정보 정보">
 	<div class="cont">
 		<div class="cont-item cont-item01">
 			<div class="cont-item-row item-title">
@@ -146,34 +146,34 @@
 					</div>
 				</div>
 				<div class="cont-item-row cont-item-row-btn right">
-					<button id="saveBtn" name="saveBtn" class="btn default" onclick="ComapnyPop.fnSave();"><span>저장</span></button>
-					<button id="delBtn" name="delBtn" class="btn default" onclick="ComapnyPop.fnDelete();"><span>삭제</span></button>
-					<button class="btn write default" onclick="ComapnyPop.fnClose();"><span>닫기</span></button>
+					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CompanyPop.fnSave();"><span>저장</span></button>
+					<button id="delBtn" name="delBtn" class="btn default" onclick="CompanyPop.fnDelete();"><span>삭제</span></button>
+					<button class="btn write default" onclick="CompanyPop.fnClose();"><span>닫기</span></button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript">
-var ComapnyPop = new $W.load("divComapnyPop");
-ComapnyPop.ready(function(){
+var CompanyPop = new $W.load("divCompanyPop");
+CompanyPop.ready(function(){
 	//
 });
 
-ComapnyPop.fnOpen = function(mode, params, func) {
-	clearObjects("divComapnyPop");
-	ComapnyPop.mode = mode;
+CompanyPop.fnOpen = function(mode, params, func) {
+	clearObjects("divCompanyPop");
+	CompanyPop.mode = mode;
 	if (!isEmpty(func)){
-		ComapnyPop.func = func;
+		CompanyPop.func = func;
 	}
 	setObjVal({"useYn_g1":"Y"});
 
 	//draw popup
-	layerToggle("divComapnyPop",{"mode":1,"top":130,"scrollYn":"Y"});
+	layerToggle("divCompanyPop",{"mode":1,"top":130,"scrollYn":"Y"});
 
 	readOnlyTrue(["compId_g1"]);
 	if(mode == "MODIFY") {
-		var url = "/app/comapny/getComapny.do";
+		var url = "/app/company/getCompany.do";
 		var map = httpSend(url, params);
 		if (!isEmpty(map)){
 			let chgData = chgMapKey(map,"_g1");
@@ -190,7 +190,7 @@ ComapnyPop.fnOpen = function(mode, params, func) {
 	}
 };
 
-ComapnyPop.fnSave = function(){
+CompanyPop.fnSave = function(){
 
 	var valid = 0 || [
 		["compId_g1","","자료(업체ID)를 확인하세요."]
@@ -217,10 +217,10 @@ ComapnyPop.fnSave = function(){
 		];
 	if (checkValid( valid )==false) return;
 
-	var ds  = getEleToBDataSet("divComapnyPop");
-	var url = "/app/comapny/updateComapny.do";
-	if (ComapnyPop.mode=="CREATE"){
-		url = "/app/comapny/insertComapny.do";
+	var ds  = getEleToBDataSet("divCompanyPop");
+	var url = "/app/company/updateCompany.do";
+	if (CompanyPop.mode=="CREATE"){
+		url = "/app/company/insertCompany.do";
 	}
 
 	//data key change
@@ -231,9 +231,9 @@ ComapnyPop.fnSave = function(){
 			alert(map["resultMsg"]);
 			return false;
 		}
-		if (!isEmpty(ComapnyPop.func)){
-			ComapnyPop.func();
-			ComapnyPop.fnClose();
+		if (!isEmpty(CompanyPop.func)){
+			CompanyPop.func();
+			CompanyPop.fnClose();
 		}
 	}else{
 		alert("작업중 오류가 발생했습니다.");
@@ -241,14 +241,14 @@ ComapnyPop.fnSave = function(){
 
 };
 
-ComapnyPop.fnDelete = function(){
-	if (ComapnyPop.mode != "MODIFY"){
+CompanyPop.fnDelete = function(){
+	if (CompanyPop.mode != "MODIFY"){
 		alert("조회후 삭제하세요.");
 		return false;
 	}
 	if ( confirm("자료를 삭제하시겠습니까?")==false ) return;
 
-	var url = "/app/comapny/deleteComapny.do";
+	var url = "/app/company/deleteCompany.do";
 	var params = {};
 	params["compId"] = getElement("compId_g1").value;
 
@@ -258,16 +258,16 @@ ComapnyPop.fnDelete = function(){
 			alert(map["resultMsg"]);
 			return false;
 		}
-		if (!isEmpty(ComapnyPop.func)){
-			ComapnyPop.func();
-			ComapnyPop.fnClose();
+		if (!isEmpty(CompanyPop.func)){
+			CompanyPop.func();
+			CompanyPop.fnClose();
 		}
 	}else{
 		alert("작업중 오류가 발생했습니다.");
 	}
 };
 
-ComapnyPop.fnClose = function(){
-	layerToggle("divComapnyPop",{"mode":0});
+CompanyPop.fnClose = function(){
+	layerToggle("divCompanyPop",{"mode":0});
 };
 </script>

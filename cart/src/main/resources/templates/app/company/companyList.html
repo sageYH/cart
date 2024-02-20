@@ -8,7 +8,7 @@ window.onload = function() {
 }
 
 //page
-var pageClsComapny = new pageCls("dvComapnyPageList",fnGetList,"totalCnt");
+var pageClsCompany = new pageCls("dvCompanyPageList",fnGetList,"totalCnt");
 
 function fnGetList(){
 	var params = {};
@@ -33,20 +33,20 @@ function fnGetList(){
 	if (isEmpty(getEVal("custCpYn"))==false) params["custCpYn"] = getEVal("custCpYn");
 	if (isEmpty(getEVal("orgYn"))==false) params["orgYn"] = getEVal("orgYn");
 	//page set
-	params = pageClsComapny.getPageInfo(params);
+	params = pageClsCompany.getPageInfo(params);
 
-	var url = "/app/comapny/getComapnyPageList.do";
+	var url = "/app/company/getCompanyPageList.do";
 	//add page
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
 	var vArr = ["compId","compNm","cntryCd","cpDivCd","bizRegNo","repNm","bizTyp","bizItem","zipCd","addr","dtlAddr","dtlAddr2","picNm","picPhoneNo","hqYn","storeYn","afCpYn","frchseYn","custCpYn","orgYn"];
 	setDrawTbl("tblIdxList","dvTrList",vArr,ds,20);
-	pageClsComapny.setTotalRowsReload(rObj["totalRows"]);
+	pageClsCompany.setTotalRowsReload(rObj["totalRows"]);
 }
 
-function fnXlsComapnyDown(){
-	var url = "/app/comapny/getComapnyExcelDown.do";
+function fnXlsCompanyDown(){
+	var url = "/app/company/getCompanyExcelDown.do";
 	var paramXls = {};
 	if (isEmpty(getEVal("compId"))==false) paramXls["compId"] = getEVal("compId");
 	if (isEmpty(getEVal("compNm"))==false) paramXls["compNm"] = getEVal("compNm");
@@ -94,7 +94,7 @@ function fnOpenDialog(mode){
 		var arr = key.split(",");
 		params["compId"] = arr[0].trim();
 	}
-	ComapnyPop.fnOpen(mode, params, fnGetList);
+	CompanyPop.fnOpen(mode, params, fnGetList);
 }
 
 </script>
@@ -105,7 +105,7 @@ function fnOpenDialog(mode){
 <main>
 	<div class="sub_wrap">
 		<div class="cont">
-			<div class="cont-item" id="dvComapnySearch">
+			<div class="cont-item" id="dvCompanySearch">
 				<div class="cont-item-row">
 					<div class="item">
 						<label for="item01">검색1</label>
@@ -122,13 +122,13 @@ function fnOpenDialog(mode){
 				</div>
 				<div class="cont-item-row cont-item-row-btn">
 					<button type="button" class="btn primary default" onclick="fnGetList();">검색</button>
-					<button type="button" class="btn white default reset" onclick="clearObjects('dvComapnySearch');">초기화</button>
+					<button type="button" class="btn white default reset" onclick="clearObjects('dvCompanySearch');">초기화</button>
 				</div>
 			</div>
 			<div class="cont-item h728">
 				<div class="bar-top">
 					<div class="bar-left">
-						<select class="select" onchange="pageClsComapny.setPageRows(getEVal(this));">
+						<select class="select" onchange="pageClsCompany.setPageRows(getEVal(this));">
 							<option value="10" selected>10건</option>
 							<option value="20">20건</option>
 							<option value="30">30건</option>
@@ -220,12 +220,12 @@ function fnOpenDialog(mode){
 					 </tr> -->
 				</div>
 
-				<div id="dvComapnyPageList" class="pagination"></div>
+				<div id="dvCompanyPageList" class="pagination"></div>
 			</div>
 		</div>
 	</div>
 
-<th:block th:include="app/comapny/comapnyPop" th:remove="tag"></th:block>
+<th:block th:include="app/company/companyPop" th:remove="tag"></th:block>
 
 </main>
 <th:block th:include="app/common/footer" th:remove="tag"></th:block>

@@ -1,4 +1,4 @@
-package com.app.comapny.model;
+package com.app.company.model;
 
 import com.base.BaseDto;
 
@@ -7,8 +7,8 @@ import lombok.Setter;
 
 /**
 * <pre>
-* com.app.comapny.model
-* ComapnyDto.java
+* com.app.company.model
+* CompanyDto.java
 * 
 * </pre>
 * @date : 
@@ -18,7 +18,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ComapnyDto extends BaseDto {
+public class CompanyDto extends BaseDto {
 
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 2665419922181909329L;
