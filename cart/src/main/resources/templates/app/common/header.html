@@ -1,7 +1,7 @@
 <meta charset="utf-8" />
 <header style="z-index:20000;">
 	<div class="header-wrap">
-		<button type="button" class="btn-gnb menu"></button>
+		<button type="button" class="btn-gnb menu" onclick="let dp = document.querySelector('.total-menu').style.display.trim(); if (dp == 'none' || dp == ''){document.querySelector('.total-menu').style.display='block';}else{document.querySelector('.total-menu').style.display='none';}"></button>
 		<h1 class="logo"><a href="/">TEST</a></h1>
 
 		<div class="user-wrap">
@@ -14,7 +14,7 @@
 					<img src="/img/assets/user-img-icon.png" alt="홍길동" />
 				</dd>
 			</dl>
-			<button type="button" class="logout" th:if="${USERNM != null and USERNM != ''}" th:onclick="|location.href='@{/logout.do}'|">로그아웃</button>
+			<button type="button" class="logout" sec:authorize="isAuthenticated()" th:onclick="|location.href='@{/logout.do}'|">로그아웃</button>
 		</div>
 	</div>
 </header>

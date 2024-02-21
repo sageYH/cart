@@ -17,7 +17,7 @@ function fnGetList(){
 	var url = "/app/grpCode/getGrpCodeList.do";
 	//add page
 	var rObj = httpSend(url,params);
-	DSGRP = new BDataSet(rObj["payloads"]);
+	DSGRP = new BDataSet(rObj);
 	
 	var vArr = ["grpCd","grpNm","useYn"];
 	setDrawTbl("tblIdxList","dvTrList",vArr,DSGRP,3);
@@ -37,7 +37,7 @@ function fnGetCodeList(grpCd){
 	var url = "/app/cmnCode/getCmnCodeList.do";
 	//add page
 	var rObj = httpSend(url,params);
-	var ds = new BDataSet(rObj["payloads"]);
+	var ds = new BDataSet(rObj);
 	
 	var vArr = ["cmnCd","cmnCdNm","grpCd"];
 	setDrawTbl("tblIdxDtlList","dvTrDtlList",vArr,ds,3);
@@ -167,7 +167,7 @@ function fnDtlDelete(){
 		            </div>
 		            <div class="item-search">
 		              <input type="text" id="schGrpNm" name="schGrpNm" placeholder="그룹명을 입력하세요."/>
-		              <button type="submit">검색</button>
+		              <button type="submit" onclick="fnGetList();">검색</button>
 		            </div>
 					<table id="tblIdxList" class="gridListTable">
 						<colgroup>
@@ -185,7 +185,7 @@ function fnDtlDelete(){
 						<tbody></tbody>
 					</table>
 					<div id="dvTrList" style="display:none;">
-					<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");'>
+					<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");' onclick='fnGetCodeList("{{grpCd}}");'>
 							<td>{{grpCd}}</td>
 							<td>{{grpNm}}</td>
 							<td>{{useYn}}</td>
@@ -198,11 +198,12 @@ function fnDtlDelete(){
                         <button type="button" class="btn icon add-folder" onclick="fnOpenDtlDialog('CREATE');">추가</button>
                         <button type="button" class="btn icon delete-folder" onclick='fnDtlDelete();'>삭제</button>
 		            </div>
+		            <div class="cont-item">
 		            <div class="cont-item-row border-top">
 		              <div class="item">
-		                <label  for="groupId">그룹ID</label>
+		                <label  for="grpCd">그룹ID</label>
 		                <div class="wrap">
-		                <input type="text" id="groupId" name="groupId" />
+		                <input type="text" id="grpCd" name="grpCd" />
 		                </div>
 		              </div>
 		              <div class="item">
@@ -211,6 +212,7 @@ function fnDtlDelete(){
 		                  <input type="text" id="grpNm" name="grpNm" />
 		                </div>
 		              </div>
+		            </div>
 		            </div>
 					<table id="tblIdxDtlList" class="gridListTable">
 						<colgroup>

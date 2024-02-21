@@ -37,7 +37,10 @@ public class AuthChecker {
 			String compId = user.getuserInfoDto().getCompId();
 			request.setAttribute("USERID",userId);
 			request.setAttribute("USERNM",userNm);
+			//<span sec:authentication="principal.userInfoDto.userNm"></span>
 			request.setAttribute("COMPID",compId);
+			//<span sec:authorize="isAuthenticated()">login ok</span>
+			//<span sec:authorize="isAnonymous()">not login</span>
 
 			String uri = request.getRequestURI();
 			Matcher ignoreMatcher = Constant.UrlPattern.AUTH_IGNORE_PATTERN.matcher(uri);
