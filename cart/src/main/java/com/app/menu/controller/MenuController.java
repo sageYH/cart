@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.menu.model.MenuExDto;
@@ -213,9 +215,9 @@ public class MenuController {
 		return responseMap.getResultMap();
 	}
 
-	@RequestMapping(value = "app/menu/getGnbMenu.do", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "app/menu/getGnbMenu.do")
 	@ResponseBody
-	public List<Map> getGnbMenu(@Valid final Map params) throws Exception {
+	public List<Map> getGnbMenu(@RequestParam Map params) throws Exception {
 		final List<Map> listData = this.menuService.getGnbMenu(params);
 		
 		return listData;

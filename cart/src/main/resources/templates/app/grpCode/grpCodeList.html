@@ -169,7 +169,8 @@ function fnDtlDelete(){
 		              <input type="text" id="schGrpNm" name="schGrpNm" placeholder="그룹명을 입력하세요."/>
 		              <button type="submit" onclick="fnGetList();">검색</button>
 		            </div>
-					<table id="tblIdxList" class="gridListTable">
+		            <div style="height:85%;overflow-y:auto;overflow-x:hidden;">
+					<table id="tblIdxList" class="gridListTable table-scroll">
 						<colgroup>
 							<col style="width:10%;" />
 							<col style="width:10%;" />
@@ -184,6 +185,7 @@ function fnDtlDelete(){
 						</thead>
 						<tbody></tbody>
 					</table>
+					</div>
 					<div id="dvTrList" style="display:none;">
 					<!-- <tr key='{{grpCd}}' ondblclick='fnOpenDialog("MODIFY");' onclick='fnGetCodeList("{{grpCd}}");'>
 							<td>{{grpCd}}</td>
@@ -214,7 +216,8 @@ function fnDtlDelete(){
 		              </div>
 		            </div>
 		            </div>
-					<table id="tblIdxDtlList" class="gridListTable">
+		            <div style="height:85%;overflow-y:auto;overflow-x:hidden;">
+					<table id="tblIdxDtlList" class="gridListTable table-scroll">
 						<colgroup>
 							<col style="width:15%;" />
 							<col style="width:auto;" />
@@ -229,6 +232,7 @@ function fnDtlDelete(){
 						</thead>
 						<tbody></tbody>
 					</table>
+					</div>
 					<div id="dvTrDtlList" style="display:none;">
 					<!-- <tr key='{{cmnCd}},{{grpCd}}' ondblclick='fnOpenDtlDialog("MODIFY");'>
 							<td>{{cmnCd}}</td>

@@ -1,8 +1,8 @@
 <meta charset="utf-8" />
 	<div class="total-menu">
 		<!-- <h2>전체 메뉴</h2> -->
-		<div class="wrap" style="padding-top:2px;">
-			<div class="item" id="dvTopGnb">
+		<div class="wrap" style="padding-top:2px;" id="dvTopGnb">
+			<div class="item">
 				<h3>메뉴1</h3>
 				<ul>
 					<li>
@@ -34,7 +34,50 @@
 	</div>
 <script>
 window.onload = function() {
+	fnLoadMenu();
+}
+function fnLoadMenu(){
+	let userId = "[[${USERID}]]";
 	let url = "/app/menu/getGnbMenu.do";
+	let rObj = httpSend(url,{"userId":userId});
 	
+	let ds = new BDataSet(rObj);
+	let mArr = [];
+	for(let i=0;i<ds.getRowCount();i++){
+		if (ds.getValue("menuLvl",i) != "0") continue;
+		mArr.push(ds.getValue("menuId",i));
+	}
+	let strArr = [];
+	for(let i=0;i<mArr.length;i++){
+		let menuId = mArr[i];
+		let idx = ds.find("menuId",menuId);
+		if (Number(idx) < 0) continue;
+		strArr.push('<div class="item" style="margin-right:1px;">\n');
+		strArr.push('<h3>'+ds.getValue("menuNm",idx)+'</h3>\n');
+		strArr.push('<ul>\n');
+		let children = ds.getValue("children",idx);
+		if (!isEmpty(children)){
+			let cArr = children.split(",");
+			for(let k=0;k<cArr.length;k++){
+				let m2Id = cArr[k];
+				let idx2 = ds.find("menuId",m2Id);
+				if (Number(idx2) < 0) continue;
+				let link = ds.getValue("link",idx2);
+				let m2Nm = ds.getValue("menuNm",idx2);
+				strArr.push('<li>\n');
+				if (isEmpty(link)){
+					strArr.push('<span>'+m2Nm+'</span>\n');
+				}else{
+					strArr.push('<a href="'+link+'"><span>'+m2Nm+'</span></a>\n');
+				}
+				strArr.push('<button type="button">즐겨찾기</button>\n');
+				strArr.push('</li>\n');
+			}
+		}
+
+		strArr.push('</ul>\n');
+		strArr.push('</div>\n');
+	}
+	getElement("dvTopGnb").innerHTML = strArr.join("");
 }
 </script>
