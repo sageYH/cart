@@ -1262,7 +1262,7 @@ function layerToggle(id,map){
 		
 		let ob1=document.createElement("DIV");
 		ob1.setAttribute("id",vTitle1);
-		ob1.style.backgroundColor = "#3A96FC";
+		ob1.style.backgroundColor = "#02141F";
 		ob1.style.height = titleHeight;
 		let so1=document.createElement("SPAN");
 		so1.style.color = "#ffffff";

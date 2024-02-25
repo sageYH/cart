@@ -750,7 +750,7 @@ footer p {
   letter-spacing: -0.05em;
 }
 .total-menu .wrap .item h3 {
-  background: #3a96fc;
+  background: #02141f;
   color: #fff;
   justify-content: center;
   font-size: 18px;
@@ -999,7 +999,7 @@ input:checked ~ .checkmark:after {
   font-size: 14px;
 }
 .primary {
-  background: #3a96fc;
+  background: #02141f;
   color: #fff;
 }
 .dark-gray {
@@ -1264,12 +1264,12 @@ table td.ellipsis {
   margin-right: 3px;
 }
 .item-cont ul li a:hover {
-  color: #3a96fc;
+  color: #02141f;
   text-decoration: underline;
   text-underline-position: under;
 }
 .item-cont ul li a:hover::before {
-  background: #3a96fc;
+  background: #02141f;
 }
 .item-cont ul li span.date {
   font-family: "Roboto", sans-serif;
@@ -1431,12 +1431,12 @@ table td.ellipsis {
   margin-right: 3px;
 }
 .item-cont ul li a:hover {
-  color: #3a96fc;
+  color: #02141f;
   text-decoration: underline;
   text-underline-position: under;
 }
 .item-cont ul li a:hover::before {
-  background: #3a96fc;
+  background: #02141f;
 }
 .item-cont ul li span.date {
   font-family: "Roboto", sans-serif;
