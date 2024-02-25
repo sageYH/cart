@@ -38,5 +38,7 @@ public class CountryInfoDto extends BaseDto {
 	private String cntryAbbrNmLng;
 	// 표준시
 	private String stdTime;
+	// 기준언어셋여부
+	private String baseLangSetYn;
 
 }

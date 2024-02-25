@@ -20,6 +20,7 @@ function fnGetList(){
 	if (isEmpty(getEVal("cntryNmLng"))==false) params["cntryNmLng"] = getEVal("cntryNmLng");
 	if (isEmpty(getEVal("cntryAbbrNmLng"))==false) params["cntryAbbrNmLng"] = getEVal("cntryAbbrNmLng");
 	if (isEmpty(getEVal("stdTime"))==false) params["stdTime"] = getEVal("stdTime");
+	if (isEmpty(getEVal("baseLangSetYn"))==false) params["baseLangSetYn"] = getEVal("baseLangSetYn");
 	//page set
 	params = pageClsCountryInfo.getPageInfo(params);
 
@@ -28,8 +29,8 @@ function fnGetList(){
 	var rObj = httpSend(url,params);
 	var ds = new BDataSet(rObj["payloads"]);
 	
-	var vArr = ["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime"];
-	setDrawTbl("tblIdxList","dvTrList",vArr,ds,8);
+	var vArr = ["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime","baseLangSetYn"];
+	setDrawTbl("tblIdxList","dvTrList",vArr,ds,9);
 	pageClsCountryInfo.setTotalRowsReload(rObj["totalRows"]);
 }
 
@@ -44,11 +45,12 @@ function fnXlsCountryInfoDown(){
 	if (isEmpty(getEVal("cntryNmLng"))==false) paramXls["cntryNmLng"] = getEVal("cntryNmLng");
 	if (isEmpty(getEVal("cntryAbbrNmLng"))==false) paramXls["cntryAbbrNmLng"] = getEVal("cntryAbbrNmLng");
 	if (isEmpty(getEVal("stdTime"))==false) paramXls["stdTime"] = getEVal("stdTime");
+	if (isEmpty(getEVal("baseLangSetYn"))==false) paramXls["baseLangSetYn"] = getEVal("baseLangSetYn");
 
 	var params = {"xlsName":"국가정보"
 		,"sheetName":"시트"
-		,"columnHeaders":["국가코드","국가약어코드","국가숫자코드","국가명","국가약어명","국가명_언어","국가약어_언어","표준시"]
-		,"columnNames":["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime"]
+		,"columnHeaders":["국가코드","국가약어코드","국가숫자코드","국가명","국가약어명","국가명_언어","국가약어_언어","표준시","기준언어셋여부"]
+		,"columnNames":["cntryCd","cntryAbbrCd","cntryNumCd","cntryNm","cntryAbbrNm","cntryNmLng","cntryAbbrNmLng","stdTime","baseLangSetYn"]
 		,"condition": paramXls
 	};
 	var fData = mapToFormdata({"params":JSON.stringify(params)});
@@ -132,6 +134,7 @@ function fnOpenDialog(mode){
 						<col style="width:10%;" />
 						<col style="width:10%;" />
 						<col style="width:10%;" />
+						<col style="width:10%;" />
 					</colgroup>
 					<thead>
 						<tr>
@@ -143,6 +146,7 @@ function fnOpenDialog(mode){
 							<th scope="col">국가명_언어</th>
 							<th scope="col">국가약어_언어</th>
 							<th scope="col">표준시</th>
+							<th scope="col">기준언어셋여부</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -157,6 +161,7 @@ function fnOpenDialog(mode){
 						<td>{{cntryNmLng}}</td>
 						<td>{{cntryAbbrNmLng}}</td>
 						<td>{{stdTime}}</td>
+						<td>{{baseLangSetYn}}</td>
 					 </tr> -->
 				</div>
 

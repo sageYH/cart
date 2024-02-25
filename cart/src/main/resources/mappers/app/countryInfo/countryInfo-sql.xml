@@ -28,6 +28,9 @@
 			<if test="stdTime != null and stdTime != '' ">
 			AND CI.STD_TIME = #{stdTime}
 			</if>
+			<if test="baseLangSetYn != null and baseLangSetYn != '' ">
+			AND CI.BASE_LANG_SET_YN = #{baseLangSetYn}
+			</if>
 	</sql>
 
 	<select id="getCountryInfoListCount" parameterType="CountryInfoExDto" resultType="Integer">
@@ -49,6 +52,7 @@
 			,CI.CNTRY_NM_LNG
 			,CI.CNTRY_ABBR_NM_LNG
 			,CI.STD_TIME
+			,CI.BASE_LANG_SET_YN
 			,CI.REG_USER_ID
 			,REG_DTM
 			,CI.UPD_USER_ID
@@ -71,6 +75,7 @@
 			,CI.CNTRY_NM_LNG
 			,CI.CNTRY_ABBR_NM_LNG
 			,CI.STD_TIME
+			,CI.BASE_LANG_SET_YN
 			,CI.REG_USER_ID
 			,REG_DTM
 			,CI.UPD_USER_ID
@@ -91,6 +96,7 @@
 			,CNTRY_NM_LNG
 			,CNTRY_ABBR_NM_LNG
 			,STD_TIME
+			,BASE_LANG_SET_YN
 			,REG_USER_ID
 			,REG_DTM
 			,UPD_USER_ID
@@ -104,6 +110,7 @@
 			,#{cntryNmLng}
 			,#{cntryAbbrNmLng}
 			,#{stdTime}
+			,#{baseLangSetYn}
 			,#{regUserId}
 			,NOW()
 			,#{updUserId}
@@ -135,6 +142,9 @@
 		</if>
 		<if test="stdTime != null">
 		STD_TIME = #{stdTime},
+		</if>
+		<if test="baseLangSetYn != null">
+		BASE_LANG_SET_YN = #{baseLangSetYn},
 		</if>
 		<if test="updUserId != null">
 		UPD_USER_ID = #{updUserId},

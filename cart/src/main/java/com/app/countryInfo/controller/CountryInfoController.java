@@ -27,7 +27,7 @@ import com.common.utils.MapUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
-*  관리
+* 국가정보 관리
 *
 * @author
 *
@@ -65,7 +65,7 @@ public class CountryInfoController {
 	}
 
 	/**
-	*  List Page
+	* 국가정보 List Page
 	*
 	* @param CountryInfoExDto
 	* @return Map<String,Object>
@@ -83,7 +83,7 @@ public class CountryInfoController {
 	}
 
 	/**
-	*  List Inquiry
+	* 국가정보 List Inquiry
 	*
 	* @param CountryInfoExDto
 	* @return Map<String,Object>
@@ -99,7 +99,7 @@ public class CountryInfoController {
 
 	/**
 	* <pre>
-	* 1. 개요  detail infomation Inquiry
+	* 1. 개요 국가정보 detail infomation Inquiry
 	* </pre>
 	*
 	* @param CountryInfoExDto
@@ -116,7 +116,7 @@ public class CountryInfoController {
 	}
 
 	/**
-	*  insert
+	* 국가정보 insert
 	*
 	* @param CountryInfoExDto
 	* @return Map<String,Object>
@@ -139,7 +139,7 @@ public class CountryInfoController {
 	}
 
 	/**
-	*  Update
+	* 국가정보 Update
 	*
 	* @param CountryInfoExDto
 	* @return Map<String,Object>
@@ -162,7 +162,7 @@ public class CountryInfoController {
 	}
 
 	/**
-	*  delete
+	* 국가정보 delete
 	*
 	* @param CountryInfoExDto
 	* @return ResponseEntity<String>

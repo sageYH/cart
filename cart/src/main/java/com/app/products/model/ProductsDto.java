@@ -28,7 +28,7 @@ public class ProductsDto extends BaseDto {
 	private String prodNm;
 	// 상위상품분류ID
 	private String prntProdId;
-	// 상품레벨
+	// 회사코드
 	private String compId;
 	// 상품스킨
 	private String prodSkin;

@@ -61,6 +61,16 @@
 						</div>
 					</div>
 				</div>
+				<div class="cont-item-row">
+					<div class="item">
+						<label for="baseLangSetYn_g1">기준언어셋여부</label>
+						<div class="wrap">
+							<input type="text" id="baseLangSetYn_g1" name="baseLangSetYn_g1" />
+						</div>
+					</div>
+					<div class="item">
+					</div>
+				</div>
 				<div class="cont-item-row cont-item-row-btn right">
 					<button id="saveBtn" name="saveBtn" class="btn default" onclick="CountryInfoPop.fnSave();"><span>저장</span></button>
 					<button id="delBtn" name="delBtn" class="btn default" onclick="CountryInfoPop.fnDelete();"><span>삭제</span></button>
@@ -117,6 +127,7 @@ CountryInfoPop.fnSave = function(){
 		,["cntryNmLng_g1","","자료(국가명_언어)를 확인하세요."]
 		,["cntryAbbrNmLng_g1","","자료(국가약어_언어)를 확인하세요."]
 		,["stdTime_g1","","자료(표준시)를 확인하세요."]
+		,["baseLangSetYn_g1","","자료(기준언어셋여부)를 확인하세요."]
 
 		];
 	if (checkValid( valid )==false) return;

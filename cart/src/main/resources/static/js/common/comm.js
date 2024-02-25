@@ -746,6 +746,8 @@ function replSymEtChar(id,obj){
 	if (isEmpty(obj)==false){
 		for (var key in obj){
 			var v1 = "{{"+key+"}}";
+			v1.replaceAll("<","&lt;");
+			v1.replaceAll(">","&gt;");
 			while(true){
 				var idx = str.indexOf(v1);
 				if (idx < 0) break;
